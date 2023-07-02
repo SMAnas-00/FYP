@@ -1,0 +1,830 @@
+// ignore_for_file: unnecessary_null_comparison, unused_local_variable
+
+import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
+import 'package:maps_toolkit/maps_toolkit.dart' as map_tool;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// ignore: unused_import
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+
+class MapView extends StatefulWidget {
+  @override
+  _MapViewState createState() => _MapViewState();
+}
+
+class _MapViewState extends State<MapView> {
+  CameraPosition _initialLocation = CameraPosition(target: LatLng(0.0, 0.0));
+  late GoogleMapController mapController;
+
+  NOTIFY notify = NOTIFY();
+  bool isinNotification = false;
+  bool isInPolygon = false;
+  late StreamSubscription<Position> positionStreamSubscription;
+
+  late Position _currentPosition;
+  String _currentAddress = '';
+  Set<Polygon> _polygon = {};
+
+  final startAddressController = TextEditingController();
+  final destinationAddressController = TextEditingController();
+  // final FocusNode _focusNode = FocusNode();
+  // bool _isfocus = false;
+  var uuid = Uuid();
+  bool isInselected = true;
+  String _sessionToken = '1223344';
+  List<dynamic> _placesList = [];
+
+  List<LatLng> Polygonpoints = const [
+    LatLng(24.873463514025758, 67.13520799826712),
+    LatLng(24.873472639291787, 67.1352086688193),
+    LatLng(24.873480547855124, 67.13520933937151),
+    LatLng(24.873480547855124, 67.1352207387589),
+    LatLng(24.873479331153092, 67.13527371238264),
+    LatLng(24.873477506100052, 67.13529248784423),
+    LatLng(24.873459863919177, 67.13528913508323),
+    LatLng(24.873458038865834, 67.13523750256388),
+  ];
+
+  final startAddressFocusNode = FocusNode();
+  final desrinationAddressFocusNode = FocusNode();
+
+  String _startAddress = '';
+  String _destinationAddress = '';
+  String? _placeDistance;
+
+  Set<Marker> markers = {};
+
+  late PolylinePoints polylinePoints;
+  Map<PolylineId, Polyline> polylines = {};
+  List<LatLng> polylineCoordinates = [];
+
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  Widget _textField({
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    required String label,
+    required String hint,
+    required double width,
+    required Icon prefixIcon,
+    Widget? suffixIcon,
+    required Function(String) locationCallback,
+  }) {
+    return Container(
+      width: width * 0.8,
+      child: TextField(
+        onChanged: (value) {
+          locationCallback(value);
+        },
+        controller: controller,
+        focusNode: focusNode,
+        decoration: new InputDecoration(
+          prefixIcon: prefixIcon,
+          suffixIcon: suffixIcon,
+          labelText: label,
+          filled: true,
+          fillColor: Colors.white,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
+            ),
+            borderSide: BorderSide(
+              color: Colors.grey.shade400,
+              width: 2,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
+            ),
+            borderSide: BorderSide(
+              color: Colors.blue.shade300,
+              width: 2,
+            ),
+          ),
+          contentPadding: EdgeInsets.all(15),
+          hintText: hint,
+        ),
+      ),
+    );
+  }
+
+  // Method for retrieving the current location
+  _getCurrentLocation() async {
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) async {
+      setState(() {
+        _currentPosition = position;
+
+        print('CURRENT POS: $_currentPosition');
+        mapController.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(position.latitude, position.longitude),
+              zoom: 18.0,
+            ),
+          ),
+        );
+        checkUpdatedLocation(_currentPosition as LatLng);
+      });
+      await _getAddress();
+    }).catchError((e) {
+      print(e);
+    });
+  }
+
+  // Method for retrieving the address
+  _getAddress() async {
+    try {
+      List<Placemark> p = await placemarkFromCoordinates(
+          _currentPosition.latitude, _currentPosition.longitude);
+
+      Placemark place = p[0];
+
+      setState(() {
+        _currentAddress =
+            "${place.name}, ${place.locality}, ${place.postalCode}, ${place.country}";
+        startAddressController.text = _currentAddress;
+        _startAddress = _currentAddress;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // Method for calculating the distance between two places
+  Future<bool> _calculateDistance() async {
+    try {
+      // Retrieving placemarks from addresses
+      List<Location> startPlacemark = await locationFromAddress(_startAddress);
+      List<Location> destinationPlacemark =
+          await locationFromAddress(_destinationAddress);
+
+      // Use the retrieved coordinates of the current position,
+      // instead of the address if the start position is user's
+      // current position, as it results in better accuracy.
+      double startLatitude = _startAddress == _currentAddress
+          ? _currentPosition.latitude
+          : startPlacemark[0].latitude;
+
+      double startLongitude = _startAddress == _currentAddress
+          ? _currentPosition.longitude
+          : startPlacemark[0].longitude;
+
+      double destinationLatitude = destinationPlacemark[0].latitude;
+      double destinationLongitude = destinationPlacemark[0].longitude;
+
+      String startCoordinatesString = '($startLatitude, $startLongitude)';
+      String destinationCoordinatesString =
+          '($destinationLatitude, $destinationLongitude)';
+
+      // Start Location Marker
+      Marker startMarker = Marker(
+        markerId: MarkerId(startCoordinatesString),
+        position: LatLng(startLatitude, startLongitude),
+        infoWindow: InfoWindow(
+          title: 'Start $startCoordinatesString',
+          snippet: _startAddress,
+        ),
+        icon: BitmapDescriptor.defaultMarker,
+      );
+
+      // Destination Location Marker
+      Marker destinationMarker = Marker(
+        markerId: MarkerId(destinationCoordinatesString),
+        position: LatLng(destinationLatitude, destinationLongitude),
+        infoWindow: InfoWindow(
+          title: 'Destination $destinationCoordinatesString',
+          snippet: _destinationAddress,
+        ),
+        icon: BitmapDescriptor.defaultMarker,
+      );
+
+      // Adding the markers to the list
+      markers.add(startMarker);
+      markers.add(destinationMarker);
+
+      print(
+        'START COORDINATES: ($startLatitude, $startLongitude)',
+      );
+      print(
+        'DESTINATION COORDINATES: ($destinationLatitude, $destinationLongitude)',
+      );
+
+      // Calculating to check that the position relative
+      // to the frame, and pan & zoom the camera accordingly.
+      double miny = (startLatitude <= destinationLatitude)
+          ? startLatitude
+          : destinationLatitude;
+      double minx = (startLongitude <= destinationLongitude)
+          ? startLongitude
+          : destinationLongitude;
+      double maxy = (startLatitude <= destinationLatitude)
+          ? destinationLatitude
+          : startLatitude;
+      double maxx = (startLongitude <= destinationLongitude)
+          ? destinationLongitude
+          : startLongitude;
+
+      double southWestLatitude = miny;
+      double southWestLongitude = minx;
+
+      double northEastLatitude = maxy;
+      double northEastLongitude = maxx;
+
+      // Accommodate the two locations within the
+      // camera view of the map
+      mapController.animateCamera(
+        CameraUpdate.newLatLngBounds(
+          LatLngBounds(
+            northeast: LatLng(northEastLatitude, northEastLongitude),
+            southwest: LatLng(southWestLatitude, southWestLongitude),
+          ),
+          100.0,
+        ),
+      );
+
+      // Calculating the distance between the start and the end positions
+      // with a straight path, without considering any route
+      // double distanceInMeters = await Geolocator.bearingBetween(
+      //   startLatitude,
+      //   startLongitude,
+      //   destinationLatitude,
+      //   destinationLongitude,
+      // );
+
+      await _createPolylines(startLatitude, startLongitude, destinationLatitude,
+          destinationLongitude);
+
+      double totalDistance = 0.0;
+
+      // Calculating the total distance by adding the distance
+      // between small segments
+      for (int i = 0; i < polylineCoordinates.length - 1; i++) {
+        totalDistance += _coordinateDistance(
+          polylineCoordinates[i].latitude,
+          polylineCoordinates[i].longitude,
+          polylineCoordinates[i + 1].latitude,
+          polylineCoordinates[i + 1].longitude,
+        );
+      }
+
+      setState(() {
+        print(totalDistance.toStringAsFixed(2));
+        _placeDistance = totalDistance.toStringAsFixed(3);
+        print('DISTANCE: $_placeDistance km');
+      });
+      setState(() {});
+
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
+  // Formula for calculating distance between two coordinates
+  // https://stackoverflow.com/a/54138876/11910277
+  double _coordinateDistance(lat1, lon1, lat2, lon2) {
+    print('LATITUDE 1:' + lat1);
+    print('LATITUDE 1:' + lat2);
+
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    return 12742 * asin(sqrt(a));
+  }
+
+  // Create the polylines for showing the route between two places
+  _createPolylines(
+    double startLatitude,
+    double startLongitude,
+    double destinationLatitude,
+    double destinationLongitude,
+  ) async {
+    polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      Secrets.API_KEY, // Google Maps API Key
+      PointLatLng(startLatitude, startLongitude),
+      PointLatLng(destinationLatitude, destinationLongitude),
+      travelMode: TravelMode.driving,
+    );
+
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+
+    PolylineId id = PolylineId('ROUTE');
+    Polyline polyline = Polyline(
+      polylineId: id,
+      color: Colors.purple,
+      points: polylineCoordinates,
+      width: 3,
+    );
+    polylines[id] = polyline;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startLocationService();
+    // _focusNode.addListener(() {
+    //   setState(() {
+    //     _isfocus = _focusNode.hasFocus;
+    //   });
+    // });
+
+    _checkLocation();
+    _getCurrentLocation();
+    startAddressController.addListener(() {
+      onChange();
+    });
+    destinationAddressController.addListener(() {
+      onChange();
+    });
+  }
+
+  void onChange() {
+    if (_sessionToken == null) {
+      setState(() {
+        _sessionToken = uuid.v4();
+      });
+    }
+    setState(() {
+      String value1 = (startAddressFocusNode.hasFocus)
+          ? startAddressController.text
+          : destinationAddressController.text;
+      getsuggestion(value1);
+    });
+
+    // getsuggestion(destinationAddressController.text);
+  }
+
+  void stopLocationService() {
+    // Stop listening to location changes
+    if (positionStreamSubscription != null) {
+      positionStreamSubscription.cancel();
+    }
+  }
+
+  void getsuggestion(String input) async {
+    String kPLACES_API_KEY = 'AIzaSyDNzkszHrT2L0zwdhK0DzVK46aqO7n5lxk';
+    String baseURL =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+    String request =
+        '$baseURL?input=$input&key=$kPLACES_API_KEY&sessiontoken=$_sessionToken';
+
+    var response = await http.get(Uri.parse(request));
+    var data = response.body.toString();
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _placesList = jsonDecode(response.body.toString())['predictions'];
+      });
+    } else {
+      throw Exception('Faild to Load');
+    }
+  }
+
+  void checkUpdatedLocation(LatLng pointLatLng) async {
+    List<map_tool.LatLng> convatedpolygonpoints =
+        await Polygonpoints.map((e) => map_tool.LatLng(e.latitude, e.longitude))
+            .toList();
+    if (mounted) {
+      setState(() async {
+        isInselected = await map_tool.PolygonUtil.containsLocation(
+            map_tool.LatLng(pointLatLng.latitude, pointLatLng.longitude),
+            convatedpolygonpoints,
+            false);
+      });
+    }
+  }
+
+  Future<void> startLocationService() async {
+    // Request permission to access location
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      // Handle location permission denied
+      print('Location permission denied.');
+      return;
+    }
+
+    // Subscribe to location changes
+    Geolocator.getPositionStream().listen((Position position) {
+      final userLocation = LatLng(position.latitude, position.longitude);
+      final isInsidePolygon = isPointInPolygon(userLocation, Polygonpoints);
+      if (mounted) {
+        setState(() async {
+          isInPolygon = isInsidePolygon;
+          if (isInPolygon == true && isinNotification == false) {
+            print('In boundary============================');
+            await Fluttertoast.showToast(msg: 'In Boundary');
+            isinNotification = true;
+          }
+          if (isInPolygon == false && isinNotification == true) {
+            print('OUTSIDE boundary============================');
+            await Fluttertoast.showToast(msg: 'OUTSIDE Boundary');
+            isinNotification = false;
+          }
+        });
+      }
+    });
+  }
+
+  bool isPointInPolygon(LatLng point, List<LatLng> polygon) {
+    bool isInside = false;
+    int i, j = polygon.length - 1;
+
+    for (i = 0; i < polygon.length; i++) {
+      if ((polygon[i].latitude < point.latitude &&
+              polygon[j].latitude >= point.latitude) ||
+          (polygon[j].latitude < point.latitude &&
+              polygon[i].latitude >= point.latitude)) {
+        if (polygon[i].longitude +
+                (point.latitude - polygon[i].latitude) /
+                    (polygon[j].latitude - polygon[i].latitude) *
+                    (polygon[j].longitude - polygon[i].longitude) <
+            point.longitude) {
+          isInside = !isInside;
+        }
+      }
+      j = i;
+    }
+    return isInside;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    stopLocationService();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final BackArrow = IconButton(
+        color: Colors.white, onPressed: () {}, icon: Icon(Icons.arrow_back));
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    return Container(
+      height: height,
+      width: width,
+      child: Scaffold(
+        key: _scaffoldKey,
+        body: Stack(
+          children: <Widget>[
+            // Map View
+            GoogleMap(
+              markers: Set<Marker>.from(markers),
+              initialCameraPosition: _initialLocation,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
+              mapType: MapType.normal,
+              zoomGesturesEnabled: true,
+              zoomControlsEnabled: false,
+              polylines: Set<Polyline>.of(polylines.values),
+              onMapCreated: (GoogleMapController controller) {
+                mapController = controller;
+              },
+              polygons: {
+                Polygon(
+                    polygonId: PolygonId('1'),
+                    points: Polygonpoints,
+                    fillColor: Colors.black26,
+                    strokeWidth: 2)
+              },
+            ),
+
+            // Show zoom buttons
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 220, 0, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    ClipOval(
+                      child: Material(
+                        color: Colors.blue.shade100, // button color
+                        child: InkWell(
+                          splashColor: Colors.blue, // inkwell color
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Icon(Icons.add),
+                          ),
+                          onTap: () {
+                            mapController.animateCamera(
+                              CameraUpdate.zoomIn(),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    ClipOval(
+                      child: Material(
+                        color: Colors.blue.shade100, // button color
+                        child: InkWell(
+                          splashColor: Colors.blue, // inkwell color
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Icon(Icons.remove),
+                          ),
+                          onTap: () {
+                            mapController.animateCamera(
+                              CameraUpdate.zoomOut(),
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+
+            // Show the place input fields & button for
+            // showing the route
+            SafeArea(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white70,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20.0),
+                      ),
+                    ),
+                    width: width * 0.9,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(
+                            'Places',
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                          SizedBox(height: 10),
+                          _textField(
+                              label: 'Start',
+                              hint: 'Choose starting point',
+                              prefixIcon: Icon(Icons.looks_one),
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.my_location),
+                                onPressed: () async {
+                                  await _getAddress();
+                                  startAddressController.text = _currentAddress;
+                                  print(_currentAddress);
+                                  _startAddress = _currentAddress;
+                                },
+                              ),
+                              controller: startAddressController,
+                              focusNode: startAddressFocusNode,
+                              width: width,
+                              locationCallback: (String value) {
+                                setState(() {
+                                  _startAddress = value;
+                                });
+                              }),
+                          SizedBox(height: 10),
+                          _textField(
+                              label: 'Destination',
+                              hint: 'Choose destination',
+                              prefixIcon: Icon(Icons.looks_two),
+                              controller: destinationAddressController,
+                              focusNode: desrinationAddressFocusNode,
+                              width: width,
+                              locationCallback: (String value) {
+                                setState(() {
+                                  _destinationAddress = value;
+                                });
+                              }),
+                          Container(
+                            child: startAddressController.text == null
+                                ? Container(
+                                    height: 5,
+                                  )
+                                : SizedBox(
+                                    height: 100,
+                                    child: ListView.builder(
+                                        itemCount: _placesList.length,
+                                        itemBuilder: (context, index) {
+                                          return GestureDetector(
+                                            child: ListTile(
+                                              title: Text(_placesList[index]
+                                                  ['description']),
+                                            ),
+                                          );
+                                        }),
+                                  ),
+                          ),
+                          SizedBox(height: 10),
+                          Visibility(
+                            visible: _placeDistance == null ? false : true,
+                            child: Text(
+                              'DISTANCE: $_placeDistance km',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          ElevatedButton(
+                            onPressed: (_startAddress != '' &&
+                                    _destinationAddress != '')
+                                ? () async {
+                                    startAddressFocusNode.unfocus();
+                                    desrinationAddressFocusNode.unfocus();
+                                    setState(() {
+                                      if (markers.isNotEmpty) markers.clear();
+                                      if (polylines.isNotEmpty)
+                                        polylines.clear();
+                                      if (polylineCoordinates.isNotEmpty)
+                                        polylineCoordinates.clear();
+                                      _placeDistance = null;
+                                    });
+
+                                    _calculateDistance().then((isCalculated) {
+                                      if (isCalculated) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                                'Distance Calculated Sucessfully'),
+                                          ),
+                                        );
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                                'Error Calculating Distance'),
+                                          ),
+                                        );
+                                      }
+                                    });
+                                  }
+                                : null,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Show Route'.toUpperCase(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20.0,
+                                ),
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.teal,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SafeArea(
+                child: Align(
+              alignment: Alignment.topLeft,
+              child: Container(
+                margin: EdgeInsets.only(left: 10),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.arrow_circle_left_outlined,
+                    color: Colors.black45,
+                    size: 40,
+                  ),
+                  onPressed: () {},
+                ),
+              ),
+            )),
+            // Show current location button
+            SafeArea(
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10.0, bottom: 10.0),
+                  child: ClipOval(
+                    child: Material(
+                      color: Colors.orange.shade100, // button color
+                      child: InkWell(
+                        splashColor: Colors.orange, // inkwell color
+                        child: SizedBox(
+                          width: 56,
+                          height: 56,
+                          child: Icon(Icons.my_location),
+                        ),
+                        onTap: () {
+                          mapController.animateCamera(
+                            CameraUpdate.newCameraPosition(
+                              CameraPosition(
+                                target: LatLng(
+                                  _currentPosition.latitude,
+                                  _currentPosition.longitude,
+                                ),
+                                zoom: 18.0,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _checkLocation() async {
+    LatLng currentlocation = await _getCurrentLocation();
+    bool isInside = false;
+    for (Polygon polygon in _polygon) {}
+  }
+}
+
+class Secrets {
+  static const API_KEY = 'AIzaSyDNzkszHrT2L0zwdhK0DzVK46aqO7n5lxk';
+}
+
+class NOTIFY {
+  Future<void> _scheduleNotification() async {
+    // Define the notification details.
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails('01', 'ALERT',
+            channelDescription: 'you are in BOUNDARY',
+            importance: Importance.max,
+            priority: Priority.high,
+            showWhen: false);
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    // Schedule the notification.
+    await FlutterLocalNotificationsPlugin().zonedSchedule(
+        0,
+        'ALERT',
+        'YOU ARE IN THE BOUNDARY',
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+        platformChannelSpecifics,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
+  }
+
+  Future<void> _scheduleNotification2() async {
+    // Define the notification details.
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails('02', 'ALERT',
+            channelDescription: 'you are OUTSIDE in the Boundary',
+            importance: Importance.max,
+            priority: Priority.high,
+            showWhen: false);
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    // Schedule the notification.
+    await FlutterLocalNotificationsPlugin().zonedSchedule(
+        0,
+        'ALERT',
+        'YOU ARE OUTSIDE THE BOUNDARY',
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
+        platformChannelSpecifics,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
+  }
+}
