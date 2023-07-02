@@ -467,5 +467,3 @@ int totalpricesub(int total, int price) {
 
   return totalprice;
 }
-
-class StripePay {}
