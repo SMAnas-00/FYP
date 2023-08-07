@@ -2,40 +2,34 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-class addHotelScreen extends StatefulWidget {
-  const addHotelScreen({super.key});
+class addFlightScreen extends StatefulWidget {
+  const addFlightScreen({super.key});
 
   @override
-  State<addHotelScreen> createState() => _addHotelScreenState();
+  State<addFlightScreen> createState() => _addFlightScreenState();
 }
 
-class _addHotelScreenState extends State<addHotelScreen> {
+class _addFlightScreenState extends State<addFlightScreen> {
   File? image;
   final picker = ImagePicker();
   String imageUrl = '';
-
+  FirebaseAuth user = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   final _formKey = GlobalKey<FormState>();
-  final _Hotelname = TextEditingController();
-  final _Hotelprice = TextEditingController();
-  final _Hotellocation = TextEditingController();
-  final _Hotelroom = TextEditingController();
-  final _Hotelperson = TextEditingController();
-  final _Hoteltype = TextEditingController();
-  final _Hotelcity = TextEditingController();
-  final _Hotelimage = TextEditingController();
-  FirebaseAuth user = FirebaseAuth.instance;
-  late int price;
+  final _departure = TextEditingController();
+  final _destination = TextEditingController();
+  final _flightprice = TextEditingController();
+  final _flightname = TextEditingController();
   var did = DateTime.now().millisecondsSinceEpoch;
 
-  addHotel() async {
+  addFlight() async {
     _formKey.currentState!.save();
     if (_formKey.currentState!.validate()) {
       print("Form is vaid ");
@@ -46,20 +40,16 @@ class _addHotelScreenState extends State<addHotelScreen> {
         await firestore
             .collection('app')
             .doc('Services')
-            .collection('Hotels')
+            .collection('Flight')
             .doc('${user.currentUser!.uid}$did')
             .set({
-          'name': _Hotelname.text,
-          'Hotel_price': int.parse(_Hotelprice.text),
-          'Hotel_location': _Hotellocation.text,
-          'Hotel_rooms': _Hotelroom.text,
-          'Hotel_city': _Hotelcity.text,
-          'Active_rooms': '3',
-          'Stars': _Hoteltype.text,
-          'Room_capacity': _Hotelperson.text,
+          'airline_name': _flightname.text.toUpperCase(),
+          'departure': _departure.text.toUpperCase(),
+          'destination': _destination.text.toUpperCase(),
+          'ticket_price': int.parse(_flightprice.text),
           'admin_id': user.currentUser!.uid,
-          'hotel_imageURL': imageUrl,
-          'hotel_id': 'ho${user.currentUser!.uid}'
+          'flight_imageURL': imageUrl,
+          'flight_id': 'fl${user.currentUser!.uid}'
         });
         setState(() {
           imageUrl = '';
@@ -68,14 +58,10 @@ class _addHotelScreenState extends State<addHotelScreen> {
         Fluttertoast.showToast(msg: '${e.toString()}');
       }
     }
-    _Hotelname.clear();
-    _Hotelprice.clear();
-    _Hotellocation.clear();
-    _Hotelroom.clear();
-    _Hotelcity.clear();
-    _Hotelimage.clear();
-    _Hoteltype.clear();
-    _Hotelperson.clear();
+    _departure.clear();
+    _destination.clear();
+    _flightname.clear();
+    _flightprice.clear();
   }
 
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -88,7 +74,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
       imageQuality: 75,
     );
     firebase_storage.Reference ref =
-        firebase_storage.FirebaseStorage.instance.ref('/hotelimg/$did');
+        firebase_storage.FirebaseStorage.instance.ref('/flightimg/$did');
     await ref.putFile(File(image!.path));
     ref.getDownloadURL().then((value) {
       setState(() {
@@ -113,7 +99,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: Text('Add New Hotel',
+        title: Text('ADD FLIGHT',
             style: TextStyle(color: Color.fromARGB(255, 29, 165, 153))),
         backgroundColor: Colors.white,
       ),
@@ -125,97 +111,58 @@ class _addHotelScreenState extends State<addHotelScreen> {
             child: ListView(
               shrinkWrap: true,
               children: [
-                SizedBox(height: 20),
-
-                // Hotel Name Feild
+                SizedBox(
+                  height: 20,
+                ),
                 TextFormField(
-                  controller: _Hotelname,
+                  controller: _flightname,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    labelText: 'Hotel Name',
+                    labelText: 'AIRLINE NAME',
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Hotel Name Required';
+                      return 'Name Required';
                     }
                     return null;
                   },
                 ),
-                // Hotel Price Feild
                 TextFormField(
-                  controller: _Hotelprice,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: 'Hotel Price'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Hotel Price Required';
-                    }
-                    return null;
-                  },
-                ),
-                // Hotel Location Feild
-                TextFormField(
-                  controller: _Hotellocation,
-                  keyboardType: TextInputType.streetAddress,
-                  decoration: InputDecoration(labelText: 'Hotel Location'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Location  Required';
-                    }
-                    return null;
-                  },
-                ),
-                // Hotel Type Feild
-                TextFormField(
-                  controller: _Hoteltype,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                      labelText: 'Hotel Type ex 5 high - 1 low'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Hotel Type  Required';
-                    }
-                    return null;
-                  },
-                ),
-                // Hotel ROoms
-                TextFormField(
-                  controller: _Hotelroom,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: 'Rooms'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Hotel Type  Required';
-                    }
-                    return null;
-                  },
-                ),
-                // Person per room
-                TextFormField(
-                  controller: _Hotelperson,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: 'Persons per Room'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    return null;
-                  },
-                ),
-                // Hotel City
-                TextFormField(
-                  controller: _Hotelcity,
+                  controller: _departure,
                   keyboardType: TextInputType.text,
-                  decoration: InputDecoration(labelText: 'City'),
+                  decoration: InputDecoration(labelText: 'DEPARTURE'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Hotel City  Required';
+                      return 'Departure Required';
                     }
                     return null;
                   },
                 ),
-
-                SizedBox(height: 30),
+                TextFormField(
+                  controller: _destination,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(labelText: 'DESTINATION'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'DESTINATION Required';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: _flightprice,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: 'FLIGHT PRICE'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'FLIGHT PRICE Required';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(
+                  height: 30,
+                ),
                 SizedBox(
                   height: 120,
                   width: 120,
@@ -267,16 +214,14 @@ class _addHotelScreenState extends State<addHotelScreen> {
                     ],
                   ),
                 ),
-
-                SizedBox(height: 30),
-                // Submit Button
+                SizedBox(
+                  height: 30,
+                ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       elevation: 12.0,
                       backgroundColor: Color.fromARGB(255, 29, 165, 153)),
-                  onPressed: () {
-                    addHotel();
-                  },
+                  onPressed: addFlight,
                   child: Text('Submit'),
                 ),
               ],

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -354,8 +355,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   indent: 50,
                   endIndent: 0),
               GestureDetector(
-                onTap: () =>
-                    auth.signOut().then((value) => Navigator.pop(context)),
+                onTap: () => _showConfirmLogout(),
                 child: ListTile(
                   tileColor: Color(0x00ffffff),
                   title: Text(
@@ -379,8 +379,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Icon(Icons.output, color: Color(0xff3a57e8), size: 24),
                 ),
               ),
+              SizedBox(height: 30),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  _showConfirmLogout() {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) => CupertinoActionSheet(
+        message: Text("Would you like to log out?"),
+        actions: [
+          CupertinoActionSheetAction(
+            onPressed: () {
+              auth
+                  .signOut()
+                  .then((value) => Navigator.pop(context))
+                  .then((value) => Navigator.pop(context));
+            },
+            child: Text(
+              "Log Out",
+              style: TextStyle(color: Colors.red),
+            ),
+          )
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          child: Text("Cancel"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
       ),
     );

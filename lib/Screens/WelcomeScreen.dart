@@ -87,7 +87,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     padding: EdgeInsets.fromLTRB(0, 0, 0, 16),
                     child: MaterialButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/signin');
+                        Future.delayed(Duration(milliseconds: 500),
+                            () => Navigator.pushNamed(context, '/signin'));
+                        // Navigator.pushNamed(context, '/signin');
                       },
                       color: Color(0xff3a57e8),
                       elevation: 0,

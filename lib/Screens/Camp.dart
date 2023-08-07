@@ -199,7 +199,7 @@ class _CricketStadiumState extends State<CricketStadium> {
         .doc('requests')
         .collection('minacamp')
         .doc('camp')
-        .update({'BookedSeats': occupieddb.followedBy(selectedSeats)});
+        .set({'BookedSeats': occupieddb.followedBy(selectedSeats)});
   }
 
   Widget _buildSeat(String seat) {

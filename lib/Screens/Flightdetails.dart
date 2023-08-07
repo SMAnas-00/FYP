@@ -339,19 +339,21 @@ class _FlightDetailsState extends State<FlightDetails> {
                                     await firestore
                                         .collection('app')
                                         .doc('bookings')
+                                        .collection('admin')
+                                        .doc('request')
                                         .collection('${user.currentUser!.uid}')
-                                        .doc('flight')
+                                        .doc('request')
                                         .set({
-                                      'name': widget.flight_name,
-                                      'id': widget.flight_id,
-                                      'price': totalprice,
-                                      'image': widget.FlightImageURL,
-                                      'departure': datecheckin,
-                                      'Pessangers': selcteddays,
-                                      'days': selcteddays,
+                                      'fname': widget.flight_name,
+                                      'fid': widget.flight_id,
+                                      'fprice': totalprice,
+                                      'fimage': widget.FlightImageURL,
+                                      'fdeparture': datecheckin,
+                                      'fPessangers': selcteddays,
+                                      'fdays': selcteddays,
                                       'status': 'pending',
                                       'date': DateTime.now(),
-                                    });
+                                    }, SetOptions(merge: true));
                                   },
                                   child: Text('OK')),
                               TextButton(

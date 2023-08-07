@@ -1,12 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:newui/Screens/FlightScreen.dart';
 import 'package:newui/Screens/TODO/TodoListScreen.dart';
+import 'package:newui/Screens/animalBookscreen.dart';
 import 'package:newui/Screens/guideScreen.dart';
+import 'package:newui/Screens/local_push_notification.dart';
 import 'package:newui/Screens/transportScreen.dart';
+import 'package:newui/admin/flight.dart';
+import 'package:newui/admin/transport.dart';
+import 'package:newui/admin/users.dart';
 import 'Screens/BottomNav.dart';
 import 'Screens/Camp.dart';
 import 'Screens/ForgetScreen.dart';
@@ -27,6 +33,7 @@ void main() async {
   await Hive.initFlutter();
   var box = await Hive.openBox('Task');
   await Firebase.initializeApp();
+
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   const AndroidInitializationSettings initializationSettingsAndroid =
@@ -35,10 +42,17 @@ void main() async {
   const InitializationSettings initializationSettings =
       InitializationSettings(android: initializationSettingsAndroid);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  LocalNotificationService.initialize();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   Stripe.publishableKey =
       "pk_test_51Mv69yHAyrQONTKfe3o0jIXnyegPX6Cb641BhEuIVDJXyNBw2zjDJBRE7K7RGBETebqG3tgZOC6TJVuT5Vbgh3Et00B2nEPOk9";
   runApp(const MyApp());
+}
+
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  /// onClick listener
+  // print("Handling a background message : ${message.messageId}");
 }
 
 class MyApp extends StatelessWidget {
@@ -62,11 +76,15 @@ class MyApp extends StatelessWidget {
         '/camp': (context) => CricketStadium(),
         '/hotel': (context) => HotelScreen(),
         '/admindash': (context) => AdminHomePage(),
-        '/adminhotelcreate': (context) => AdminHotelScreen(),
+        '/adminhotelcreate': (context) => addHotelScreen(),
         '/todo': (context) => ToDoScreen(),
         '/flight': (context) => FlightList(),
         '/transport': (context) => TransportService(),
-        '/guide': (context) => guideScreen()
+        '/guide': (context) => guideScreen(),
+        '/users': (context) => ViewUserScreen(),
+        '/addtransport': (context) => addTransportScreen(),
+        '/addflight': (context) => addFlightScreen(),
+        '/animal' :(context) => AnimalBookingPage()
       },
     );
   }

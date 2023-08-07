@@ -25,14 +25,13 @@ class LoginScreen extends StatelessWidget {
         await Fluttertoast.showToast(
             msg: 'WELCOME ${auth.currentUser!.email}',
             toastLength: Toast.LENGTH_SHORT);
+        _emailcontroller.clear();
+        _passwordcontroller.clear();
         await Navigator.pushNamed(context, '/navbar');
-        // if (dbuser.data()?['Role'] == "user") {
+        // if (dbuser.data()?['Role'] == "admin") {
         //   Fluttertoast.showToast(
         //       msg: 'WELCOME ${auth.currentUser!.email}',
         //       toastLength: Toast.LENGTH_SHORT);
-        //   Navigator.pushNamed(context, '/navbar');
-        // } else {
-        //   Fluttertoast.showToast(msg: 'Invalid Email or Password');
         // }
       } else {
         Fluttertoast.showToast(msg: 'Verify Email or TRY Again');
@@ -161,7 +160,7 @@ class LoginScreen extends StatelessWidget {
                     TextField(
                       controller: _passwordcontroller,
                       keyboardType: TextInputType.visiblePassword,
-                      obscureText: false,
+                      obscureText: true,
                       textAlign: TextAlign.start,
                       maxLines: 1,
                       style: TextStyle(
@@ -267,7 +266,7 @@ class LoginScreen extends StatelessWidget {
                           TextButton(
                             onPressed: () {
                               Navigator.pop(context);
-                              // Navigator.pushNamed(context, '/signup');
+                              Navigator.pushNamed(context, '/signup');
                             },
                             child: Text(
                               "SignUp",
@@ -282,6 +281,26 @@ class LoginScreen extends StatelessWidget {
                             ),
                           )
                         ],
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Container(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.pushNamed(context, '/admindash');
+                        },
+                        child: Text(
+                          "Signin as ADMIN",
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontStyle: FontStyle.normal,
+                            fontSize: 12,
+                            color: Color(0xff000000),
+                          ),
+                        ),
                       ),
                     ),
                   ],

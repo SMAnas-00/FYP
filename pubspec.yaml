@@ -60,6 +60,9 @@ dependencies:
   get: ^4.6.5
   hive_flutter: ^1.1.0
   chewie: ^1.5.0
+  firebase_messaging: ^14.2.1
+  # new dependencies 13/7/2023
+  snake_button: ^0.0.5
   
 
 

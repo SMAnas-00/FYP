@@ -426,20 +426,22 @@ class _HoteldetailsState extends State<Hoteldetails> {
                                     await firestore
                                         .collection('app')
                                         .doc('bookings')
+                                        .collection('admin')
+                                        .doc('request')
                                         .collection('${user.currentUser!.uid}')
-                                        .doc('hotel')
+                                        .doc('request')
                                         .set({
-                                      'name': widget.hotelName,
-                                      'id': widget.hotelid,
-                                      'price': totalprice,
-                                      'image': widget.hotelImageURL,
-                                      'checkin': datecheckin,
-                                      'checkout': datecheckout,
-                                      'rooms': selctedrooms,
-                                      'days': selcteddays,
+                                      'hname': widget.hotelName,
+                                      'hid': widget.hotelid,
+                                      'hprice': totalprice,
+                                      'himage': widget.hotelImageURL,
+                                      'hcheckin': datecheckin,
+                                      'hcheckout': datecheckout,
+                                      'hrooms': selctedrooms,
+                                      'hdays': selcteddays,
                                       'status': 'pending',
                                       'date': DateTime.now(),
-                                    });
+                                    }, SetOptions(merge: true));
                                   },
                                   child: Text('OK')),
                               TextButton(

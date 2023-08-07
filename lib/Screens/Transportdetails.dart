@@ -354,19 +354,21 @@ class _TransportDetailsState extends State<TransportDetails> {
                                     await firestore
                                         .collection('app')
                                         .doc('bookings')
+                                        .collection('admin')
+                                        .doc('request')
                                         .collection('${user.currentUser!.uid}')
-                                        .doc('transport')
+                                        .doc('request')
                                         .set({
-                                      'name': widget.transtype,
-                                      'id': widget.transId,
-                                      'price': totalprice,
-                                      'image': widget.trans_imgURL,
-                                      'departure': datecheckin,
-                                      'Pessangers': selcteddays,
-                                      'num_of_passenger': selcteddays,
+                                      'tname': widget.transtype,
+                                      'tid': widget.transId,
+                                      'tprice': totalprice,
+                                      'timage': widget.trans_imgURL,
+                                      'tdeparture': datecheckin,
+                                      'tPessangers': selcteddays,
+                                      'tnum_of_passenger': selcteddays,
                                       'status': 'pending',
                                       'date': DateTime.now(),
-                                    });
+                                    }, SetOptions(merge: true));
                                   },
                                   child: Text('OK')),
                               TextButton(

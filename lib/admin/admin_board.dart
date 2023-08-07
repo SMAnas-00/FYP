@@ -17,6 +17,7 @@ class AdminHomePage extends StatelessWidget {
             icon: Icons.person,
             onPressed: () {
               // Navigate to users management page
+              Navigator.pushNamed(context, '/users');
             },
           ),
           AdminDashboardCard(
@@ -24,6 +25,7 @@ class AdminHomePage extends StatelessWidget {
             icon: Icons.hotel,
             onPressed: () {
               // Navigate to hotels management page
+              Navigator.pushNamed(context, '/adminhotelcreate');
             },
           ),
           AdminDashboardCard(
@@ -31,6 +33,7 @@ class AdminHomePage extends StatelessWidget {
             icon: Icons.flight,
             onPressed: () {
               // Navigate to flights management page
+              Navigator.pushNamed(context, '/addflight');
             },
           ),
           AdminDashboardCard(
@@ -38,6 +41,15 @@ class AdminHomePage extends StatelessWidget {
             icon: Icons.directions_car,
             onPressed: () {
               // Navigate to transport management page
+              Navigator.pushNamed(context, '/addtransport');
+            },
+          ),
+          AdminDashboardCard(
+            title: 'Requests',
+            icon: Icons.request_page,
+            onPressed: () {
+              // Navigate to flights management page
+              Navigator.pushNamed(context, '/');
             },
           ),
         ],

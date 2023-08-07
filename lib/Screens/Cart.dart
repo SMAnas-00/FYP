@@ -107,6 +107,41 @@ class _CartScreenState extends State<CartScreen> {
     });
   }
 
+  sendNotification1(String title, String token, String price) async {
+    final data = {
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'id': 1,
+      'status': 'done',
+      'message': title
+    };
+    try {
+      http.Response response =
+          await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
+              headers: <String, String>{
+                'Content-Type': 'application/json',
+                'Authorization':
+                    'key=AAAAxEir0ZA:APA91bEjKav5v9gOfz-abN9-zuQwE2LKFQ8wT-cKwoHUTYCUxB3162YVY8j4hX3fGNAy23Qd07vXYmxipYst-RDQV3xvENgJ5DWH2JfxXk_Pl7qNJnVx3DAtZ9_fFmQ3nKC_UqcG0-jH'
+              },
+              body: jsonEncode(<String, dynamic>{
+                'notification': <String, dynamic>{
+                  'title': title,
+                  'body': 'Booking done of  Rs $price'
+                },
+                'priority': 'high',
+                'data': data,
+                'to': token
+              }));
+
+      if (response.statusCode == 200) {
+        print("Notification has been send");
+      } else {
+        print("Somethin went wrong");
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final CollectionReference collectionReference = FirebaseFirestore.instance
@@ -225,21 +260,33 @@ class _CartScreenState extends State<CartScreen> {
         await firestore
             .collection('app')
             .doc('bookings')
+            .collection('admin')
+            .doc('request')
             .collection('${user.currentUser!.uid}')
-            .doc('flight')
-            .update({'status': 'success'});
-        await firestore
+            .doc('request')
+            .update({'status': 'success', 'totalPrice': total});
+        // await firestore
+        //     .collection('app')
+        //     .doc('bookings')
+        //     .collection('${user.currentUser!.uid}')
+        //     .doc('hotel')
+        //     .update({'status': 'success'});
+        // await firestore
+        //     .collection('app')
+        //     .doc('bookings')
+        //     .collection('${user.currentUser!.uid}')
+        //     .doc('transport')
+        //     .update({'status': 'success'});
+        var usertoken = await firestore
             .collection('app')
-            .doc('bookings')
-            .collection('${user.currentUser!.uid}')
-            .doc('hotel')
-            .update({'status': 'success'});
-        await firestore
-            .collection('app')
-            .doc('bookings')
-            .collection('${user.currentUser!.uid}')
-            .doc('transport')
-            .update({'status': 'success'});
+            .doc('Users')
+            .collection('Signup')
+            .doc(user.currentUser!.uid)
+            .get();
+        var token = await usertoken.data()?['token'];
+
+        sendNotification1("Booking done!", token, '$total');
+
         showDialog(
             context: cntext,
             builder: (_) => AlertDialog(

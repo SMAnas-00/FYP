@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:newui/Screens/local_push_notification.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -123,10 +126,31 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    FirebaseMessaging.instance.getInitialMessage();
+    FirebaseMessaging.onMessage.listen((event) {
+      LocalNotificationService.display(event);
+    });
+    storeNotificationToken();
+
     _getCurrentLocation();
     Future.delayed(Duration(seconds: 10), () {
       fetchWeatherData();
     });
+  }
+
+  storeNotificationToken() async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      print(token);
+      await FirebaseFirestore.instance
+          .collection('app')
+          .doc('Users')
+          .collection('Signup')
+          .doc(auth.currentUser?.uid)
+          .set({'token': token}, SetOptions(merge: true));
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -709,10 +733,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            child:
-
-                                ///***If you have exported images you must have to copy those images in assets/images directory.
-                                Icon(Icons.home)),
+                            child: Icon(Icons.home)),
                         Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
@@ -731,27 +752,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.all(0),
-                  padding: EdgeInsets.all(0),
-                  width: 200,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    color: Color(0x00000000),
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.zero,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/guide');
-                        },
-                        child: Container(
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, '/guide');
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.all(0),
+                    padding: EdgeInsets.all(0),
+                    width: 200,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Color(0x00ffffff),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
                             alignment: Alignment.center,
                             margin: EdgeInsets.all(0),
                             padding: EdgeInsets.all(0),
@@ -762,26 +783,83 @@ class _HomeScreenState extends State<HomeScreen> {
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            child:
-
-                                ///***If you have exported images you must have to copy those images in assets/images directory.
-                                Icon(Icons.book)),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-                        child: Text(
-                          "Guide",
-                          textAlign: TextAlign.start,
-                          overflow: TextOverflow.clip,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            fontSize: 14,
-                            color: Color(0xff000000),
+                            child: Icon(Icons.book)),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                          child: Text(
+                            "GUIDE",
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.clip,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              fontSize: 14,
+                              color: Color(0xff000000),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    Navigator.pushNamed(context, '/animal');
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.all(0),
+                    width: 200,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Color(0x00000000),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.all(0),
+                          padding: EdgeInsets.all(0),
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            color: Color(0xffffffff),
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Icon(Icons.broken_image),
+
+                          ///***If you have exported images you must have to copy those images in assets/images directory.
+                          //     Image(
+                          //   image: NetworkImage(
+                          //       "https://cdn.pixabay.com/photo/2016/03/05/19/02/hamburger-1238246_960_720.jpg"),
+                          //   height: 40,
+                          //   width: 40,
+                          //   fit: BoxFit.cover,
+                          // ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                          child: Text(
+                            "Animal",
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.clip,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              fontSize: 14,
+                              color: Color(0xff000000),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.004),
