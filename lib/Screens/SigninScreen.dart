@@ -35,6 +35,7 @@ class LoginScreen extends StatelessWidget {
         // }
       } else {
         Fluttertoast.showToast(msg: 'Verify Email or TRY Again');
+        auth.currentUser!.sendEmailVerification();
       }
     });
   }

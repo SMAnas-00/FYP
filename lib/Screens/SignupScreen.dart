@@ -30,6 +30,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 email: _emailcontroller.text,
                 password: _passwordcontroller.text)
             .then((value) {
+          auth.currentUser!.sendEmailVerification();
           final user = auth.currentUser;
           final uid = user?.uid;
           firestore
