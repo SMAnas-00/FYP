@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -32,9 +34,9 @@ class _addFlightScreenState extends State<addFlightScreen> {
   addFlight() async {
     _formKey.currentState!.save();
     if (_formKey.currentState!.validate()) {
-      print("Form is vaid ");
+      debugPrint("Form is vaid ");
 
-      print('Data for login ');
+      debugPrint('Data for login ');
 
       try {
         await firestore
@@ -55,7 +57,7 @@ class _addFlightScreenState extends State<addFlightScreen> {
           imageUrl = '';
         });
       } on FirebaseException catch (e) {
-        Fluttertoast.showToast(msg: '${e.toString()}');
+        Fluttertoast.showToast(msg: e.toString());
       }
     }
     _departure.clear();
@@ -82,7 +84,7 @@ class _addFlightScreenState extends State<addFlightScreen> {
       });
       Fluttertoast.showToast(msg: 'image uploaded successfully');
     }).onError((error, stackTrace) {
-      Fluttertoast.showToast(msg: '${error.toString()}');
+      Fluttertoast.showToast(msg: error.toString());
     });
   }
 
@@ -99,25 +101,25 @@ class _addFlightScreenState extends State<addFlightScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: Text('ADD FLIGHT',
+        title: const Text('ADD FLIGHT',
             style: TextStyle(color: Color.fromARGB(255, 29, 165, 153))),
         backgroundColor: Colors.white,
       ),
       body: Card(
         child: Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Form(
             key: _formKey,
             child: ListView(
               shrinkWrap: true,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 TextFormField(
                   controller: _flightname,
                   keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'AIRLINE NAME',
                   ),
                   validator: (value) {
@@ -130,7 +132,7 @@ class _addFlightScreenState extends State<addFlightScreen> {
                 TextFormField(
                   controller: _departure,
                   keyboardType: TextInputType.text,
-                  decoration: InputDecoration(labelText: 'DEPARTURE'),
+                  decoration: const InputDecoration(labelText: 'DEPARTURE'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Departure Required';
@@ -141,7 +143,7 @@ class _addFlightScreenState extends State<addFlightScreen> {
                 TextFormField(
                   controller: _destination,
                   keyboardType: TextInputType.text,
-                  decoration: InputDecoration(labelText: 'DESTINATION'),
+                  decoration: const InputDecoration(labelText: 'DESTINATION'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'DESTINATION Required';
@@ -152,7 +154,7 @@ class _addFlightScreenState extends State<addFlightScreen> {
                 TextFormField(
                   controller: _flightprice,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: 'FLIGHT PRICE'),
+                  decoration: const InputDecoration(labelText: 'FLIGHT PRICE'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'FLIGHT PRICE Required';
@@ -160,7 +162,7 @@ class _addFlightScreenState extends State<addFlightScreen> {
                     return null;
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 SizedBox(
@@ -214,15 +216,15 @@ class _addFlightScreenState extends State<addFlightScreen> {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       elevation: 12.0,
-                      backgroundColor: Color.fromARGB(255, 29, 165, 153)),
+                      backgroundColor: const Color.fromARGB(255, 29, 165, 153)),
                   onPressed: addFlight,
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                 ),
               ],
             ),

@@ -68,16 +68,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffffffff),
+      backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
         elevation: 4,
         centerTitle: false,
         automaticallyImplyLeading: false,
-        backgroundColor: Color(0xff3a57e8),
-        shape: RoundedRectangleBorder(
+        backgroundColor: const Color(0xff3a57e8),
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.zero,
         ),
-        title: Text(
+        title: const Text(
           "Profile",
           style: TextStyle(
             fontWeight: FontWeight.w700,
@@ -88,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -105,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         builder: (_, AsyncSnapshot snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return CircleAvatar(
+                            return const CircleAvatar(
                               backgroundColor: Color(0xff3a57e8),
                             );
                           }
@@ -113,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             height: 120,
                             width: 120,
                             clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               shape: BoxShape.circle,
                             ),
                             child: Image.network(snapshot.data.toString(),
@@ -123,15 +123,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     GestureDetector(
                       child: Container(
                         alignment: Alignment.center,
-                        margin: EdgeInsets.all(0),
-                        padding: EdgeInsets.all(0),
+                        margin: const EdgeInsets.all(0),
+                        padding: const EdgeInsets.all(0),
                         width: 40,
                         height: 40,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Color(0xff3a57e8),
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.photo_camera,
                           color: Color(0xffffffff),
                           size: 20,
@@ -153,10 +153,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       .snapshots(),
                   builder: (context, snapshot) {
                     return Padding(
-                      padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
+                      padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
                       child: ListTile(
-                        tileColor: Color(0x00ffffff),
-                        title: Text(
+                        tileColor: const Color(0x00ffffff),
+                        title: const Text(
                           "Name",
                           style: TextStyle(
                             fontWeight: FontWeight.w400,
@@ -168,7 +168,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         subtitle: Text(
                           snapshot.data?["Last_name"],
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontStyle: FontStyle.normal,
                             fontSize: 16,
@@ -177,20 +177,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           textAlign: TextAlign.start,
                         ),
                         dense: true,
-                        contentPadding: EdgeInsets.all(0),
+                        contentPadding: const EdgeInsets.all(0),
                         selected: false,
-                        selectedTileColor: Color(0x42000000),
-                        shape: RoundedRectangleBorder(
+                        selectedTileColor: const Color(0x42000000),
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
-                        leading: Icon(Icons.person,
+                        leading: const Icon(Icons.person,
                             color: Color(0xff3a57e8), size: 24),
-                        trailing: Icon(Icons.edit,
+                        trailing: const Icon(Icons.edit,
                             color: Color(0xff79797c), size: 22),
                       ),
                     );
                   }),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.fromLTRB(50, 0, 0, 0),
                 child: Text(
                   "This is not your username or pin. This name will be visible to your Palmer Profile.",
@@ -204,7 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-              Divider(
+              const Divider(
                 color: Color(0xffdddddd),
                 height: 30,
                 thickness: 0,
@@ -220,8 +220,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       .snapshots(),
                   builder: (context, snapshot) {
                     return ListTile(
-                      tileColor: Color(0x00ffffff),
-                      title: Text(
+                      tileColor: const Color(0x00ffffff),
+                      title: const Text(
                         "ID",
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
@@ -233,7 +233,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       subtitle: Text(
                         snapshot.data?['id'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontStyle: FontStyle.normal,
                           fontSize: 12,
@@ -242,17 +242,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         textAlign: TextAlign.start,
                       ),
                       dense: true,
-                      contentPadding: EdgeInsets.all(0),
+                      contentPadding: const EdgeInsets.all(0),
                       selected: false,
-                      selectedTileColor: Color(0x42000000),
-                      shape: RoundedRectangleBorder(
+                      selectedTileColor: const Color(0x42000000),
+                      shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero,
                       ),
-                      leading: Icon(Icons.info_outline,
+                      leading: const Icon(Icons.info_outline,
                           color: Color(0xff3a57e8), size: 24),
                     );
                   }),
-              Divider(
+              const Divider(
                 color: Color(0xffdddddd),
                 height: 30,
                 thickness: 0,
@@ -268,8 +268,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       .snapshots(),
                   builder: (context, snapshot) {
                     return ListTile(
-                      tileColor: Color(0x00ffffff),
-                      title: Text(
+                      tileColor: const Color(0x00ffffff),
+                      title: const Text(
                         "Citizen Card:",
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
@@ -281,7 +281,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       subtitle: Text(
                         snapshot.data?['cnic'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontStyle: FontStyle.normal,
                           fontSize: 12,
@@ -290,17 +290,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         textAlign: TextAlign.start,
                       ),
                       dense: true,
-                      contentPadding: EdgeInsets.all(0),
+                      contentPadding: const EdgeInsets.all(0),
                       selected: false,
-                      selectedTileColor: Color(0x42000000),
-                      shape: RoundedRectangleBorder(
+                      selectedTileColor: const Color(0x42000000),
+                      shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero,
                       ),
-                      leading: Icon(Icons.contact_emergency_outlined,
+                      leading: const Icon(Icons.contact_emergency_outlined,
                           color: Color(0xff3a57e8), size: 24),
                     );
                   }),
-              Divider(
+              const Divider(
                 color: Color(0xffdddddd),
                 height: 20,
                 thickness: 0,
@@ -316,8 +316,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       .snapshots(),
                   builder: (context, snapshot) {
                     return ListTile(
-                      tileColor: Color(0x00ffffff),
-                      title: Text(
+                      tileColor: const Color(0x00ffffff),
+                      title: const Text(
                         "Phone",
                         style: TextStyle(
                           fontWeight: FontWeight.w400,
@@ -329,7 +329,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       subtitle: Text(
                         snapshot.data?['Contact'],
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontStyle: FontStyle.normal,
                           fontSize: 16,
@@ -338,17 +338,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         textAlign: TextAlign.start,
                       ),
                       dense: true,
-                      contentPadding: EdgeInsets.all(0),
+                      contentPadding: const EdgeInsets.all(0),
                       selected: false,
-                      selectedTileColor: Color(0x42000000),
-                      shape: RoundedRectangleBorder(
+                      selectedTileColor: const Color(0x42000000),
+                      shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.zero,
                       ),
-                      leading:
-                          Icon(Icons.call, color: Color(0xff3a57e8), size: 24),
+                      leading: const Icon(Icons.call,
+                          color: Color(0xff3a57e8), size: 24),
                     );
                   }),
-              Divider(
+              const Divider(
                   color: Color(0xffdddddd),
                   height: 20,
                   thickness: 0,
@@ -356,7 +356,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   endIndent: 0),
               GestureDetector(
                 onTap: () => _showConfirmLogout(),
-                child: ListTile(
+                child: const ListTile(
                   tileColor: Color(0x00ffffff),
                   title: Text(
                     "SIGNOUT",
@@ -379,7 +379,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Icon(Icons.output, color: Color(0xff3a57e8), size: 24),
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
             ],
           ),
         ),
@@ -391,7 +391,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showCupertinoModalPopup(
       context: context,
       builder: (context) => CupertinoActionSheet(
-        message: Text("Would you like to log out?"),
+        message: const Text("Would you like to log out?"),
         actions: [
           CupertinoActionSheetAction(
             onPressed: () {
@@ -400,14 +400,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   .then((value) => Navigator.pop(context))
                   .then((value) => Navigator.pop(context));
             },
-            child: Text(
+            child: const Text(
               "Log Out",
               style: TextStyle(color: Colors.red),
             ),
           )
         ],
         cancelButton: CupertinoActionSheetAction(
-          child: Text("Cancel"),
+          child: const Text("Cancel"),
           onPressed: () {
             Navigator.of(context).pop();
           },

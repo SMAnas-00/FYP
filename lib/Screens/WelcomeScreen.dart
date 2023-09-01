@@ -13,18 +13,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         return false;
       },
       child: Scaffold(
-        backgroundColor: Color(0xffffffff),
+        backgroundColor: const Color(0xffffffff),
         body: Align(
-          alignment: Alignment(0.0, 0.1),
+          alignment: const Alignment(0.0, 0.1),
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 30),
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 30),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.max,
@@ -42,7 +42,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       ),
                     ],
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.fromLTRB(0, 20, 0, 16),
                     child: Text(
                       "Welcome to Palmer",
@@ -56,7 +56,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       ),
                     ),
                   ),
-                  Text(
+                  const Text(
                     "An easy and Convinent way to perform Hajj and Ummrahh",
                     textAlign: TextAlign.left,
                     overflow: TextOverflow.clip,
@@ -67,7 +67,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       color: Color(0xff746f6f),
                     ),
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.symmetric(vertical: 30, horizontal: 0),
                     child: Align(
                       alignment: Alignment.center,
@@ -84,21 +84,25 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 16),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
                     child: MaterialButton(
                       onPressed: () {
-                        Future.delayed(Duration(milliseconds: 500),
+                        Future.delayed(const Duration(milliseconds: 500),
                             () => Navigator.pushNamed(context, '/signin'));
                         // Navigator.pushNamed(context, '/signin');
                       },
-                      color: Color(0xff3a57e8),
+                      color: const Color(0xff3a57e8),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(22.0),
-                        side: BorderSide(color: Color(0xffffffff), width: 1),
+                        side: const BorderSide(
+                            color: Color(0xffffffff), width: 1),
                       ),
-                      padding: EdgeInsets.all(16),
-                      child: Text(
+                      padding: const EdgeInsets.all(16),
+                      textColor: const Color(0xffffffff),
+                      height: 45,
+                      minWidth: MediaQuery.of(context).size.width,
+                      child: const Text(
                         "Sign In",
                         style: TextStyle(
                           fontSize: 14,
@@ -106,25 +110,26 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           fontStyle: FontStyle.normal,
                         ),
                       ),
-                      textColor: Color(0xffffffff),
-                      height: 45,
-                      minWidth: MediaQuery.of(context).size.width,
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 16),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
                     child: MaterialButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/signup');
                       },
-                      color: Color(0xffffffff),
+                      color: const Color(0xffffffff),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(22.0),
-                        side: BorderSide(color: Color(0xff3a57e8), width: 1),
+                        side: const BorderSide(
+                            color: Color(0xff3a57e8), width: 1),
                       ),
-                      padding: EdgeInsets.all(16),
-                      child: Text(
+                      padding: const EdgeInsets.all(16),
+                      textColor: const Color(0xff3a57e8),
+                      height: 45,
+                      minWidth: MediaQuery.of(context).size.width,
+                      child: const Text(
                         "Sign Up",
                         style: TextStyle(
                           fontSize: 14,
@@ -132,9 +137,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           fontStyle: FontStyle.normal,
                         ),
                       ),
-                      textColor: Color(0xff3a57e8),
-                      height: 45,
-                      minWidth: MediaQuery.of(context).size.width,
                     ),
                   ),
                 ],

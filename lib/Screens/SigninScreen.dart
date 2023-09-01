@@ -43,35 +43,35 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffe6e6e6),
+      backgroundColor: const Color(0xffe6e6e6),
       body: Stack(
         alignment: Alignment.topLeft,
         children: [
           Container(
-            margin: EdgeInsets.all(0),
-            padding: EdgeInsets.all(0),
+            margin: const EdgeInsets.all(0),
+            padding: const EdgeInsets.all(0),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height * 0.35000000000000003,
             decoration: BoxDecoration(
-              color: Color(0xff3a57e8),
+              color: const Color(0xff3a57e8),
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.zero,
-              border: Border.all(color: Color(0x4d9e9e9e), width: 1),
+              border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
             ),
           ),
           Container(
-            margin: EdgeInsets.fromLTRB(20, 100, 20, 20),
-            padding: EdgeInsets.all(0),
+            margin: const EdgeInsets.fromLTRB(20, 100, 20, 20),
+            padding: const EdgeInsets.all(0),
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
-              color: Color(0xffffffff),
+              color: const Color(0xffffffff),
               shape: BoxShape.rectangle,
               borderRadius: BorderRadius.circular(16.0),
-              border: Border.all(color: Color(0x4d9e9e9e), width: 1),
+              border: Border.all(color: const Color(0x4d9e9e9e), width: 1),
             ),
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -81,22 +81,22 @@ class LoginScreen extends StatelessWidget {
                     Align(
                       alignment: Alignment.topLeft,
                       child: IconButton(
-                          color: Color(0xff212435),
+                          color: const Color(0xff212435),
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          icon: Icon(Icons.arrow_back)),
+                          icon: const Icon(Icons.arrow_back)),
                     ),
 
                     ///***If you have exported images you must have to copy those images in assets/images directory.
-                    Image(
+                    const Image(
                       image: NetworkImage(
                           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRoSL4WHG5Ypv4e4W58d5Gt4PnBEM_kZQDDhAKjZAOYLBy6V1karPn2SMil6DFkjUUeX7M&usqp=CAU"),
                       height: 100,
                       width: 100,
                       fit: BoxFit.cover,
                     ),
-                    Padding(
+                    const Padding(
                       padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
                       child: Align(
                         alignment: Alignment.centerLeft,
@@ -114,15 +114,15 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 0),
                       child: TextField(
                         controller: _emailcontroller,
                         keyboardType: TextInputType.emailAddress,
                         obscureText: false,
                         textAlign: TextAlign.left,
                         maxLines: 1,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.w400,
                           fontStyle: FontStyle.normal,
                           fontSize: 14,
@@ -131,30 +131,30 @@ class LoginScreen extends StatelessWidget {
                         decoration: InputDecoration(
                           disabledBorder: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(4.0),
-                            borderSide:
-                                BorderSide(color: Color(0xff000000), width: 1),
+                            borderSide: const BorderSide(
+                                color: Color(0xff000000), width: 1),
                           ),
                           focusedBorder: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(4.0),
-                            borderSide:
-                                BorderSide(color: Color(0xff000000), width: 1),
+                            borderSide: const BorderSide(
+                                color: Color(0xff000000), width: 1),
                           ),
                           enabledBorder: UnderlineInputBorder(
                             borderRadius: BorderRadius.circular(4.0),
-                            borderSide:
-                                BorderSide(color: Color(0xff000000), width: 1),
+                            borderSide: const BorderSide(
+                                color: Color(0xff000000), width: 1),
                           ),
                           hintText: "Enter Email",
-                          hintStyle: TextStyle(
+                          hintStyle: const TextStyle(
                             fontWeight: FontWeight.w400,
                             fontStyle: FontStyle.normal,
                             fontSize: 14,
                             color: Color(0xff494646),
                           ),
                           filled: true,
-                          fillColor: Color(0xffffffff),
+                          fillColor: const Color(0xffffffff),
                           isDense: false,
-                          contentPadding: EdgeInsets.all(0),
+                          contentPadding: const EdgeInsets.all(0),
                         ),
                       ),
                     ),
@@ -164,7 +164,7 @@ class LoginScreen extends StatelessWidget {
                       obscureText: true,
                       textAlign: TextAlign.start,
                       maxLines: 1,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontStyle: FontStyle.normal,
                         fontSize: 14,
@@ -173,38 +173,38 @@ class LoginScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         disabledBorder: UnderlineInputBorder(
                           borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                              BorderSide(color: Color(0xff000000), width: 1),
+                          borderSide: const BorderSide(
+                              color: Color(0xff000000), width: 1),
                         ),
                         focusedBorder: UnderlineInputBorder(
                           borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                              BorderSide(color: Color(0xff000000), width: 1),
+                          borderSide: const BorderSide(
+                              color: Color(0xff000000), width: 1),
                         ),
                         enabledBorder: UnderlineInputBorder(
                           borderRadius: BorderRadius.circular(4.0),
-                          borderSide:
-                              BorderSide(color: Color(0xff000000), width: 1),
+                          borderSide: const BorderSide(
+                              color: Color(0xff000000), width: 1),
                         ),
                         hintText: "Enter Password",
-                        hintStyle: TextStyle(
+                        hintStyle: const TextStyle(
                           fontWeight: FontWeight.w400,
                           fontStyle: FontStyle.normal,
                           fontSize: 14,
                           color: Color(0xff494646),
                         ),
                         filled: true,
-                        fillColor: Color(0xffffffff),
+                        fillColor: const Color(0xffffffff),
                         isDense: false,
-                        contentPadding: EdgeInsets.all(0),
+                        contentPadding: const EdgeInsets.all(0),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                       child: Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            child: Text(
+                            child: const Text(
                               "Forgot Password?",
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
@@ -225,13 +225,16 @@ class LoginScreen extends StatelessWidget {
                         // Navigator.pushNamed(context, '/navbar');
                         checkLogin(context);
                       },
-                      color: Color(0xff3a57e8),
+                      color: const Color(0xff3a57e8),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16.0),
                       ),
-                      padding: EdgeInsets.all(16),
-                      child: Text(
+                      padding: const EdgeInsets.all(16),
+                      textColor: const Color(0xffffffff),
+                      height: 40,
+                      minWidth: MediaQuery.of(context).size.width,
+                      child: const Text(
                         "Login",
                         style: TextStyle(
                           fontSize: 16,
@@ -239,18 +242,15 @@ class LoginScreen extends StatelessWidget {
                           fontStyle: FontStyle.normal,
                         ),
                       ),
-                      textColor: Color(0xffffffff),
-                      height: 40,
-                      minWidth: MediaQuery.of(context).size.width,
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.fromLTRB(0, 15, 4, 0),
                             child: Text(
                               "Don't have an account?",
@@ -269,7 +269,7 @@ class LoginScreen extends StatelessWidget {
                               Navigator.pop(context);
                               Navigator.pushNamed(context, '/signup');
                             },
-                            child: Text(
+                            child: const Text(
                               "SignUp",
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
@@ -284,23 +284,21 @@ class LoginScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(height: 5),
-                    Container(
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pushNamed(context, '/admindash');
-                        },
-                        child: Text(
-                          "Signin as ADMIN",
-                          textAlign: TextAlign.start,
-                          overflow: TextOverflow.clip,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontStyle: FontStyle.normal,
-                            fontSize: 12,
-                            color: Color(0xff000000),
-                          ),
+                    const SizedBox(height: 5),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/admindash');
+                      },
+                      child: const Text(
+                        "Signin as ADMIN",
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.normal,
+                          fontSize: 12,
+                          color: Color(0xff000000),
                         ),
                       ),
                     ),

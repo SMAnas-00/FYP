@@ -183,17 +183,21 @@
 //   }
 // }
 
+// ignore_for_file: file_names, non_constant_identifier_names, must_be_immutable
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:newui/Screens/Flightdetails.dart';
 
-final Color flightBorderColor = Color(0xFFE6E6E6);
-final Color chipBackgroundColor = Color(0xFFF6F6F6);
+Color flightBorderColor = const Color(0xFFE6E6E6);
+Color chipBackgroundColor = const Color(0xFFF6F6F6);
 
 final formatCurrency = NumberFormat.simpleCurrency();
 
 class FlightList extends StatefulWidget {
+  const FlightList({super.key});
+
   @override
   State<FlightList> createState() => _FlightListState();
 }
@@ -215,8 +219,8 @@ class _FlightListState extends State<FlightList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flights'),
-        backgroundColor: Color(0xff3a57e8),
+        title: const Text('Flights'),
+        backgroundColor: const Color(0xff3a57e8),
       ),
       body: StreamBuilder<QuerySnapshot>(
           stream: _streamflightlist,
@@ -228,15 +232,15 @@ class _FlightListState extends State<FlightList> {
               QuerySnapshot querySnapshot = snapshot.data;
               List<QueryDocumentSnapshot> listqurey = querySnapshot.docs;
               return Padding(
-                padding: EdgeInsets.only(left: 16.0),
+                padding: const EdgeInsets.only(left: 16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     ListView.builder(
-                        physics: ClampingScrollPhysics(),
+                        physics: const ClampingScrollPhysics(),
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
                         itemCount: listqurey.length,
@@ -280,13 +284,13 @@ class _FlightListState extends State<FlightList> {
                 ),
               );
             }
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }),
     );
   }
 }
 
-class FlightCard extends StatelessWidget {
+class FlightCard extends StatefulWidget {
   int disc_price;
   int price;
   String flight_name;
@@ -295,6 +299,7 @@ class FlightCard extends StatelessWidget {
   String departure_city;
 
   FlightCard({
+    super.key,
     required this.disc_price,
     required this.price,
     required this.flight_day,
@@ -302,16 +307,22 @@ class FlightCard extends StatelessWidget {
     required this.flight_name,
     required this.departure_city,
   });
+
+  @override
+  State<FlightCard> createState() => _FlightCardState();
+}
+
+class _FlightCardState extends State<FlightCard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Stack(children: <Widget>[
         Container(
-          margin: EdgeInsets.only(right: 16.0),
+          margin: const EdgeInsets.only(right: 16.0),
           decoration: BoxDecoration(
-              color: Color.fromARGB(255, 214, 218, 240),
-              borderRadius: BorderRadius.all(Radius.circular(12)),
+              color: const Color.fromARGB(255, 214, 218, 240),
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
               border: Border.all(color: flightBorderColor)),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -321,13 +332,13 @@ class FlightCard extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     Text(
-                      '${formatCurrency.format(disc_price)}',
-                      style: TextStyle(
+                      formatCurrency.format(widget.disc_price),
+                      style: const TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 20.0),
                     ),
                     Text(
-                      '${formatCurrency.format(price)}',
-                      style: TextStyle(
+                      formatCurrency.format(widget.price),
+                      style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16.0,
                           decoration: TextDecoration.lineThrough,
@@ -339,10 +350,12 @@ class FlightCard extends StatelessWidget {
                   spacing: 12.0,
                   runSpacing: -8.0,
                   children: <Widget>[
-                    FlightDetailChip(Icons.calendar_today, "$flight_day"),
-                    FlightDetailChip(Icons.flight, "$flight_name"),
-                    FlightDetailChip(Icons.timelapse_outlined, "$flight_time"),
-                    FlightDetailChip(Icons.flight_takeoff, "$departure_city"),
+                    FlightDetailChip(Icons.calendar_today, widget.flight_day),
+                    FlightDetailChip(Icons.flight, widget.flight_name),
+                    FlightDetailChip(
+                        Icons.timelapse_outlined, widget.flight_time),
+                    FlightDetailChip(
+                        Icons.flight_takeoff, widget.departure_city),
                   ],
                 )
               ],
@@ -358,19 +371,19 @@ class FlightDetailChip extends StatelessWidget {
   final IconData iconData;
   final String label;
 
-  FlightDetailChip(this.iconData, this.label);
+  const FlightDetailChip(this.iconData, this.label, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return RawChip(
       label: Text(label),
-      labelStyle: TextStyle(color: Colors.black, fontSize: 14),
+      labelStyle: const TextStyle(color: Colors.black, fontSize: 14),
       backgroundColor: chipBackgroundColor,
       avatar: Icon(
         iconData,
         size: 14.0,
       ),
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0))),
     );
   }

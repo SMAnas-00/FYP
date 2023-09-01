@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'mybutton.dart';
 
 class DialogBox extends StatelessWidget {
@@ -8,6 +7,7 @@ class DialogBox extends StatelessWidget {
   VoidCallback oncancel;
   DialogBox(
       {super.key,
+      // ignore: non_constant_identifier_names
       required this.Controller,
       required this.onsave,
       required this.oncancel});
@@ -16,15 +16,15 @@ class DialogBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Colors.yellow,
-      content: Container(
+      content: SizedBox(
         height: 120,
         child: Column(children: [
           TextField(
             controller: Controller,
-            decoration:
-                InputDecoration(hintText: 'Add Task', focusColor: Colors.grey),
+            decoration: const InputDecoration(
+                hintText: 'Add Task', focusColor: Colors.grey),
           ),
-          SizedBox(height: 15),
+          const SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -36,6 +36,5 @@ class DialogBox extends StatelessWidget {
         ]),
       ),
     );
-    ;
   }
 }

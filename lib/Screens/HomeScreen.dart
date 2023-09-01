@@ -13,6 +13,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -67,11 +69,11 @@ class _HomeScreenState extends State<HomeScreen> {
             locationLatLang = 'null';
           });
         }
-        print(locationLatLang);
-        await Future.delayed(Duration(minutes: 30));
+        debugPrint(locationLatLang);
+        await Future.delayed(const Duration(minutes: 30));
       }
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -86,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
         cityName = '${place.locality}';
       });
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -95,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isLoading = true;
     });
 
-    final apiKey = '940bfc66d0aafd682bb9f4384af1ef67';
+    const apiKey = '940bfc66d0aafd682bb9f4384af1ef67';
     final apiUrl =
         'https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$apiKey';
 
@@ -133,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
     storeNotificationToken();
 
     _getCurrentLocation();
-    Future.delayed(Duration(seconds: 10), () {
+    Future.delayed(const Duration(seconds: 10), () {
       fetchWeatherData();
     });
   }
@@ -141,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
   storeNotificationToken() async {
     try {
       String? token = await FirebaseMessaging.instance.getToken();
-      print(token);
+      debugPrint(token);
       await FirebaseFirestore.instance
           .collection('app')
           .doc('Users')
@@ -149,14 +151,14 @@ class _HomeScreenState extends State<HomeScreen> {
           .doc(auth.currentUser?.uid)
           .set({'token': token}, SetOptions(merge: true));
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffe2e5e7),
+      backgroundColor: const Color(0xffe2e5e7),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -167,15 +169,16 @@ class _HomeScreenState extends State<HomeScreen> {
               alignment: Alignment.topLeft,
               children: [
                 Container(
-                  margin: EdgeInsets.all(0),
-                  padding: EdgeInsets.all(0),
+                  margin: const EdgeInsets.all(0),
+                  padding: const EdgeInsets.all(0),
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.45,
                   decoration: BoxDecoration(
-                    color: Color(0xff3a57e8),
+                    color: const Color(0xff3a57e8),
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.zero,
-                    border: Border.all(color: Color(0x4d9e9e9e), width: 1),
+                    border:
+                        Border.all(color: const Color(0x4d9e9e9e), width: 1),
                   ),
                 ),
                 SafeArea(
@@ -185,13 +188,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Padding(
-                        padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+                        padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.max,
@@ -221,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ],
                             ),
                             IconButton(
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.dashboard,
                                   color: Color(0xffffffff),
                                   size: 20,
@@ -231,24 +234,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.location_on,
                               color: Color(0xffffffff),
                               size: 20,
                             ),
                             Padding(
-                              padding: EdgeInsets.fromLTRB(4, 0, 0, 0),
+                              padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
                               child: Text(
                                 _currentAddress,
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontStyle: FontStyle.normal,
                                   fontSize: 14,
@@ -260,13 +263,13 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                         child: TypeAheadField(
                           textFieldConfiguration: TextFieldConfiguration(
                               obscureText: false,
                               textAlign: TextAlign.start,
                               maxLines: 1,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 fontStyle: FontStyle.normal,
                                 fontSize: 14,
@@ -275,32 +278,32 @@ class _HomeScreenState extends State<HomeScreen> {
                               decoration: InputDecoration(
                                 disabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12.0),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                       color: Color(0x00ffffff), width: 1),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12.0),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                       color: Color(0x00ffffff), width: 1),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12.0),
-                                  borderSide: BorderSide(
+                                  borderSide: const BorderSide(
                                       color: Color(0x00ffffff), width: 1),
                                 ),
                                 hintText: "Type Something...",
-                                hintStyle: TextStyle(
+                                hintStyle: const TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontStyle: FontStyle.normal,
                                   fontSize: 14,
                                   color: Color(0x55ffffff),
                                 ),
                                 filled: true,
-                                fillColor: Color(0xff4c67ee),
+                                fillColor: const Color(0xff4c67ee),
                                 isDense: true,
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                     vertical: 8, horizontal: 12),
-                                prefixIcon: Icon(Icons.search,
+                                prefixIcon: const Icon(Icons.search,
                                     color: Color(0x55ffffff), size: 20),
                               ),
                               controller: _searchController),
@@ -334,7 +337,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                     }
                                   },
                                   child: Padding(
-                                    padding: EdgeInsets.fromLTRB(16, 8, 16, 24),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        16, 8, 16, 24),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(12.0),
                                       child: (position == 0)
@@ -365,7 +369,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 controller: pageController,
                                 count: 3,
                                 axisDirection: Axis.horizontal,
-                                effect: WormEffect(
+                                effect: const WormEffect(
                                   dotColor: Color(0xff9e9e9e),
                                   activeDotColor: Color(0xff3f51b5),
                                   dotHeight: 12,
@@ -383,7 +387,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -405,20 +409,20 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Container(
-              margin: EdgeInsets.all(0),
-              padding: EdgeInsets.all(0),
+              margin: const EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               height: 100,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Color(0x1fffffff),
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.zero,
               ),
               child: isLoading
-                  ? Center(
+                  ? const Center(
                       child: CircularProgressIndicator(),
                     )
                   : Container(
-                      margin: EdgeInsets.symmetric(horizontal: 20),
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -432,16 +436,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                     )
                                   : Container(),
                               Text(
-                                '${weatherDescription}'.toUpperCase(),
-                                style: TextStyle(fontWeight: FontWeight.w600),
+                                weatherDescription.toUpperCase(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600),
                               )
                             ],
                           ),
                           Row(
                             children: [
                               Text(
-                                '${temperature}°C',
-                                style: TextStyle(
+                                '$temperature°C',
+                                style: const TextStyle(
                                     fontWeight: FontWeight.w700, fontSize: 20),
                               )
                             ],
@@ -450,7 +455,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -472,11 +477,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             GridView(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
@@ -489,11 +494,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   child: Container(
                     alignment: Alignment.center,
-                    margin: EdgeInsets.all(0),
-                    padding: EdgeInsets.all(0),
+                    margin: const EdgeInsets.all(0),
+                    padding: const EdgeInsets.all(0),
                     width: 200,
                     height: 100,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0x00ffffff),
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.zero,
@@ -505,18 +510,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.all(0),
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
                           width: 70,
                           height: 70,
                           decoration: BoxDecoration(
-                            color: Color(0xffffffff),
+                            color: const Color(0xffffffff),
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: Icon(Icons.bed),
+                          child: const Icon(Icons.bed),
                         ),
-                        Padding(
+                        const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
                             "Hotel",
@@ -540,11 +545,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.pushNamed(context, '/flight');
                   },
                   child: Container(
-                    margin: EdgeInsets.all(0),
-                    padding: EdgeInsets.all(0),
+                    margin: const EdgeInsets.all(0),
+                    padding: const EdgeInsets.all(0),
                     width: 200,
                     height: 100,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0x00ffffff),
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.zero,
@@ -556,20 +561,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Container(
                             alignment: Alignment.center,
-                            margin: EdgeInsets.all(0),
-                            padding: EdgeInsets.all(0),
+                            margin: const EdgeInsets.all(0),
+                            padding: const EdgeInsets.all(0),
                             width: 70,
                             height: 70,
                             decoration: BoxDecoration(
-                              color: Color(0xffffffff),
+                              color: const Color(0xffffffff),
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             child:
 
                                 ///***If you have exported images you must have to copy those images in assets/images directory.
-                                Icon(Icons.flight)),
-                        Padding(
+                                const Icon(Icons.flight)),
+                        const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
                             "Flights",
@@ -593,11 +598,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.pushNamed(context, '/transport');
                   },
                   child: Container(
-                    margin: EdgeInsets.all(0),
-                    padding: EdgeInsets.all(0),
+                    margin: const EdgeInsets.all(0),
+                    padding: const EdgeInsets.all(0),
                     width: 200,
                     height: 100,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0x00000000),
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.zero,
@@ -609,21 +614,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.all(0),
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
                           width: 70,
                           height: 70,
                           decoration: BoxDecoration(
-                            color: Color(0xffffffff),
+                            color: const Color(0xffffffff),
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child:
 
                               ///***If you have exported images you must have to copy those images in assets/images directory.
-                              Icon(Icons.bike_scooter),
+                              const Icon(Icons.bike_scooter),
                         ),
-                        Padding(
+                        const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
                             "Transport",
@@ -648,11 +653,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   child: Container(
                     alignment: Alignment.center,
-                    margin: EdgeInsets.all(0),
-                    padding: EdgeInsets.all(0),
+                    margin: const EdgeInsets.all(0),
+                    padding: const EdgeInsets.all(0),
                     width: 200,
                     height: 100,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0x00000000),
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.zero,
@@ -664,16 +669,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.all(0),
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
                           width: 70,
                           height: 70,
                           decoration: BoxDecoration(
-                            color: Color(0xffffffff),
+                            color: const Color(0xffffffff),
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: Icon(Icons.broken_image),
+                          child: const Icon(Icons.broken_image),
 
                           ///***If you have exported images you must have to copy those images in assets/images directory.
                           //     Image(
@@ -684,7 +689,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           //   fit: BoxFit.cover,
                           // ),
                         ),
-                        Padding(
+                        const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
                             "360 View",
@@ -708,11 +713,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   child: Container(
                     alignment: Alignment.center,
-                    margin: EdgeInsets.all(0),
-                    padding: EdgeInsets.all(0),
+                    margin: const EdgeInsets.all(0),
+                    padding: const EdgeInsets.all(0),
                     width: 200,
                     height: 100,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0x00ffffff),
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.zero,
@@ -724,17 +729,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Container(
                             alignment: Alignment.center,
-                            margin: EdgeInsets.all(0),
-                            padding: EdgeInsets.all(0),
+                            margin: const EdgeInsets.all(0),
+                            padding: const EdgeInsets.all(0),
                             width: 70,
                             height: 70,
                             decoration: BoxDecoration(
-                              color: Color(0xffffffff),
+                              color: const Color(0xffffffff),
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            child: Icon(Icons.home)),
-                        Padding(
+                            child: const Icon(Icons.home)),
+                        const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
                             "Mina Camp",
@@ -758,11 +763,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   child: Container(
                     alignment: Alignment.center,
-                    margin: EdgeInsets.all(0),
-                    padding: EdgeInsets.all(0),
+                    margin: const EdgeInsets.all(0),
+                    padding: const EdgeInsets.all(0),
                     width: 200,
                     height: 100,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0x00ffffff),
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.zero,
@@ -774,17 +779,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Container(
                             alignment: Alignment.center,
-                            margin: EdgeInsets.all(0),
-                            padding: EdgeInsets.all(0),
+                            margin: const EdgeInsets.all(0),
+                            padding: const EdgeInsets.all(0),
                             width: 70,
                             height: 70,
                             decoration: BoxDecoration(
-                              color: Color(0xffffffff),
+                              color: const Color(0xffffffff),
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            child: Icon(Icons.book)),
-                        Padding(
+                            child: const Icon(Icons.book)),
+                        const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
                             "GUIDE",
@@ -808,11 +813,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   child: Container(
                     alignment: Alignment.center,
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    padding: EdgeInsets.all(0),
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.all(0),
                     width: 200,
                     height: 100,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Color(0x00000000),
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.zero,
@@ -824,16 +829,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.all(0),
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
                           width: 70,
                           height: 70,
                           decoration: BoxDecoration(
-                            color: Color(0xffffffff),
+                            color: const Color(0xffffffff),
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: Icon(Icons.broken_image),
+                          child: const Icon(Icons.broken_image),
 
                           ///***If you have exported images you must have to copy those images in assets/images directory.
                           //     Image(
@@ -844,7 +849,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           //   fit: BoxFit.cover,
                           // ),
                         ),
-                        Padding(
+                        const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
                             "Animal",

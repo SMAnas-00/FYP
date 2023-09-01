@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -37,16 +39,16 @@ class _HoteldetailsState extends State<Hoteldetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffffffff),
+      backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
         elevation: 3,
         centerTitle: true,
         automaticallyImplyLeading: true,
-        backgroundColor: Color(0xffffffff),
-        shape: RoundedRectangleBorder(
+        backgroundColor: const Color(0xffffffff),
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.zero,
         ),
-        title: Text(
+        title: const Text(
           "Hotel details",
           style: TextStyle(
             fontWeight: FontWeight.w700,
@@ -56,7 +58,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
           ),
         ),
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Color(0xff212435),
             size: 24,
@@ -71,7 +73,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
           alignment: Alignment.topLeft,
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, 80),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -79,8 +81,8 @@ class _HoteldetailsState extends State<Hoteldetails> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 0),
                       child: Align(
                         alignment: Alignment.center,
                         child:
@@ -95,8 +97,8 @@ class _HoteldetailsState extends State<Hoteldetails> {
                       ),
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +110,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                               widget.hotelName,
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w700,
                                 fontStyle: FontStyle.normal,
                                 fontSize: 16,
@@ -125,14 +127,14 @@ class _HoteldetailsState extends State<Hoteldetails> {
                                 "PKR ${widget.hotelPrice}",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontStyle: FontStyle.normal,
                                   fontSize: 16,
                                   color: Color(0xff000000),
                                 ),
                               ),
-                              Text(
+                              const Text(
                                 "/night",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
@@ -152,14 +154,14 @@ class _HoteldetailsState extends State<Hoteldetails> {
                       widget.description,
                       textAlign: TextAlign.start,
                       overflow: TextOverflow.clip,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontStyle: FontStyle.normal,
                         fontSize: 14,
                         color: Color(0xff000000),
                       ),
                     ),
-                    Padding(
+                    const Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
@@ -175,7 +177,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                       ),
                     ),
                     RatingBarIndicator(
-                      itemBuilder: (context, index) => Icon(
+                      itemBuilder: (context, index) => const Icon(
                         Icons.star,
                         color: Colors.amber,
                       ),
@@ -183,7 +185,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                       rating: double.parse(widget.hotelRating),
                       itemSize: 20,
                     ),
-                    Padding(
+                    const Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
@@ -205,15 +207,15 @@ class _HoteldetailsState extends State<Hoteldetails> {
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.all(4),
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: Color(0xfff0efef),
+                            color: const Color(0xfff0efef),
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.remove,
                               color: Color(0xff000000),
                               size: 20,
@@ -231,13 +233,13 @@ class _HoteldetailsState extends State<Hoteldetails> {
                           ),
                         ),
                         Padding(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 8),
                           child: Text(
                             selcteddays.toString(),
                             textAlign: TextAlign.start,
                             overflow: TextOverflow.clip,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.normal,
                               fontSize: 16,
@@ -247,16 +249,16 @@ class _HoteldetailsState extends State<Hoteldetails> {
                         ),
                         Container(
                           alignment: Alignment.center,
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.all(4),
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: Color(0xfff0efef),
+                            color: const Color(0xfff0efef),
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: IconButton(
                             iconSize: 20,
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.add,
                               color: Color(0xff000000),
                               size: 20,
@@ -274,7 +276,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                         ),
                       ],
                     ),
-                    Padding(
+                    const Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
@@ -296,15 +298,15 @@ class _HoteldetailsState extends State<Hoteldetails> {
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.all(4),
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: Color(0xfff0efef),
+                            color: const Color(0xfff0efef),
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.remove,
                               color: Color(0xff000000),
                               size: 20,
@@ -322,13 +324,13 @@ class _HoteldetailsState extends State<Hoteldetails> {
                           ),
                         ),
                         Padding(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 8),
                           child: Text(
                             selctedrooms.toString(),
                             textAlign: TextAlign.start,
                             overflow: TextOverflow.clip,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.normal,
                               fontSize: 16,
@@ -338,16 +340,16 @@ class _HoteldetailsState extends State<Hoteldetails> {
                         ),
                         Container(
                           alignment: Alignment.center,
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.all(4),
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: Color(0xfff0efef),
+                            color: const Color(0xfff0efef),
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: IconButton(
                             iconSize: 20,
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.add,
                               color: Color(0xff000000),
                               size: 20,
@@ -370,7 +372,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: MaterialButton(
@@ -386,21 +388,21 @@ class _HoteldetailsState extends State<Hoteldetails> {
                           int totalprice =
                               widget.hotelPrice * selctedrooms * selcteddays;
                           return AlertDialog(
-                            title: Text('Confirmatrion'),
-                            content: Container(
+                            title: const Text('Confirmatrion'),
+                            content: SizedBox(
                               height: 150,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text('NAME: ${widget.hotelName}'),
                                   Text('Hotel Id:${widget.hotelid}'),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 5),
                                   Text('Rooms: $selctedrooms'),
-                                  SizedBox(height: 10),
-                                  Text('Check In: ${datecheckin}'),
-                                  Text('Check OUT: ${datecheckout}'),
-                                  SizedBox(height: 10),
-                                  Text('Total Price: ${totalprice}'),
+                                  const SizedBox(height: 10),
+                                  Text('Check In: $datecheckin'),
+                                  Text('Check OUT: $datecheckout'),
+                                  const SizedBox(height: 10),
+                                  Text('Total Price: $totalprice'),
                                 ],
                               ),
                             ),
@@ -415,7 +417,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                                         .doc('bookings')
                                         .collection('cart')
                                         .doc('request')
-                                        .collection('${user.currentUser!.uid}')
+                                        .collection(user.currentUser!.uid)
                                         .doc('hotel')
                                         .set({
                                       'name': widget.hotelName,
@@ -428,7 +430,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                                         .doc('bookings')
                                         .collection('admin')
                                         .doc('request')
-                                        .collection('${user.currentUser!.uid}')
+                                        .collection(user.currentUser!.uid)
                                         .doc('request')
                                         .set({
                                       'hname': widget.hotelName,
@@ -443,24 +445,27 @@ class _HoteldetailsState extends State<Hoteldetails> {
                                       'date': DateTime.now(),
                                     }, SetOptions(merge: true));
                                   },
-                                  child: Text('OK')),
+                                  child: const Text('OK')),
                               TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: Text('CLOSE')),
+                                  child: const Text('CLOSE')),
                             ],
                           );
                         });
                   },
-                  color: Color(0xff3a57e8),
+                  color: const Color(0xff3a57e8),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
-                    side: BorderSide(color: Color(0xffffffff), width: 1),
+                    side: const BorderSide(color: Color(0xffffffff), width: 1),
                   ),
-                  padding: EdgeInsets.all(16),
-                  child: Text(
+                  padding: const EdgeInsets.all(16),
+                  textColor: const Color(0xffffffff),
+                  height: 50,
+                  minWidth: MediaQuery.of(context).size.width,
+                  child: const Text(
                     "Add to cart",
                     style: TextStyle(
                       fontSize: 16,
@@ -468,9 +473,6 @@ class _HoteldetailsState extends State<Hoteldetails> {
                       fontStyle: FontStyle.normal,
                     ),
                   ),
-                  textColor: Color(0xffffffff),
-                  height: 50,
-                  minWidth: MediaQuery.of(context).size.width,
                 ),
               ),
             ),

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -5,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 class CardScreen extends StatefulWidget {
+  const CardScreen({super.key});
+
   @override
   State<CardScreen> createState() => _CardScreenState();
 }
@@ -25,7 +29,7 @@ class _CardScreenState extends State<CardScreen> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.more_vert),
+            icon: const Icon(Icons.more_vert),
             onPressed: () {},
           ),
         ],
@@ -45,16 +49,16 @@ class _CardScreenState extends State<CardScreen> {
                     color: Colors.black.withOpacity(0.5),
                     spreadRadius: 5,
                     blurRadius: 7,
-                    offset: Offset(0, 3),
+                    offset: const Offset(0, 3),
                   ),
                 ],
               ),
               child: Container(
-                margin: EdgeInsets.fromLTRB(10, 10, 8, 10),
+                margin: const EdgeInsets.fromLTRB(10, 10, 8, 10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -83,7 +87,7 @@ class _CardScreenState extends State<CardScreen> {
                                 fontSize: 12,
                               ),
                             ),
-                            Text(
+                            const Text(
                               'John Doe',
                               style: TextStyle(
                                 color: Colors.white,
@@ -102,7 +106,7 @@ class _CardScreenState extends State<CardScreen> {
                                 fontSize: 12,
                               ),
                             ),
-                            Text(
+                            const Text(
                               '12/25',
                               style: TextStyle(
                                 color: Colors.white,
@@ -117,12 +121,12 @@ class _CardScreenState extends State<CardScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 await makePayment();
               },
-              child: Text('PAY'),
+              child: const Text('PAY'),
             ),
           ],
         ),
@@ -147,7 +151,7 @@ class _CardScreenState extends State<CardScreen> {
       ///now finally display payment sheeet
       displayPaymentSheet();
     } catch (e, s) {
-      print('exception:$e$s');
+      debugPrint('exception:$e$s');
     }
   }
 
@@ -156,12 +160,12 @@ class _CardScreenState extends State<CardScreen> {
       await Stripe.instance.presentPaymentSheet().then((value) {
         showDialog(
             context: cntext,
-            builder: (_) => AlertDialog(
+            builder: (_) => const AlertDialog(
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
-                        children: const [
+                        children: [
                           Icon(
                             Icons.check_circle,
                             color: Colors.green,

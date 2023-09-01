@@ -1,14 +1,15 @@
+// ignore_for_file: file_names, deprecated_member_use
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../main.dart';
-
 class TransportDetails extends StatefulWidget {
   String transtype;
   String destination;
   String pickup;
+  // ignore: non_constant_identifier_names
   String trans_imgURL;
   int fareprice;
   String transId;
@@ -31,18 +32,17 @@ class _TransportDetailsState extends State<TransportDetails> {
   int selcteddays = 1;
   @override
   Widget build(BuildContext context) {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
     return Scaffold(
-      backgroundColor: Color(0xffffffff),
+      backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
         elevation: 3,
         centerTitle: true,
         automaticallyImplyLeading: true,
-        backgroundColor: Color(0xffffffff),
-        shape: RoundedRectangleBorder(
+        backgroundColor: const Color(0xffffffff),
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.zero,
         ),
-        title: Text(
+        title: const Text(
           "Flight details",
           style: TextStyle(
             fontWeight: FontWeight.w700,
@@ -52,7 +52,7 @@ class _TransportDetailsState extends State<TransportDetails> {
           ),
         ),
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Color(0xff212435),
             size: 24,
@@ -67,7 +67,7 @@ class _TransportDetailsState extends State<TransportDetails> {
           alignment: Alignment.topLeft,
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, 80),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -75,8 +75,8 @@ class _TransportDetailsState extends State<TransportDetails> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 0),
                       child: Align(
                         alignment: Alignment.center,
                         child:
@@ -91,8 +91,8 @@ class _TransportDetailsState extends State<TransportDetails> {
                       ),
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,7 +104,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                               widget.transtype.toUpperCase(),
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w700,
                                 fontStyle: FontStyle.normal,
                                 fontSize: 16,
@@ -121,14 +121,14 @@ class _TransportDetailsState extends State<TransportDetails> {
                                 "PKR ${widget.fareprice}",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontStyle: FontStyle.normal,
                                   fontSize: 16,
                                   color: Color(0xff000000),
                                 ),
                               ),
-                              Text(
+                              const Text(
                                 "/Ride",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
@@ -144,7 +144,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                         ],
                       ),
                     ),
-                    Padding(
+                    const Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
@@ -161,27 +161,27 @@ class _TransportDetailsState extends State<TransportDetails> {
                     ),
                     Row(
                       children: [
-                        SizedBox(width: 20),
+                        const SizedBox(width: 20),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               "From",
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
-                            Text('${widget.pickup}'),
-                            SizedBox(height: 10),
-                            Divider(),
-                            Text(
+                            Text(widget.pickup),
+                            const SizedBox(height: 10),
+                            const Divider(),
+                            const Text(
                               "To",
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
-                            Text('${widget.destination}')
+                            Text(widget.destination)
                           ],
                         )
                       ],
                     ),
-                    Padding(
+                    const Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
@@ -203,15 +203,15 @@ class _TransportDetailsState extends State<TransportDetails> {
                       children: [
                         Container(
                           alignment: Alignment.center,
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.all(4),
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: Color(0xfff0efef),
+                            color: const Color(0xfff0efef),
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: IconButton(
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.remove,
                               color: Color(0xff000000),
                               size: 20,
@@ -229,13 +229,13 @@ class _TransportDetailsState extends State<TransportDetails> {
                           ),
                         ),
                         Padding(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 8),
                           child: Text(
                             selcteddays.toString(),
                             textAlign: TextAlign.start,
                             overflow: TextOverflow.clip,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.normal,
                               fontSize: 16,
@@ -245,16 +245,16 @@ class _TransportDetailsState extends State<TransportDetails> {
                         ),
                         Container(
                           alignment: Alignment.center,
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.all(4),
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: Color(0xfff0efef),
+                            color: const Color(0xfff0efef),
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: IconButton(
                             iconSize: 20,
-                            icon: Icon(
+                            icon: const Icon(
                               Icons.add,
                               color: Color(0xff000000),
                               size: 20,
@@ -272,8 +272,8 @@ class _TransportDetailsState extends State<TransportDetails> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 30),
-                    Row(
+                    const SizedBox(height: 30),
+                    const Row(
                       children: [DateTimePick()],
                     ),
                   ],
@@ -281,7 +281,7 @@ class _TransportDetailsState extends State<TransportDetails> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: MaterialButton(
@@ -293,11 +293,12 @@ class _TransportDetailsState extends State<TransportDetails> {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text("Error"),
-                            content: Text("Please select booking date date"),
+                            title: const Text("Error"),
+                            content:
+                                const Text("Please select booking date date"),
                             actions: <Widget>[
                               TextButton(
-                                child: Text("Ok"),
+                                child: const Text("Ok"),
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
@@ -312,8 +313,8 @@ class _TransportDetailsState extends State<TransportDetails> {
                         builder: (BuildContext context) {
                           int totalprice = widget.fareprice;
                           return AlertDialog(
-                            title: Text('Confirmatrion'),
-                            content: Container(
+                            title: const Text('Confirmatrion'),
+                            content: SizedBox(
                               height: 150,
                               child: SingleChildScrollView(
                                 child: Column(
@@ -321,13 +322,13 @@ class _TransportDetailsState extends State<TransportDetails> {
                                   children: [
                                     Text('NAME: ${widget.transtype}'),
                                     Text('ID: ${widget.transId}'),
-                                    SizedBox(height: 10),
+                                    const SizedBox(height: 10),
                                     Text('DEPART: ${widget.pickup}'),
                                     Text('DES: ${widget.destination}'),
-                                    SizedBox(height: 10),
-                                    Text('NAME: ${datecheckin}'),
-                                    SizedBox(height: 5),
-                                    Text('Total Price: ${totalprice}'),
+                                    const SizedBox(height: 10),
+                                    Text('NAME: $datecheckin'),
+                                    const SizedBox(height: 5),
+                                    Text('Total Price: $totalprice'),
                                   ],
                                 ),
                               ),
@@ -343,7 +344,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                                         .doc('bookings')
                                         .collection('cart')
                                         .doc('request')
-                                        .collection('${user.currentUser!.uid}')
+                                        .collection(user.currentUser!.uid)
                                         .doc('transport')
                                         .set({
                                       'name': widget.transtype,
@@ -356,7 +357,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                                         .doc('bookings')
                                         .collection('admin')
                                         .doc('request')
-                                        .collection('${user.currentUser!.uid}')
+                                        .collection(user.currentUser!.uid)
                                         .doc('request')
                                         .set({
                                       'tname': widget.transtype,
@@ -370,24 +371,27 @@ class _TransportDetailsState extends State<TransportDetails> {
                                       'date': DateTime.now(),
                                     }, SetOptions(merge: true));
                                   },
-                                  child: Text('OK')),
+                                  child: const Text('OK')),
                               TextButton(
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: Text('CLOSE')),
+                                  child: const Text('CLOSE')),
                             ],
                           );
                         });
                   },
-                  color: Color(0xff3a57e8),
+                  color: const Color(0xff3a57e8),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
-                    side: BorderSide(color: Color(0xffffffff), width: 1),
+                    side: const BorderSide(color: Color(0xffffffff), width: 1),
                   ),
-                  padding: EdgeInsets.all(16),
-                  child: Text(
+                  padding: const EdgeInsets.all(16),
+                  textColor: const Color(0xffffffff),
+                  height: 50,
+                  minWidth: MediaQuery.of(context).size.width,
+                  child: const Text(
                     "Add to cart",
                     style: TextStyle(
                       fontSize: 16,
@@ -395,9 +399,6 @@ class _TransportDetailsState extends State<TransportDetails> {
                       fontStyle: FontStyle.normal,
                     ),
                   ),
-                  textColor: Color(0xffffffff),
-                  height: 50,
-                  minWidth: MediaQuery.of(context).size.width,
                 ),
               ),
             ),
@@ -422,8 +423,8 @@ class _DateTimePickState extends State<DateTimePick> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 80),
-          primary: Color(0xFF3A57E8),
+          padding: const EdgeInsets.symmetric(horizontal: 80),
+          primary: const Color(0xFF3A57E8),
           onPrimary: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -434,13 +435,13 @@ class _DateTimePickState extends State<DateTimePick> {
           context: context,
           initialDate: DateTime.now(),
           firstDate: DateTime.now(),
-          lastDate: DateTime.now().add(Duration(days: 365)),
+          lastDate: DateTime.now().add(const Duration(days: 365)),
         );
-        if (selectedDate != null)
+        if (selectedDate != null) {
           setState(() {
             _checkInDate = selectedDate;
           });
-        ;
+        }
       },
       child: Text(
         _checkInDate != null

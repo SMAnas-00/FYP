@@ -1,5 +1,5 @@
+// ignore_for_file: camel_case_types, non_constant_identifier_names
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +30,8 @@ class _addTransportScreenState extends State<addTransportScreen> {
   addTransport() async {
     _formKey.currentState!.save();
     if (_formKey.currentState!.validate()) {
-      print("Form is vaid ");
-
-      print('Data for login ');
-
+      debugPrint("Form is vaid ");
+      debugPrint('Data for login ');
       var did = DateTime.now().microsecondsSinceEpoch;
 
       try {
@@ -54,7 +52,9 @@ class _addTransportScreenState extends State<addTransportScreen> {
         setState(() {
           imageUrl = '';
         });
-      } on FirebaseException catch (e) {}
+      } on FirebaseException catch (e) {
+        debugPrint(e.toString());
+      }
       _WhereFrom.clear();
       _WhereTo.clear();
       _Fairforthetrip.clear();
@@ -80,7 +80,7 @@ class _addTransportScreenState extends State<addTransportScreen> {
       });
       Fluttertoast.showToast(msg: 'image uploaded successfully');
     }).onError((error, stackTrace) {
-      Fluttertoast.showToast(msg: '${error.toString()}');
+      Fluttertoast.showToast(msg: error.toString());
     });
   }
 
@@ -97,25 +97,25 @@ class _addTransportScreenState extends State<addTransportScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: Text('Add New Transport',
+        title: const Text('Add New Transport',
             style: TextStyle(color: Color.fromARGB(255, 29, 165, 153))),
         backgroundColor: Colors.white,
       ),
       body: Card(
         child: Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Form(
             key: _formKey,
             child: ListView(
               shrinkWrap: true,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 TextFormField(
                   controller: _WhereTo,
                   keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Destination',
                   ),
                   validator: (value) {
@@ -128,7 +128,7 @@ class _addTransportScreenState extends State<addTransportScreen> {
                 TextFormField(
                   controller: _WhereFrom,
                   keyboardType: TextInputType.text,
-                  decoration: InputDecoration(labelText: 'Pick Up'),
+                  decoration: const InputDecoration(labelText: 'Pick Up'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Destination Required';
@@ -139,7 +139,8 @@ class _addTransportScreenState extends State<addTransportScreen> {
                 TextFormField(
                   controller: _Fairforthetrip,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: 'Fair for the trip'),
+                  decoration:
+                      const InputDecoration(labelText: 'Fair for the trip'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Fair Required';
@@ -150,7 +151,8 @@ class _addTransportScreenState extends State<addTransportScreen> {
                 TextFormField(
                   controller: _Transtype,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: 'Type of Transit'),
+                  decoration:
+                      const InputDecoration(labelText: 'Type of Transit'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Required';
@@ -158,7 +160,7 @@ class _addTransportScreenState extends State<addTransportScreen> {
                     return null;
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 SizedBox(
@@ -212,15 +214,15 @@ class _addTransportScreenState extends State<addTransportScreen> {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       elevation: 12.0,
-                      backgroundColor: Color.fromARGB(255, 29, 165, 153)),
+                      backgroundColor: const Color.fromARGB(255, 29, 165, 153)),
                   onPressed: addTransport,
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                 ),
               ],
             ),
