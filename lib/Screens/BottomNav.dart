@@ -1,12 +1,11 @@
+// ignore: file_names
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:newui/Screens/AtmCardScreen.dart';
 import 'package:newui/Screens/Cart.dart';
 import 'package:newui/Screens/HomeScreen.dart';
 import 'package:newui/Screens/MapScreen.dart';
 import 'package:newui/Screens/Profile.dart';
 import 'package:newui/Screens/TODO/TodoListScreen.dart';
-import 'package:newui/Screens/TODO/note.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -23,9 +22,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
   /// widget list
   final List<Widget> bottomBarPages = [
     MapView(),
-    ToDoScreen(),
-    HomeScreen(),
-    CartScreen(),
+    const ToDoScreen(),
+    const HomeScreen(),
+    const CartScreen(),
     ProfileScreen(),
   ];
 
@@ -56,8 +55,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
               color: Colors.white,
               showLabel: false,
               notchColor: Colors.black87,
-              bottomBarItems: [
-                const BottomBarItem(
+              bottomBarItems: const [
+                BottomBarItem(
                   inActiveItem: Icon(
                     Icons.home_work,
                     color: Colors.blueGrey,
@@ -68,7 +67,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   ),
                   itemLabel: 'Map',
                 ),
-                const BottomBarItem(
+                BottomBarItem(
                   inActiveItem: Icon(
                     Icons.list,
                     color: Colors.blueGrey,
@@ -92,7 +91,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   ),
                   itemLabel: 'Home',
                 ),
-                const BottomBarItem(
+                BottomBarItem(
                   inActiveItem: Icon(
                     Icons.add_shopping_cart,
                     color: Colors.blueGrey,
@@ -103,7 +102,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   ),
                   itemLabel: 'Cart',
                 ),
-                const BottomBarItem(
+                BottomBarItem(
                   inActiveItem: Icon(
                     Icons.person,
                     color: Colors.blueGrey,

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
@@ -7,26 +9,28 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class NoCartScreen extends StatelessWidget {
+  const NoCartScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.center,
       child: Padding(
-        padding: EdgeInsets.all(32),
+        padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
             ///***If you have exported images you must have to copy those images in assets/images directory.
-            Image(
+            const Image(
               image: NetworkImage(
                   "https://image.freepik.com/free-vector/no-data-concept-illustration_114360-2506.jpg"),
               height: 140,
               width: 140,
               fit: BoxFit.cover,
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
               child: Text(
                 "The Basket is empty :-(",
@@ -40,7 +44,7 @@ class NoCartScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
               child: Text(
                 "Your basket will help you to buy several app at once!.",
@@ -55,16 +59,19 @@ class NoCartScreen extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+              padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
               child: MaterialButton(
                 onPressed: () {},
-                color: Color(0xff3a57e8),
+                color: const Color(0xff3a57e8),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(26.0),
                 ),
-                padding: EdgeInsets.all(16),
-                child: Text(
+                padding: const EdgeInsets.all(16),
+                textColor: const Color(0xffffffff),
+                height: 45,
+                minWidth: MediaQuery.of(context).size.width * 0.6,
+                child: const Text(
                   "ADD FIRST PRODUCT",
                   style: TextStyle(
                     fontSize: 14,
@@ -72,9 +79,6 @@ class NoCartScreen extends StatelessWidget {
                     fontStyle: FontStyle.normal,
                   ),
                 ),
-                textColor: Color(0xffffffff),
-                height: 45,
-                minWidth: MediaQuery.of(context).size.width * 0.6,
               ),
             ),
           ],
@@ -102,7 +106,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 5), () {
       total;
     });
   }
@@ -133,12 +137,12 @@ class _CartScreenState extends State<CartScreen> {
               }));
 
       if (response.statusCode == 200) {
-        print("Notification has been send");
+        debugPrint("Notification has been send");
       } else {
-        print("Somethin went wrong");
+        debugPrint("Somethin went wrong");
       }
     } catch (e) {
-      print(e.toString());
+      debugPrint(e.toString());
     }
   }
 
@@ -149,13 +153,13 @@ class _CartScreenState extends State<CartScreen> {
         .doc('bookings')
         .collection('cart')
         .doc('request')
-        .collection('${user.currentUser!.uid}');
+        .collection(user.currentUser!.uid);
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
           centerTitle: true,
-          backgroundColor: Color(0xff3a57e8),
-          title: Text(
+          backgroundColor: const Color(0xff3a57e8),
+          title: const Text(
             "Cart",
             style: TextStyle(
               color: Colors.white,
@@ -164,16 +168,14 @@ class _CartScreenState extends State<CartScreen> {
             ),
           ),
           actions: [
-            Container(
-              child: TextButton(
-                child: Text(
-                  'Tap to Pay',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () async {
-                  await makePayment();
-                },
+            TextButton(
+              child: const Text(
+                'Tap to Pay',
+                style: TextStyle(color: Colors.white),
               ),
+              onPressed: () async {
+                await makePayment();
+              },
             )
           ],
         ),
@@ -186,8 +188,9 @@ class _CartScreenState extends State<CartScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Text('Loading');
             }
+            // ignore: unnecessary_null_comparison
             if (snapshot.data!.docs == null) {
-              return NoCartScreen();
+              return const NoCartScreen();
             }
             total = 0;
 
@@ -211,7 +214,7 @@ class _CartScreenState extends State<CartScreen> {
 
   Future<void> makePayment() async {
     try {
-      paymentIntent = await createPaymentIntent('${total}', 'PKR');
+      paymentIntent = await createPaymentIntent('$total', 'PKR');
       //Payment Sheet
       await Stripe.instance
           .initPaymentSheet(
@@ -226,7 +229,7 @@ class _CartScreenState extends State<CartScreen> {
       ///now finally display payment sheeet
       displayPaymentSheet();
     } catch (e, s) {
-      print('exception:$e$s');
+      debugPrint('exception:$e$s');
     }
   }
 
@@ -238,7 +241,7 @@ class _CartScreenState extends State<CartScreen> {
             .doc('bookings')
             .collection('cart')
             .doc('request')
-            .collection('${user.currentUser!.uid}')
+            .collection(user.currentUser!.uid)
             .doc('hotel')
             .delete();
         await firestore
@@ -246,7 +249,7 @@ class _CartScreenState extends State<CartScreen> {
             .doc('bookings')
             .collection('cart')
             .doc('request')
-            .collection('${user.currentUser!.uid}')
+            .collection(user.currentUser!.uid)
             .doc('flight')
             .delete();
         await firestore
@@ -254,7 +257,7 @@ class _CartScreenState extends State<CartScreen> {
             .doc('bookings')
             .collection('cart')
             .doc('request')
-            .collection('${user.currentUser!.uid}')
+            .collection(user.currentUser!.uid)
             .doc('transport')
             .delete();
         await firestore
@@ -262,7 +265,7 @@ class _CartScreenState extends State<CartScreen> {
             .doc('bookings')
             .collection('admin')
             .doc('request')
-            .collection('${user.currentUser!.uid}')
+            .collection(user.currentUser!.uid)
             .doc('request')
             .update({'status': 'success', 'totalPrice': total});
         // await firestore
@@ -287,14 +290,15 @@ class _CartScreenState extends State<CartScreen> {
 
         sendNotification1("Booking done!", token, '$total');
 
+        // ignore: use_build_context_synchronously
         showDialog(
             context: cntext,
-            builder: (_) => AlertDialog(
+            builder: (_) => const AlertDialog(
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
-                        children: const [
+                        children: [
                           Icon(
                             Icons.check_circle,
                             color: Colors.green,
@@ -309,17 +313,17 @@ class _CartScreenState extends State<CartScreen> {
 
         paymentIntent = null;
       }).onError((error, stackTrace) {
-        print('Error is:--->$error $stackTrace');
+        debugPrint('Error is:--->$error $stackTrace');
       });
     } on StripeException catch (e) {
-      print('Error is:---> $e');
+      debugPrint('Error is:---> $e');
       showDialog(
           context: cntext,
           builder: (_) => const AlertDialog(
                 content: Text("Cancelled "),
               ));
     } catch (e) {
-      print('$e');
+      debugPrint('$e');
     }
   }
 
@@ -361,9 +365,9 @@ class CartItem extends StatefulWidget {
   final String image;
   final int price;
   final String id;
-  late final int total;
+  final int total;
 
-  CartItem(
+  const CartItem(
       {Key? key,
       required this.image,
       required this.title,
@@ -388,14 +392,14 @@ class _CartItemState extends State<CartItem> {
         title: Text(widget.title),
         subtitle: Text('Rs${widget.price}'),
         onTap: () {
-          print(widget.id);
+          debugPrint(widget.id);
           if (widget.id.isNotEmpty) {
             if (widget.id.startsWith('fl')) {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Delete'),
+                      title: const Text('Delete'),
                       content: Text('Do you want to Delete ${widget.title}'),
                       actions: <Widget>[
                         TextButton(
@@ -406,22 +410,23 @@ class _CartItemState extends State<CartItem> {
                                 .doc('bookings')
                                 .collection('cart')
                                 .doc('request')
-                                .collection('${user.currentUser!.uid}')
+                                .collection(user.currentUser!.uid)
                                 .doc('flight')
                                 .delete();
 
+                            // ignore: use_build_context_synchronously
                             Navigator.of(context).pop();
                             setState(() {
                               totalpricesub(widget.total, widget.price);
                             });
                           },
-                          child: Text('Yes'),
+                          child: const Text('Yes'),
                         ),
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('No'),
+                          child: const Text('No'),
                         ),
                       ],
                     );
@@ -432,7 +437,7 @@ class _CartItemState extends State<CartItem> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Delete'),
+                      title: const Text('Delete'),
                       content: Text('Do you want to Delete ${widget.title}'),
                       actions: <Widget>[
                         TextButton(
@@ -443,22 +448,23 @@ class _CartItemState extends State<CartItem> {
                                 .doc('bookings')
                                 .collection('cart')
                                 .doc('request')
-                                .collection('${user.currentUser!.uid}')
+                                .collection(user.currentUser!.uid)
                                 .doc('hotel')
                                 .delete();
 
+                            // ignore: use_build_context_synchronously
                             Navigator.of(context).pop();
                             setState(() {
                               totalpricesub(widget.total, widget.price);
                             });
                           },
-                          child: Text('Yes'),
+                          child: const Text('Yes'),
                         ),
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('No'),
+                          child: const Text('No'),
                         ),
                       ],
                     );
@@ -469,7 +475,7 @@ class _CartItemState extends State<CartItem> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Delete'),
+                      title: const Text('Delete'),
                       content: Text('Do you want to Delete ${widget.title}'),
                       actions: <Widget>[
                         TextButton(
@@ -480,22 +486,23 @@ class _CartItemState extends State<CartItem> {
                                 .doc('bookings')
                                 .collection('cart')
                                 .doc('request')
-                                .collection('${user.currentUser!.uid}')
+                                .collection(user.currentUser!.uid)
                                 .doc('transport')
                                 .delete();
 
+                            // ignore: use_build_context_synchronously
                             Navigator.of(context).pop();
                             setState(() {
                               totalpricesub(widget.total, widget.price);
                             });
                           },
-                          child: Text('Yes'),
+                          child: const Text('Yes'),
                         ),
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text('No'),
+                          child: const Text('No'),
                         ),
                       ],
                     );

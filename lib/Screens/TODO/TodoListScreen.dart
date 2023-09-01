@@ -1,9 +1,8 @@
+// ignore_for_file: file_names
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:newui/Screens/TODO/database.dart';
 import 'package:newui/Screens/TODO/dialogbox.dart';
-
 import 'note.dart';
 
 class ToDoScreen extends StatefulWidget {
@@ -19,7 +18,6 @@ class _ToDoScreenState extends State<ToDoScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     if (_myBox.get("TODOLIST") == null) {
       db.createInitialData();
     } else {
@@ -69,14 +67,14 @@ class _ToDoScreenState extends State<ToDoScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('TODO'),
-        backgroundColor: Color(0xFF3A57E8),
+        title: const Text('TODO'),
+        backgroundColor: const Color(0xFF3A57E8),
         actions: [
           TextButton(
               onPressed: () {
                 createnewtask();
               },
-              child: Text(
+              child: const Text(
                 'Add New',
                 style: TextStyle(color: Colors.white),
               ))

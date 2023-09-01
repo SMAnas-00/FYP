@@ -1,9 +1,12 @@
+// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AnimalBookingPage extends StatefulWidget {
+  const AnimalBookingPage({super.key});
+
   @override
   _AnimalBookingPageState createState() => _AnimalBookingPageState();
 }
@@ -25,7 +28,7 @@ class _AnimalBookingPageState extends State<AnimalBookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Animal Booking'),
+        title: const Text('Animal Booking'),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -39,85 +42,75 @@ class _AnimalBookingPageState extends State<AnimalBookingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Select animal type:',
-                      style: TextStyle(fontSize: 16.0),
-                    ),
-                    SizedBox(height: 8.0),
-                    DropdownButton(
-                      value: _animalType,
-                      items: _animalTypes.map((animalType) {
-                        return DropdownMenuItem(
-                          value: animalType,
-                          child: Text(animalType),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _animalType = value!;
-                        });
-                      },
-                    ),
-                  ]),
-            ),
-            Container(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 16.0),
-                    Text(
-                      'Number of animals:',
-                      style: TextStyle(fontSize: 16.0),
-                    ),
-                    SizedBox(height: 8.0),
-                    Row(
-                      children: [
-                        FloatingActionButton(
-                          onPressed: () {
-                            setState(() {
-                              if (_numberOfAnimals > 1) {
-                                _numberOfAnimals--;
-                              }
-                              if (_numberOfAnimals <= 0) {
-                                _numberOfAnimals = 0;
-                              }
-                            });
-                          },
-                          backgroundColor: (_numberOfAnimals <= 1)
-                              ? Colors.black26
-                              : Colors.teal,
-                          child: Icon(Icons.remove),
-                        ),
-                        SizedBox(width: 16.0),
-                        Text(
-                          _numberOfAnimals.toString(),
-                          style: TextStyle(fontSize: 24.0),
-                        ),
-                        SizedBox(width: 16.0),
-                        FloatingActionButton(
-                          onPressed: () {
-                            setState(() {
-                              if (_numberOfAnimals >= 6) {
-                                _numberOfAnimals = 6;
-                              } else {
-                                _numberOfAnimals++;
-                              }
-                            });
-                          },
-                          backgroundColor: (_numberOfAnimals >= 6)
-                              ? Colors.black26
-                              : Colors.teal,
-                          child: Icon(Icons.add),
-                        ),
-                      ],
-                    ),
-                  ]),
-            ),
-            SizedBox(height: 32.0),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Text(
+                'Select animal type:',
+                style: TextStyle(fontSize: 16.0),
+              ),
+              const SizedBox(height: 8.0),
+              DropdownButton(
+                value: _animalType,
+                items: _animalTypes.map((animalType) {
+                  return DropdownMenuItem(
+                    value: animalType,
+                    child: Text(animalType),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _animalType = value!;
+                  });
+                },
+              ),
+            ]),
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const SizedBox(height: 16.0),
+              const Text(
+                'Number of animals:',
+                style: TextStyle(fontSize: 16.0),
+              ),
+              const SizedBox(height: 8.0),
+              Row(
+                children: [
+                  FloatingActionButton(
+                    onPressed: () {
+                      setState(() {
+                        if (_numberOfAnimals > 1) {
+                          _numberOfAnimals--;
+                        }
+                        if (_numberOfAnimals <= 0) {
+                          _numberOfAnimals = 0;
+                        }
+                      });
+                    },
+                    backgroundColor:
+                        (_numberOfAnimals <= 1) ? Colors.black26 : Colors.teal,
+                    child: const Icon(Icons.remove),
+                  ),
+                  const SizedBox(width: 16.0),
+                  Text(
+                    _numberOfAnimals.toString(),
+                    style: const TextStyle(fontSize: 24.0),
+                  ),
+                  const SizedBox(width: 16.0),
+                  FloatingActionButton(
+                    onPressed: () {
+                      setState(() {
+                        if (_numberOfAnimals >= 6) {
+                          _numberOfAnimals = 6;
+                        } else {
+                          _numberOfAnimals++;
+                        }
+                      });
+                    },
+                    backgroundColor:
+                        (_numberOfAnimals >= 6) ? Colors.black26 : Colors.teal,
+                    child: const Icon(Icons.add),
+                  ),
+                ],
+              ),
+            ]),
+            const SizedBox(height: 32.0),
             Center(
               child: ElevatedButton(
                 onPressed: () async {
@@ -139,7 +132,7 @@ class _AnimalBookingPageState extends State<AnimalBookingPage> {
                       .doc('bookings')
                       .collection('cart')
                       .doc('request')
-                      .collection('${user.currentUser!.uid}')
+                      .collection(user.currentUser!.uid)
                       .doc('animal')
                       .set({
                     'id': user.currentUser!.uid,
@@ -154,7 +147,7 @@ class _AnimalBookingPageState extends State<AnimalBookingPage> {
                       .doc('bookings')
                       .collection('admin')
                       .doc('request')
-                      .collection('${user.currentUser!.uid}')
+                      .collection(user.currentUser!.uid)
                       .doc('request')
                       .set({
                     'id': user.currentUser!.uid,
@@ -163,7 +156,7 @@ class _AnimalBookingPageState extends State<AnimalBookingPage> {
                     'price': animalCost
                   }, SetOptions(merge: true));
                 },
-                child: Text('Book Animal'),
+                child: const Text('Book Animal'),
               ),
             ),
           ],

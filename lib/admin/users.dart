@@ -1,3 +1,4 @@
+// ignore_for_file: non_constant_identifier_names
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,7 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
       .doc('Users')
       .collection('Signup');
   late Stream<QuerySnapshot> _streamUsername;
+  @override
   void initState() {
     super.initState();
     _streamUsername = Username.snapshots();
@@ -24,9 +26,9 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xff3a57e8),
+        backgroundColor: const Color(0xff3a57e8),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -46,10 +48,10 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
                   return Column(
                     children: [
                       Card(
-                        margin: EdgeInsets.symmetric(
+                        margin: const EdgeInsets.symmetric(
                             vertical: 20.0, horizontal: 10.0),
                         child: Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               vertical: 20.0, horizontal: 10.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -66,7 +68,7 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
                   );
                 }));
           }
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );
