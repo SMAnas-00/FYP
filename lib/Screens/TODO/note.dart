@@ -18,7 +18,7 @@ class Todolist extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 25.0, top: 25.0, right: 25.0),
       child: Slidable(
-        endActionPane: ActionPane(motion: StretchMotion(), children: [
+        endActionPane: ActionPane(motion: const StretchMotion(), children: [
           SlidableAction(
             onPressed: deleteFunction,
             icon: Icons.delete,
@@ -26,7 +26,9 @@ class Todolist extends StatelessWidget {
           )
         ]),
         child: Container(
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+              color: Colors.yellow, borderRadius: BorderRadius.circular(12)),
           child: Row(
             children: [
               Checkbox(
@@ -43,8 +45,6 @@ class Todolist extends StatelessWidget {
               ),
             ],
           ),
-          decoration: BoxDecoration(
-              color: Colors.yellow, borderRadius: BorderRadius.circular(12)),
         ),
       ),
     );

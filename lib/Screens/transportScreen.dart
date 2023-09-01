@@ -29,11 +29,11 @@ class _TransportServiceState extends State<TransportService> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Transport',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color(0xff3a57e8),
+        backgroundColor: const Color(0xff3a57e8),
       ),
       body: StreamBuilder(
           stream: _streamTransport,
@@ -50,34 +50,29 @@ class _TransportServiceState extends State<TransportService> {
                   QueryDocumentSnapshot document = listqureysnap[index];
                   //final img = document['Hotel_image'].toString();
                   return SingleChildScrollView(
-                    child: Container(
-                        // margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                        child: GestureDetector(
+                    child: GestureDetector(
                       child: Card(
                         child: Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 50, vertical: 20),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                child: Text(
-                                  document['Transport_type'],
-                                ),
+                              Text(
+                                document['Transport_type'],
                               ),
+                              Text(document['Pick_up'] +
+                                  '-' +
+                                  document['Destination']),
                               Container(
-                                  child: Text(document['Pick_up'] +
-                                      '-' +
-                                      document['Destination'])),
-                              Container(
-                                margin: EdgeInsets.all(10),
+                                margin: const EdgeInsets.all(10),
                                 child: Column(
                                   // mainAxisAlignment:
                                   //     MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       document['Fair'].toString(),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ],
@@ -94,7 +89,7 @@ class _TransportServiceState extends State<TransportService> {
                             snapshot.data!.docs[index]['Destination'];
                         String pickup = snapshot.data!.docs[index]['Pick_up'];
                         int fareprice = snapshot.data!.docs[index]['Fair'];
-                        String trans_imgURL =
+                        String transImgurl =
                             snapshot.data!.docs[index]['transport_imageURL'];
                         String transId = snapshot.data!.docs[index]['Trans_id'];
                         Navigator.push(
@@ -104,17 +99,17 @@ class _TransportServiceState extends State<TransportService> {
                                       transtype: type,
                                       destination: destination,
                                       pickup: pickup,
-                                      trans_imgURL: trans_imgURL,
+                                      trans_imgURL: transImgurl,
                                       fareprice: fareprice,
                                       transId: transId,
                                     )));
                       },
-                    )),
+                    ),
                   );
                 },
               );
             }
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }),
     );
   }

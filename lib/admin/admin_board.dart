@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
 class AdminHomePage extends StatelessWidget {
+  const AdminHomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Dashboard'),
+        title: const Text('Admin Dashboard'),
       ),
       body: GridView.count(
         crossAxisCount: 2,
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         childAspectRatio: 1.5,
         children: [
           AdminDashboardCard(
@@ -64,6 +66,7 @@ class AdminDashboardCard extends StatelessWidget {
   final VoidCallback onPressed;
 
   const AdminDashboardCard({
+    super.key,
     required this.title,
     required this.icon,
     required this.onPressed,
@@ -83,8 +86,8 @@ class AdminDashboardCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, size: 48.0),
-              SizedBox(height: 8.0),
-              Text(title, style: TextStyle(fontSize: 16.0)),
+              const SizedBox(height: 8.0),
+              Text(title, style: const TextStyle(fontSize: 16.0)),
             ],
           ),
         ),

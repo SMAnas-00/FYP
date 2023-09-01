@@ -1,12 +1,10 @@
+// ignore_for_file: camel_case_types, non_constant_identifier_names
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class addHotelScreen extends StatefulWidget {
@@ -38,9 +36,9 @@ class _addHotelScreenState extends State<addHotelScreen> {
   addHotel() async {
     _formKey.currentState!.save();
     if (_formKey.currentState!.validate()) {
-      print("Form is vaid ");
+      debugPrint("Form is vaid ");
 
-      print('Data for login ');
+      debugPrint('Data for login ');
 
       try {
         await firestore
@@ -65,7 +63,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
           imageUrl = '';
         });
       } on FirebaseException catch (e) {
-        Fluttertoast.showToast(msg: '${e.toString()}');
+        Fluttertoast.showToast(msg: e.toString());
       }
     }
     _Hotelname.clear();
@@ -96,7 +94,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
       });
       Fluttertoast.showToast(msg: 'image uploaded successfully');
     }).onError((error, stackTrace) {
-      Fluttertoast.showToast(msg: '${error.toString()}');
+      Fluttertoast.showToast(msg: error.toString());
     });
   }
 
@@ -113,25 +111,24 @@ class _addHotelScreenState extends State<addHotelScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: Text('Add New Hotel',
+        title: const Text('Add New Hotel',
             style: TextStyle(color: Color.fromARGB(255, 29, 165, 153))),
         backgroundColor: Colors.white,
       ),
       body: Card(
         child: Container(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Form(
             key: _formKey,
             child: ListView(
               shrinkWrap: true,
               children: [
-                SizedBox(height: 20),
-
+                const SizedBox(height: 20),
                 // Hotel Name Feild
                 TextFormField(
                   controller: _Hotelname,
                   keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Hotel Name',
                   ),
                   validator: (value) {
@@ -145,7 +142,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
                 TextFormField(
                   controller: _Hotelprice,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: 'Hotel Price'),
+                  decoration: const InputDecoration(labelText: 'Hotel Price'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Hotel Price Required';
@@ -157,7 +154,8 @@ class _addHotelScreenState extends State<addHotelScreen> {
                 TextFormField(
                   controller: _Hotellocation,
                   keyboardType: TextInputType.streetAddress,
-                  decoration: InputDecoration(labelText: 'Hotel Location'),
+                  decoration:
+                      const InputDecoration(labelText: 'Hotel Location'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Location  Required';
@@ -169,7 +167,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
                 TextFormField(
                   controller: _Hoteltype,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'Hotel Type ex 5 high - 1 low'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -182,7 +180,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
                 TextFormField(
                   controller: _Hotelroom,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: 'Rooms'),
+                  decoration: const InputDecoration(labelText: 'Rooms'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Hotel Type  Required';
@@ -194,7 +192,8 @@ class _addHotelScreenState extends State<addHotelScreen> {
                 TextFormField(
                   controller: _Hotelperson,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: 'Persons per Room'),
+                  decoration:
+                      const InputDecoration(labelText: 'Persons per Room'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Required';
@@ -206,7 +205,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
                 TextFormField(
                   controller: _Hotelcity,
                   keyboardType: TextInputType.text,
-                  decoration: InputDecoration(labelText: 'City'),
+                  decoration: const InputDecoration(labelText: 'City'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Hotel City  Required';
@@ -215,7 +214,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
                   },
                 ),
 
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 SizedBox(
                   height: 120,
                   width: 120,
@@ -268,16 +267,16 @@ class _addHotelScreenState extends State<addHotelScreen> {
                   ),
                 ),
 
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 // Submit Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       elevation: 12.0,
-                      backgroundColor: Color.fromARGB(255, 29, 165, 153)),
+                      backgroundColor: const Color.fromARGB(255, 29, 165, 153)),
                   onPressed: () {
                     addHotel();
                   },
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                 ),
               ],
             ),

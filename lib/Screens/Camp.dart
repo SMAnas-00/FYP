@@ -115,6 +115,8 @@ import 'package:flutter/material.dart';
 // import 'dart:collection';
 
 class CricketStadium extends StatefulWidget {
+  const CricketStadium({super.key});
+
   @override
   _CricketStadiumState createState() => _CricketStadiumState();
 }
@@ -219,8 +221,8 @@ class _CricketStadiumState extends State<CricketStadium> {
         }
       },
       child: Container(
-        margin: EdgeInsets.all(4),
-        padding: EdgeInsets.all(8),
+        margin: const EdgeInsets.all(4),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: colors,
           borderRadius: BorderRadius.circular(8),
@@ -241,7 +243,7 @@ class _CricketStadiumState extends State<CricketStadium> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Book CAMP"),
+        title: const Text("Book CAMP"),
       ),
       body: GridView.count(
         crossAxisCount: 5,
@@ -255,26 +257,26 @@ class _CricketStadiumState extends State<CricketStadium> {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: Text("Confirm Booking"),
+              title: const Text("Confirm Booking"),
               content: Text(message),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text("Cancel"),
+                  child: const Text("Cancel"),
                 ),
                 TextButton(
                   onPressed: () {
                     _sendseattoDB(selectedSeats);
                     Navigator.of(context).pop();
                   },
-                  child: Text("Book"),
+                  child: const Text("Book"),
                 ),
               ],
             ),
           );
         },
         label: Text("Book Seats (${selectedSeats.length}/4)"),
-        icon: Icon(Icons.check),
+        icon: const Icon(Icons.check),
       ),
     );
   }

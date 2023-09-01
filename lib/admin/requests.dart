@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,6 +24,7 @@ class _RequestsState extends State<Requests> {
 
   late Stream<QuerySnapshot> _streamTransport;
 
+  @override
   void initState() {
     super.initState();
     _streamTransport = Transportitems.snapshots();
@@ -31,11 +34,11 @@ class _RequestsState extends State<Requests> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Transport',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color(0xff3a57e8),
+        backgroundColor: const Color(0xff3a57e8),
       ),
       body: StreamBuilder(
           stream: _streamTransport,
@@ -52,34 +55,29 @@ class _RequestsState extends State<Requests> {
                   QueryDocumentSnapshot document = listqureysnap[index];
                   //final img = document['Hotel_image'].toString();
                   return SingleChildScrollView(
-                    child: Container(
-                        // margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                        child: GestureDetector(
+                    child: GestureDetector(
                       child: Card(
                         child: Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 50, vertical: 20),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                child: Text(
-                                  document['Transport_type'],
-                                ),
+                              Text(
+                                document['Transport_type'],
                               ),
+                              Text(document['Pick_up'] +
+                                  '-' +
+                                  document['Destination']),
                               Container(
-                                  child: Text(document['Pick_up'] +
-                                      '-' +
-                                      document['Destination'])),
-                              Container(
-                                margin: EdgeInsets.all(10),
+                                margin: const EdgeInsets.all(10),
                                 child: Column(
                                   // mainAxisAlignment:
                                   //     MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       document['Fair'].toString(),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ],
@@ -111,12 +109,12 @@ class _RequestsState extends State<Requests> {
                                       transId: transId,
                                     )));
                       },
-                    )),
+                    ),
                   );
                 },
               );
             }
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }),
     );
   }
@@ -139,6 +137,7 @@ class _TransportServiceState extends State<TransportService> {
       .collection('Transport');
   late Stream<QuerySnapshot> _streamTransport;
 
+  @override
   void initState() {
     super.initState();
     _streamTransport = Transportitems.snapshots();
@@ -148,11 +147,11 @@ class _TransportServiceState extends State<TransportService> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Transport',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color(0xff3a57e8),
+        backgroundColor: const Color(0xff3a57e8),
       ),
       body: StreamBuilder(
           stream: _streamTransport,
@@ -169,34 +168,29 @@ class _TransportServiceState extends State<TransportService> {
                   QueryDocumentSnapshot document = listqureysnap[index];
                   //final img = document['Hotel_image'].toString();
                   return SingleChildScrollView(
-                    child: Container(
-                        // margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                        child: GestureDetector(
+                    child: GestureDetector(
                       child: Card(
                         child: Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 50, vertical: 20),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                child: Text(
-                                  document['Transport_type'],
-                                ),
+                              Text(
+                                document['Transport_type'],
                               ),
+                              Text(document['Pick_up'] +
+                                  '-' +
+                                  document['Destination']),
                               Container(
-                                  child: Text(document['Pick_up'] +
-                                      '-' +
-                                      document['Destination'])),
-                              Container(
-                                margin: EdgeInsets.all(10),
+                                margin: const EdgeInsets.all(10),
                                 child: Column(
                                   // mainAxisAlignment:
                                   //     MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       document['Fair'].toString(),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ],
@@ -228,12 +222,12 @@ class _TransportServiceState extends State<TransportService> {
                                       transId: transId,
                                     )));
                       },
-                    )),
+                    ),
                   );
                 },
               );
             }
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }),
     );
   }

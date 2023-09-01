@@ -23,15 +23,12 @@ import 'Screens/SigninScreen.dart';
 import 'Screens/SignupScreen.dart';
 import 'Screens/SplashScreen.dart';
 import 'Screens/WelcomeScreen.dart';
-import 'Screens/codecheck.dart';
-import 'Screens/hoteldetailScreen.dart';
 import 'admin/admin_board.dart';
 import 'admin/hotelcreation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  var box = await Hive.openBox('Task');
   await Firebase.initializeApp();
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -64,27 +61,27 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "NewUI",
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: const SplashScreen(),
       routes: {
         '/welcome': (context) => WelcomeScreen(),
         '/signin': (context) => LoginScreen(),
         '/signup': (context) => SignupScreen(),
-        '/forget': (context) => ForgetScreen(),
-        '/home': (context) => HomeScreen(),
-        '/navbar': (context) => BottomNavBar(),
+        '/forget': (context) => const ForgetScreen(),
+        '/home': (context) => const HomeScreen(),
+        '/navbar': (context) => const BottomNavBar(),
         '/map': (context) => MapView(),
-        '/camp': (context) => CricketStadium(),
-        '/hotel': (context) => HotelScreen(),
-        '/admindash': (context) => AdminHomePage(),
-        '/adminhotelcreate': (context) => addHotelScreen(),
-        '/todo': (context) => ToDoScreen(),
-        '/flight': (context) => FlightList(),
-        '/transport': (context) => TransportService(),
-        '/guide': (context) => guideScreen(),
-        '/users': (context) => ViewUserScreen(),
-        '/addtransport': (context) => addTransportScreen(),
-        '/addflight': (context) => addFlightScreen(),
-        '/animal' :(context) => AnimalBookingPage()
+        '/camp': (context) => const CricketStadium(),
+        '/hotel': (context) => const HotelScreen(),
+        '/admindash': (context) => const AdminHomePage(),
+        '/adminhotelcreate': (context) => const addHotelScreen(),
+        '/todo': (context) => const ToDoScreen(),
+        '/flight': (context) => const FlightList(),
+        '/transport': (context) => const TransportService(),
+        '/guide': (context) => const guideScreen(),
+        '/users': (context) => const ViewUserScreen(),
+        '/addtransport': (context) => const addTransportScreen(),
+        '/addflight': (context) => const addFlightScreen(),
+        '/animal': (context) => const AnimalBookingPage()
       },
     );
   }

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -12,23 +14,23 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 5),
+    Timer(const Duration(seconds: 5),
         () => Navigator.pushReplacementNamed(context, '/welcome'));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff3a57e8),
+      backgroundColor: const Color(0xff3a57e8),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
             Container(
-              margin: EdgeInsets.only(right: 90),
+              margin: const EdgeInsets.only(right: 90),
               child: Align(
                 alignment: Alignment.center,
                 child: Lottie.network(
@@ -41,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.fromLTRB(0, 30, 0, 60),
               child: Text(
                 "ASALAM-U-ALIKUM",
@@ -56,18 +58,21 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             Align(
-              alignment: Alignment(0.0, 0.1),
+              alignment: const Alignment(0.0, 0.1),
               child: MaterialButton(
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, '/welcome');
                 },
-                color: Color(0xffffffff),
+                color: const Color(0xffffffff),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24.0),
                 ),
-                padding: EdgeInsets.all(16),
-                child: Text(
+                padding: const EdgeInsets.all(16),
+                textColor: const Color(0xff3a57e8),
+                height: 45,
+                minWidth: MediaQuery.of(context).size.width * 0.5,
+                child: const Text(
                   "Next",
                   style: TextStyle(
                     fontSize: 14,
@@ -75,9 +80,6 @@ class _SplashScreenState extends State<SplashScreen> {
                     fontStyle: FontStyle.normal,
                   ),
                 ),
-                textColor: Color(0xff3a57e8),
-                height: 45,
-                minWidth: MediaQuery.of(context).size.width * 0.5,
               ),
             ),
           ],
