@@ -1,60 +1,64 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
+
   @override
   State<SignupScreen> createState() => _SignupScreenState();
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  TextEditingController _namecontroller = TextEditingController();
+  final TextEditingController _namecontroller = TextEditingController();
+  final TextEditingController _emailcontroller = TextEditingController();
+  final TextEditingController _cniccontroller = TextEditingController();
+  final TextEditingController _passwordcontroller = TextEditingController();
+  final TextEditingController _phonecontroller =
+      TextEditingController(text: "+92");
 
-  TextEditingController _emailcontroller = TextEditingController();
-
-  TextEditingController _cniccontroller = TextEditingController();
-
-  TextEditingController _passwordcontroller = TextEditingController();
-
-  TextEditingController _phonecontroller = TextEditingController();
   final _formkey = GlobalKey<FormState>();
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  signup() async {
-    final isvalid = _formkey.currentState!.validate();
-    if (!isvalid) {
-      try {
-        await auth
-            .createUserWithEmailAndPassword(
-                email: _emailcontroller.text,
-                password: _passwordcontroller.text)
-            .then((value) {
-          auth.currentUser!.sendEmailVerification();
-          final user = auth.currentUser;
-          final uid = user?.uid;
-          firestore
-              .collection("app")
-              .doc("Users")
-              .collection("Signup")
-              .doc(uid)
-              .set({
-            'First_name': _namecontroller.text,
-            'Last_name': _namecontroller.text,
-            'Email': _emailcontroller.text,
-            'Contact': _phonecontroller.text,
-            'Password': _passwordcontroller.text,
-            'Role': 'user',
-            'Created_by': "user",
-            'Active_lock': "1",
-            'Modified_by': "user",
-            'Modified_date': DateTime.now().millisecondsSinceEpoch,
-            'Status': "Active",
-            'id': uid,
-          });
-        });
-      } catch (e) {}
-    }
+  void signup() async {
+    await auth
+        .createUserWithEmailAndPassword(
+            email: _emailcontroller.text.toString(),
+            password: _passwordcontroller.text.toString())
+        .then((value) {
+      auth.currentUser!.sendEmailVerification();
+      final user = auth.currentUser;
+      firestore
+          .collection("app")
+          .doc("Users")
+          .collection("Signup")
+          .doc(user!.uid)
+          .set({
+        'First_name': _namecontroller.text,
+        'Last_name': _namecontroller.text,
+        'Email': _emailcontroller.text,
+        'Contact': _phonecontroller.text,
+        'Password': _passwordcontroller.text,
+        'Role': 'user',
+        'Created_by': "user",
+        'Active_lock': "1",
+        'Modified_by': "user",
+        'Modified_date': DateTime.now(),
+        'Status': "Active",
+        'id': user.uid,
+      });
+      _emailcontroller.clear();
+      _passwordcontroller.clear();
+      _namecontroller.clear();
+      _phonecontroller.clear();
+      Fluttertoast.showToast(msg: "Successfully Registered");
+      Navigator.pushNamed(context, '/signin');
+    }).onError((error, stackTrace) {
+      Fluttertoast.showToast(msg: "Somthing wrong");
+    });
   }
 
   bool _obsurePassText = true;
@@ -130,10 +134,19 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                    child: TextField(
+                    child: TextFormField(
                       controller: _namecontroller,
                       keyboardType: TextInputType.name,
                       obscureText: false,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Enter Your Name";
+                        }
+                        if (!RegExp(r'^[a-z A-Z]+$').hasMatch(value)) {
+                          return "Enter Correct Name";
+                        }
+                        return null;
+                      },
                       textAlign: TextAlign.start,
                       maxLines: 1,
                       style: const TextStyle(
@@ -179,12 +192,16 @@ class _SignupScreenState extends State<SignupScreen> {
                     padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
                     child: TextFormField(
                       controller: _cniccontroller,
+                      inputFormatters: [
+                        CardFormatter(sample: 'xxxxx-xxxxxxx-x', separator: '-')
+                      ],
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Field Requried';
+                          return 'Enter CNIC';
                         }
-                        if (!RegExp(r'^\d{5}-\d{7}-\d{1}$').hasMatch(value)) {
-                          return 'Cnic Invalid';
+                        if (!RegExp(r'^[0-9]{5}-[0-9]{7}-[0-9]$')
+                            .hasMatch(value)) {
+                          return "Invalid CNIC ";
                         }
                         return null;
                       },
@@ -214,7 +231,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           borderSide: const BorderSide(
                               color: Color(0xff3a57e8), width: 1),
                         ),
-                        hintText: "CNIC (without space or hyphen)",
+                        hintText: "CNIC : xxxxx-xxxxxxx-x",
                         hintStyle: const TextStyle(
                           fontWeight: FontWeight.w400,
                           fontStyle: FontStyle.normal,
@@ -233,12 +250,22 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-                    child: TextField(
+                    child: TextFormField(
                       controller: _emailcontroller,
                       keyboardType: TextInputType.emailAddress,
                       obscureText: false,
                       textAlign: TextAlign.start,
                       maxLines: 1,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Enter Your Email";
+                        }
+                        if (!RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+$')
+                            .hasMatch(value)) {
+                          return 'Enter correct email';
+                        }
+                        return null;
+                      },
                       style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontStyle: FontStyle.normal,
@@ -347,12 +374,14 @@ class _SignupScreenState extends State<SignupScreen> {
                       maxLines: 1,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return 'Field Requried';
+                          return 'Enter phone number';
                         }
-                        if (!RegExp(
-                                r'^\+?\d{1,4}?\s?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}$')
+                        if (!RegExp(r'(^(?:[+0]9)?[0-9]{11}$)')
                             .hasMatch(value)) {
-                          return 'Phone Number Invalid';
+                          return "Enter correct number";
+                        }
+                        if (value.startsWith("0")) {
+                          return "Please start with country code";
                         }
                         return null;
                       },
@@ -378,7 +407,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           borderSide: const BorderSide(
                               color: Color(0xff3a57e8), width: 1),
                         ),
-                        hintText: "Phone Number",
+                        hintText: "+923041387752",
                         hintStyle: const TextStyle(
                           fontWeight: FontWeight.w400,
                           fontStyle: FontStyle.normal,
@@ -465,8 +494,9 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                               onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.pushNamed(context, '/signin');
+                                if (_formkey.currentState!.validate()) {
+                                  signup();
+                                }
                               },
                             )),
                       ],
@@ -479,5 +509,36 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       ),
     );
+  }
+}
+
+class CardFormatter extends TextInputFormatter {
+  final String sample;
+  final String separator;
+
+  CardFormatter({
+    required this.sample,
+    required this.separator,
+  });
+
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.text.isNotEmpty) {
+      if (newValue.text.length > oldValue.text.length) {
+        if (newValue.text.length > sample.length) return oldValue;
+        if (newValue.text.length < sample.length &&
+            sample[newValue.text.length - 1] == separator) {
+          return TextEditingValue(
+            text:
+                '${oldValue.text}$separator${newValue.text.substring(newValue.text.length - 1)}',
+            selection: TextSelection.collapsed(
+              offset: newValue.selection.end + 1,
+            ),
+          );
+        }
+      }
+    }
+    return newValue;
   }
 }
