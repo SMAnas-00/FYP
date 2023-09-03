@@ -1,7 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:newui/fireabaseServices/splash_Services.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,11 +10,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  SplashServices splashScreen = SplashServices();
+
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 5),
-        () => Navigator.pushReplacementNamed(context, '/welcome'));
+    splashScreen.isLogin(context);
   }
 
   @override

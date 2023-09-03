@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,8 +8,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 // ignore: must_be_immutable
 class LoginScreen extends StatelessWidget {
   FirebaseAuth auth = FirebaseAuth.instance;
-  TextEditingController _emailcontroller = TextEditingController();
-  TextEditingController _passwordcontroller = TextEditingController();
+  final TextEditingController _emailcontroller = TextEditingController();
+  final TextEditingController _passwordcontroller = TextEditingController();
+
+  LoginScreen({super.key});
 
   Future<void> checkLogin(BuildContext context) async {
     final user = auth.currentUser;
@@ -21,22 +25,30 @@ class LoginScreen extends StatelessWidget {
         .signInWithEmailAndPassword(
             email: _emailcontroller.text, password: _passwordcontroller.text)
         .then((value) async {
-      if (value.user!.emailVerified && dbuser.data()?['Role'] == "user") {
-        await Fluttertoast.showToast(
-            msg: 'WELCOME ${auth.currentUser!.email}',
-            toastLength: Toast.LENGTH_SHORT);
-        _emailcontroller.clear();
-        _passwordcontroller.clear();
-        await Navigator.pushNamed(context, '/navbar');
-        // if (dbuser.data()?['Role'] == "admin") {
-        //   Fluttertoast.showToast(
-        //       msg: 'WELCOME ${auth.currentUser!.email}',
-        //       toastLength: Toast.LENGTH_SHORT);
-        // }
+      if (user!.emailVerified) {
+        if (dbuser.data()?['Role'] == "user") {
+          await Fluttertoast.showToast(
+              msg: 'WELCOME ${auth.currentUser!.email}',
+              toastLength: Toast.LENGTH_SHORT);
+          _emailcontroller.clear();
+          _passwordcontroller.clear();
+          Navigator.pushNamed(context, '/navbar');
+        }
+        if (dbuser.data()?['Role'] == "admin") {
+          await Fluttertoast.showToast(
+              msg: 'WELCOME ${auth.currentUser!.email}',
+              toastLength: Toast.LENGTH_SHORT);
+          _emailcontroller.clear();
+          _passwordcontroller.clear();
+          Navigator.pushNamed(context, '/admindash');
+        }
       } else {
         Fluttertoast.showToast(msg: 'Verify Email or TRY Again');
         auth.currentUser!.sendEmailVerification();
       }
+    }).onError((error, stackTrace) {
+      Fluttertoast.showToast(
+          msg: 'Please make sure the credential are correct');
     });
   }
 
@@ -116,9 +128,20 @@ class LoginScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 16, horizontal: 0),
-                      child: TextField(
+                      child: TextFormField(
                         controller: _emailcontroller,
                         keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Enter Your Email";
+                          }
+                          if (!RegExp(
+                                  r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+$')
+                              .hasMatch(value)) {
+                            return 'Enter correct email';
+                          }
+                          return null;
+                        },
                         obscureText: false,
                         textAlign: TextAlign.left,
                         maxLines: 1,
@@ -222,7 +245,6 @@ class LoginScreen extends StatelessWidget {
                     ),
                     MaterialButton(
                       onPressed: () {
-                        // Navigator.pushNamed(context, '/navbar');
                         checkLogin(context);
                       },
                       color: const Color(0xff3a57e8),
