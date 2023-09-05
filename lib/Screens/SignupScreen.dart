@@ -56,7 +56,7 @@ class _SignupScreenState extends State<SignupScreen> {
       _passwordcontroller.clear();
       _namecontroller.clear();
       _phonecontroller.clear();
-      Fluttertoast.showToast(msg: "Successfully Registered");
+      Fluttertoast.showToast(msg: "Please check your email for verification ");
       Navigator.pushNamed(context, '/signin');
     }).onError((error, stackTrace) {
       Fluttertoast.showToast(msg: "Somthing wrong");
