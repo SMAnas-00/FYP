@@ -49,6 +49,8 @@ class _SignupScreenState extends State<SignupScreen> {
         'Modified_date': DateTime.now(),
         'Status': "Active",
         'id': user.uid,
+        'dp': "",
+        'cnic': _cniccontroller.text,
       });
       _emailcontroller.clear();
       _passwordcontroller.clear();

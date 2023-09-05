@@ -79,10 +79,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                           vertical: 16, horizontal: 0),
                       child: Align(
                         alignment: Alignment.center,
-                        child:
-
-                            ///***If you have exported images you must have to copy those images in assets/images directory.
-                            Image(
+                        child: Image(
                           image: NetworkImage(widget.trans_imgURL),
                           height: 150,
                           width: 150,

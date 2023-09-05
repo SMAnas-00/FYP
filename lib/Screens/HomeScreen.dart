@@ -570,10 +570,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            child:
-
-                                ///***If you have exported images you must have to copy those images in assets/images directory.
-                                const Icon(Icons.flight)),
+                            child: const Icon(Icons.flight)),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
@@ -623,10 +620,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child:
-
-                              ///***If you have exported images you must have to copy those images in assets/images directory.
-                              const Icon(Icons.bike_scooter),
+                          child: const Icon(Icons.bike_scooter),
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
@@ -679,15 +673,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: const Icon(Icons.broken_image),
-
-                          ///***If you have exported images you must have to copy those images in assets/images directory.
-                          //     Image(
-                          //   image: NetworkImage(
-                          //       "https://cdn.pixabay.com/photo/2016/03/05/19/02/hamburger-1238246_960_720.jpg"),
-                          //   height: 40,
-                          //   width: 40,
-                          //   fit: BoxFit.cover,
-                          // ),
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
@@ -839,15 +824,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: const Icon(Icons.broken_image),
-
-                          ///***If you have exported images you must have to copy those images in assets/images directory.
-                          //     Image(
-                          //   image: NetworkImage(
-                          //       "https://cdn.pixabay.com/photo/2016/03/05/19/02/hamburger-1238246_960_720.jpg"),
-                          //   height: 40,
-                          //   width: 40,
-                          //   fit: BoxFit.cover,
-                          // ),
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),

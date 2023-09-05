@@ -109,6 +109,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               backgroundColor: Color(0xff3a57e8),
                             );
                           }
+                          if (snapshot.data == "") {
+                            return Container(
+                              height: 120,
+                              width: 120,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: const BoxDecoration(
+                                  shape: BoxShape.circle, color: Colors.grey),
+                              child: const Icon(
+                                Icons.person,
+                                size: 60,
+                                color: Colors.white,
+                              ),
+                            );
+                          }
                           return Container(
                             height: 120,
                             width: 120,

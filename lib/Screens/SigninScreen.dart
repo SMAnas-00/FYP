@@ -306,24 +306,6 @@ class LoginScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 5),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pushNamed(context, '/admindash');
-                      },
-                      child: const Text(
-                        "Signin as ADMIN",
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.clip,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 12,
-                          color: Color(0xff000000),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
