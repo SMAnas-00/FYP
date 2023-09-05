@@ -25,26 +25,21 @@ class LoginScreen extends StatelessWidget {
         .signInWithEmailAndPassword(
             email: _emailcontroller.text, password: _passwordcontroller.text)
         .then((value) async {
-      if (user!.emailVerified) {
-        if (dbuser.data()?['Role'] == "user") {
-          await Fluttertoast.showToast(
-              msg: 'WELCOME ${auth.currentUser!.email}',
-              toastLength: Toast.LENGTH_SHORT);
-          _emailcontroller.clear();
-          _passwordcontroller.clear();
-          Navigator.pushNamed(context, '/navbar');
-        }
-        if (dbuser.data()?['Role'] == "admin") {
-          await Fluttertoast.showToast(
-              msg: 'WELCOME ${auth.currentUser!.email}',
-              toastLength: Toast.LENGTH_SHORT);
-          _emailcontroller.clear();
-          _passwordcontroller.clear();
-          Navigator.pushNamed(context, '/admindash');
-        }
-      } else {
-        Fluttertoast.showToast(msg: 'Verify Email or TRY Again');
-        auth.currentUser!.sendEmailVerification();
+      if (dbuser.data()?['Role'] == "user") {
+        await Fluttertoast.showToast(
+            msg: 'WELCOME ${auth.currentUser!.email}',
+            toastLength: Toast.LENGTH_SHORT);
+        _emailcontroller.clear();
+        _passwordcontroller.clear();
+        Navigator.pushNamed(context, '/navbar');
+      }
+      if (dbuser.data()?['Role'] == "admin") {
+        await Fluttertoast.showToast(
+            msg: 'WELCOME ${auth.currentUser!.email}',
+            toastLength: Toast.LENGTH_SHORT);
+        _emailcontroller.clear();
+        _passwordcontroller.clear();
+        Navigator.pushNamed(context, '/admindash');
       }
     }).onError((error, stackTrace) {
       Fluttertoast.showToast(

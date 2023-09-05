@@ -7,7 +7,6 @@ class DialogBox extends StatelessWidget {
   VoidCallback oncancel;
   DialogBox(
       {super.key,
-      // ignore: non_constant_identifier_names
       required this.Controller,
       required this.onsave,
       required this.oncancel});
@@ -29,8 +28,6 @@ class DialogBox extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Mybutton(onPressed: onsave, text: "Save"),
-              // SizedBox(width: 5),
-              // Mybutton(onPressed: oncancel, text: "Cancel"),
             ],
           )
         ]),
