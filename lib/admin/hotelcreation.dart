@@ -35,6 +35,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
   final cityController = TextEditingController();
   final hotelImageController = TextEditingController();
   final hotelLocationController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   DetailsResult? locationPosition;
 
@@ -105,7 +106,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
         });
         User? checkuser = user.currentUser;
         if (checkuser != null) {
-          final hotelId = '${user.currentUser!.uid}$did';
+          final hotelId = 'ho${user.currentUser!.uid}$did';
           await uploadImages(hotelId);
 
           await FirebaseFirestore.instance
@@ -125,10 +126,11 @@ class _addHotelScreenState extends State<addHotelScreen> {
             'room_capacity': personPerRoomController.text,
             'admin_id': checkuser.uid,
             'hotel_imageURLs': _imageUrls,
-            'hotel_id': hotelId,
+            'hotel_id': 'ho$did',
             'location': hotelLocationController.text,
-            'hotel_lng': locationPosition!.geometry!.location!.lng,
-            'hotel_lat': locationPosition!.geometry!.location!.lat,
+            'hotel_lng': locationPosition!.geometry!.location!.lng!,
+            'hotel_lat': locationPosition!.geometry!.location!.lat!,
+            'description': descriptionController.text,
           });
           setState(() {
             selectedHotelType = null;
@@ -203,7 +205,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
                       onChanged: (newValue) {
                         setState(() {
                           selectedHotelType = newValue;
-                          hotelImageController.text = newValue!;
+                          hotelTypeController.text = newValue!;
                         });
                       },
                       items: const [
@@ -342,6 +344,18 @@ class _addHotelScreenState extends State<addHotelScreen> {
                   },
                 ),
                 const SizedBox(height: 30),
+                TextFormField(
+                  controller: descriptionController,
+                  maxLines: null,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(labelText: 'Description'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Description Required';
+                    }
+                    return null;
+                  },
+                ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     elevation: 12.0,
