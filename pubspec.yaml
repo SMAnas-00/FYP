@@ -63,6 +63,9 @@ dependencies:
   firebase_messaging: ^14.2.1
   # new dependencies 13/7/2023
   snake_button: ^0.0.5
+  location:
+  google_place:
+  
   
 
 

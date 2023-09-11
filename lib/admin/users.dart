@@ -56,8 +56,7 @@ class _ViewUserScreenState extends State<ViewUserScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(documentSnapshot['First_name'] +
-                                  documentSnapshot['Last_name']),
+                              Text(documentSnapshot['First_name']),
                               Text(documentSnapshot['Status']),
                               Text(documentSnapshot['Role']),
                             ],
