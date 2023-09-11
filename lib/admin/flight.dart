@@ -1,15 +1,15 @@
 // ignore_for_file: camel_case_types
 
+import 'dart:async';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_place/google_place.dart';
 import 'package:image_picker/image_picker.dart';
-
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:intl/intl.dart';
 
 class addFlightScreen extends StatefulWidget {
   const addFlightScreen({super.key});
@@ -19,73 +19,168 @@ class addFlightScreen extends StatefulWidget {
 }
 
 class _addFlightScreenState extends State<addFlightScreen> {
-  File? image;
-  final picker = ImagePicker();
-  String imageUrl = '';
+  List<XFile> selectedImages = [];
+  List<String> imageUrls = [];
+  final ImagePicker imagePicker = ImagePicker();
+  bool loading = false;
+
   FirebaseAuth user = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseStorage storage = FirebaseStorage.instance;
+
   final _formKey = GlobalKey<FormState>();
-  final _departure = TextEditingController();
-  final _destination = TextEditingController();
-  final _flightprice = TextEditingController();
-  final _flightname = TextEditingController();
+  final flightNameController = TextEditingController();
+  final flightNumberController = TextEditingController();
+  final flightTypeController = TextEditingController();
+  final departureController = TextEditingController();
+  final departureDateController = TextEditingController();
+  final departureTimeController = TextEditingController();
+  final midPointController = TextEditingController();
+  final destinationController = TextEditingController();
+  final destinationDateController = TextEditingController();
+  final destinationTimeController = TextEditingController();
+  final economySeatsController = TextEditingController();
+  final businessSeatsController = TextEditingController();
+  final economyPriceController = TextEditingController();
+  final businessPriceController = TextEditingController();
+
+  DateTime selectedDateTime = DateTime.now();
+
+  DetailsResult? departurePosition;
+  DetailsResult? midPosition;
+  DetailsResult? destinationPosition;
+
+  late FocusNode departureFocusNode;
+  late FocusNode midFocusNode;
+  late FocusNode destinationFocusNode;
+
+  late GooglePlace googlePlace;
+
+  List<AutocompletePrediction> predictions = [];
+  Timer? debounce;
+
+  String? selectedFlightType;
   var did = DateTime.now().millisecondsSinceEpoch;
 
-  addFlight() async {
-    _formKey.currentState!.save();
-    if (_formKey.currentState!.validate()) {
-      debugPrint("Form is vaid ");
-
-      debugPrint('Data for login ');
-
-      try {
-        await firestore
-            .collection('app')
-            .doc('Services')
-            .collection('Flight')
-            .doc('${user.currentUser!.uid}$did')
-            .set({
-          'airline_name': _flightname.text.toUpperCase(),
-          'departure': _departure.text.toUpperCase(),
-          'destination': _destination.text.toUpperCase(),
-          'ticket_price': int.parse(_flightprice.text),
-          'admin_id': user.currentUser!.uid,
-          'flight_imageURL': imageUrl,
-          'flight_id': 'fl${user.currentUser!.uid}'
-        });
-        setState(() {
-          imageUrl = '';
-        });
-      } on FirebaseException catch (e) {
-        Fluttertoast.showToast(msg: e.toString());
-      }
-    }
-    _departure.clear();
-    _destination.clear();
-    _flightname.clear();
-    _flightprice.clear();
+  @override
+  void initState() {
+    super.initState();
+    String apiKey = "AIzaSyDNzkszHrT2L0zwdhK0DzVK46aqO7n5lxk";
+    googlePlace = GooglePlace(apiKey);
+    departureFocusNode = FocusNode();
+    midFocusNode = FocusNode();
+    destinationFocusNode = FocusNode();
   }
 
-  FirebaseAuth auth = FirebaseAuth.instance;
+  @override
+  void dispose() {
+    super.dispose();
+    departureFocusNode.dispose();
+    midFocusNode.dispose();
+    destinationFocusNode.dispose();
+  }
 
-  Future<void> setImage() async {
-    final image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 512,
-      maxHeight: 512,
-      imageQuality: 75,
-    );
-    firebase_storage.Reference ref =
-        firebase_storage.FirebaseStorage.instance.ref('/flightimg/$did');
-    await ref.putFile(File(image!.path));
-    ref.getDownloadURL().then((value) {
+  void autoCompleteSearch(String value) async {
+    var result = await googlePlace.autocomplete.get(value);
+    if (result != null && result.predictions != null && mounted) {
       setState(() {
-        imageUrl = value;
+        predictions = result.predictions!;
       });
-      Fluttertoast.showToast(msg: 'image uploaded successfully');
-    }).onError((error, stackTrace) {
-      Fluttertoast.showToast(msg: error.toString());
-    });
+    }
+  }
+
+  Future<void> selectImages() async {
+    final pickedFiles = await imagePicker.pickMultiImage();
+
+    if (pickedFiles.isNotEmpty) {
+      setState(() {
+        selectedImages = pickedFiles;
+      });
+    }
+  }
+
+  Future<void> uploadImages(String hotelId) async {
+    try {
+      for (var imageFile in selectedImages) {
+        final Reference storageReference = storage.ref().child(
+            'flight_images/$hotelId/${DateTime.now().millisecondsSinceEpoch}');
+        final UploadTask uploadTask =
+            storageReference.putFile(File(imageFile.path));
+
+        final TaskSnapshot downloadUrl = await uploadTask;
+        final String imageUrl = await downloadUrl.ref.getDownloadURL();
+        imageUrls.add(imageUrl);
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Error uploading images: $e');
+    }
+  }
+
+  Future<void> addFlight() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        setState(() {
+          loading = true;
+        });
+        User? checkuser = user.currentUser;
+        if (checkuser != null) {
+          await firestore
+              .collection('app')
+              .doc('Services')
+              .collection('Flight')
+              .doc('${user.currentUser!.uid}$did')
+              .set({
+            'airline_name': flightNameController.text,
+            'airline_number': flightNumberController.text,
+            'type': selectedFlightType,
+            'departure': departureController.text,
+            'departure_lng': departurePosition!.geometry!.location!.lng!,
+            'departure_lat': departurePosition!.geometry!.location!.lat!,
+            'destination_lng': destinationPosition!.geometry!.location!.lng!,
+            'destination_lat': destinationPosition!.geometry!.location!.lat!,
+            'departure_date': departureDateController.text,
+            'departure_time': departureTimeController.text,
+            'mid_point': midPointController.text,
+            'destination': destinationController.text,
+            'destination_date': destinationDateController.text,
+            'destination_time': destinationTimeController.text,
+            'economy_price': int.parse(economyPriceController.text),
+            'economy_seats': int.parse(economySeatsController.text),
+            'business_price': int.parse(businessPriceController.text),
+            'business_seats': int.parse(businessSeatsController.text),
+            'total_seats': int.parse(economySeatsController.text) +
+                int.parse(businessSeatsController.text),
+            'admin_id': user.currentUser!.uid,
+            'flight_imageURL': imageUrls,
+            'flight_id': 'fo$did'
+          });
+          setState(() {
+            selectedFlightType = null;
+          });
+          Fluttertoast.showToast(msg: 'Flight created successfully');
+        }
+      } catch (e) {
+        Fluttertoast.showToast(msg: 'Error adding flight: $e');
+      }
+
+      flightNameController.clear();
+      flightNumberController.clear();
+      flightTypeController.clear();
+      departureController.clear();
+      departureTimeController.clear();
+      midPointController.clear();
+      destinationController.clear();
+      destinationTimeController.clear();
+      economySeatsController.clear();
+      economyPriceController.clear();
+      businessSeatsController.clear();
+      businessPriceController.clear();
+      setState(() {
+        selectedImages.clear();
+        imageUrls.clear();
+        loading = false;
+      });
+    }
   }
 
   @override
@@ -117,10 +212,10 @@ class _addFlightScreenState extends State<addFlightScreen> {
                   height: 20,
                 ),
                 TextFormField(
-                  controller: _flightname,
+                  controller: flightNameController,
                   keyboardType: TextInputType.text,
                   decoration: const InputDecoration(
-                    labelText: 'AIRLINE NAME',
+                    labelText: 'Arline Name',
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -130,101 +225,441 @@ class _addFlightScreenState extends State<addFlightScreen> {
                   },
                 ),
                 TextFormField(
-                  controller: _departure,
+                  controller: flightNumberController,
                   keyboardType: TextInputType.text,
-                  decoration: const InputDecoration(labelText: 'DEPARTURE'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Departure Required';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _destination,
-                  keyboardType: TextInputType.text,
-                  decoration: const InputDecoration(labelText: 'DESTINATION'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'DESTINATION Required';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _flightprice,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'FLIGHT PRICE'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'FLIGHT PRICE Required';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                SizedBox(
-                  height: 120,
-                  width: 120,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    fit: StackFit.expand,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.teal[300],
-                            borderRadius: BorderRadius.circular(100.0)),
-                        child: Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                color: Colors.teal[300],
-                                borderRadius: BorderRadius.circular(100)),
-                            child: imageUrl == ""
-                                ? ClipOval(
-                                    child: SizedBox.fromSize(
-                                      size: const Size.fromRadius(48.0),
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.teal[300],
-                                      ),
-                                    ),
-                                  )
-                                : ClipOval(
-                                    child: SizedBox.fromSize(
-                                        size: const Size.fromRadius(48.0),
-                                        child: Image.network(imageUrl)),
-                                  )),
-                      ),
-                      Positioned(
-                          bottom: 0,
-                          right: -25,
-                          child: RawMaterialButton(
-                            onPressed: () {
-                              setImage();
-                            },
-                            elevation: 2.0,
-                            fillColor: Colors.white,
-                            padding: const EdgeInsets.all(15.0),
-                            shape: const CircleBorder(),
-                            child: const Icon(
-                              Icons.camera_alt_outlined,
-                              color: Colors.teal,
-                            ),
-                          )),
-                    ],
+                  decoration: const InputDecoration(
+                    labelText: 'Airline Number',
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Flight number required';
+                    }
+                    return null;
+                  },
+                ),
+                Column(
+                  children: [
+                    DropdownButtonFormField<String>(
+                      value: selectedFlightType,
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedFlightType = newValue;
+                          flightTypeController.text = newValue!;
+                        });
+                      },
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'Connected',
+                          child: Text('Connected'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'Direct',
+                          child: Text('Direct'),
+                        ),
+                      ],
+                      decoration: const InputDecoration(
+                        labelText: 'Flight Type',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Flight Type Required';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ),
+                TextFormField(
+                  controller: departureController,
+                  focusNode: departureFocusNode,
+                  decoration: InputDecoration(
+                    labelText: 'Departure',
+                    suffixIcon: departureController.text.isNotEmpty
+                        ? IconButton(
+                            onPressed: () {
+                              setState(() {
+                                predictions = [];
+                                departureController.clear();
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.clear_outlined,
+                              color: Color.fromARGB(255, 29, 165, 153),
+                            ))
+                        : null,
+                  ),
+                  onChanged: (value) {
+                    if (debounce?.isActive ?? false) debounce!.cancel();
+                    debounce = Timer(const Duration(milliseconds: 1000), () {
+                      if (value.isNotEmpty) {
+                        autoCompleteSearch(value);
+                        setState(() {
+                          predictions = [];
+                        });
+                      } else {
+                        setState(() {
+                          predictions = [];
+                          departurePosition = null;
+                        });
+                      }
+                    });
+                  },
+                ),
+                if (departureFocusNode.hasFocus)
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: predictions.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: const CircleAvatar(
+                          backgroundColor: Color.fromARGB(255, 29, 165, 153),
+                          child: Icon(
+                            Icons.pin_drop,
+                            color: Colors.white,
+                          ),
+                        ),
+                        title: Text(predictions[index].description.toString()),
+                        onTap: () async {
+                          final placeId = predictions[index].placeId!;
+                          final details =
+                              await googlePlace.details.get(placeId);
+                          if (details != null &&
+                              details.result != null &&
+                              mounted) {
+                            if (departureFocusNode.hasFocus) {
+                              setState(() {
+                                setState(() {
+                                  departurePosition = details.result;
+                                  departureController.text =
+                                      details.result!.name!;
+                                  predictions = [];
+                                });
+                              });
+                            }
+                          }
+                        },
+                      );
+                    },
+                  ),
+                TextFormField(
+                  controller: midPointController,
+                  focusNode: midFocusNode,
+                  decoration: InputDecoration(
+                    labelText: 'Connected Airport',
+                    suffixIcon: midPointController.text.isNotEmpty
+                        ? IconButton(
+                            onPressed: () {
+                              setState(() {
+                                predictions = [];
+                                midPointController.clear();
+                              });
+                            },
+                            icon: const Icon(Icons.clear_outlined,
+                                color: Color.fromARGB(255, 29, 165, 153)))
+                        : null,
+                  ),
+                  onChanged: (value) {
+                    if (debounce?.isActive ?? false) debounce!.cancel();
+                    debounce = Timer(const Duration(milliseconds: 1000), () {
+                      if (value.isNotEmpty) {
+                        autoCompleteSearch(value);
+                        setState(() {
+                          predictions = [];
+                        });
+                      } else {
+                        setState(() {
+                          predictions = [];
+                          midPosition = null;
+                        });
+                      }
+                    });
+                  },
+                ),
+                if (midFocusNode.hasFocus)
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: predictions.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: const CircleAvatar(
+                          backgroundColor: Color.fromARGB(255, 29, 165, 153),
+                          child: Icon(Icons.pin_drop, color: Colors.white),
+                        ),
+                        title: Text(predictions[index].description.toString()),
+                        onTap: () async {
+                          final placeId = predictions[index].placeId!;
+                          final details =
+                              await googlePlace.details.get(placeId);
+                          if (details != null &&
+                              details.result != null &&
+                              mounted) {
+                            if (midFocusNode.hasFocus) {
+                              setState(() {
+                                setState(() {
+                                  midPosition = details.result;
+                                  midPointController.text =
+                                      details.result!.name!;
+                                  predictions = [];
+                                });
+                              });
+                            }
+                          }
+                        },
+                      );
+                    },
+                  ),
+                TextFormField(
+                  controller: destinationController,
+                  focusNode: destinationFocusNode,
+                  decoration: InputDecoration(
+                    labelText: 'Destination',
+                    suffixIcon: destinationController.text.isNotEmpty
+                        ? IconButton(
+                            onPressed: () {
+                              setState(() {
+                                predictions = [];
+                                destinationController.clear();
+                              });
+                            },
+                            icon: const Icon(Icons.clear_outlined,
+                                color: Color.fromARGB(255, 29, 165, 153)))
+                        : null,
+                  ),
+                  onChanged: (value) {
+                    if (debounce?.isActive ?? false) debounce!.cancel();
+                    debounce = Timer(const Duration(milliseconds: 1000), () {
+                      if (value.isNotEmpty) {
+                        autoCompleteSearch(value);
+                        setState(() {
+                          predictions = [];
+                        });
+                      } else {
+                        setState(() {
+                          predictions = [];
+                          destinationPosition = null;
+                        });
+                      }
+                    });
+                  },
+                ),
+                if (destinationFocusNode.hasFocus)
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: predictions.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: const CircleAvatar(
+                          backgroundColor: Color.fromARGB(255, 29, 165, 153),
+                          child: Icon(Icons.pin_drop, color: Colors.white),
+                        ),
+                        title: Text(predictions[index].description.toString()),
+                        onTap: () async {
+                          final placeId = predictions[index].placeId!;
+                          final details =
+                              await googlePlace.details.get(placeId);
+                          if (details != null &&
+                              details.result != null &&
+                              mounted) {
+                            if (destinationFocusNode.hasFocus) {
+                              setState(() {
+                                setState(() {
+                                  destinationPosition = details.result;
+                                  destinationController.text =
+                                      details.result!.name!;
+                                  predictions = [];
+                                });
+                              });
+                            }
+                          }
+                        },
+                      );
+                    },
+                  ),
+                GestureDetector(
+                  onTap: () async {
+                    DateTime? datePicked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2024));
+                    if (datePicked != null) {
+                      setState(() {
+                        departureDateController.text =
+                            '${datePicked.day}-${datePicked.month}-${datePicked.year}';
+                      });
+                    }
+                  },
+                  child: TextFormField(
+                    controller: departureDateController,
+                    enabled: false,
+                    showCursor: false,
+                    decoration: const InputDecoration(
+                      labelText: 'Select Departure Date',
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    TimeOfDay? timePicked = await showTimePicker(
+                        context: context, initialTime: TimeOfDay.now());
+                    if (timePicked != null) {
+                      String setTime =
+                          "${timePicked.hour}:${timePicked.minute}:00";
+                      setState(() {
+                        departureTimeController.text = DateFormat.jm()
+                            .format(DateFormat("hh:mm:ss").parse(setTime));
+                      });
+                    }
+                  },
+                  child: TextFormField(
+                    controller: departureTimeController,
+                    enabled: false,
+                    showCursor: false,
+                    decoration: const InputDecoration(
+                      labelText: 'Select Departure Time',
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    DateTime? datePicked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2024));
+                    if (datePicked != null) {
+                      setState(() {
+                        destinationDateController.text =
+                            '${datePicked.day}-${datePicked.month}-${datePicked.year}';
+                      });
+                    }
+                  },
+                  child: TextFormField(
+                    controller: destinationDateController,
+                    enabled: false,
+                    showCursor: false,
+                    decoration: const InputDecoration(
+                      labelText: 'Select Destination Date',
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    TimeOfDay? timePicked = await showTimePicker(
+                        context: context, initialTime: TimeOfDay.now());
+                    if (timePicked != null) {
+                      String setTime =
+                          "${timePicked.hour}:${timePicked.minute}:00";
+                      setState(() {
+                        destinationTimeController.text = DateFormat.jm()
+                            .format(DateFormat("hh:mm:ss").parse(setTime));
+                      });
+                    }
+                  },
+                  child: TextFormField(
+                    controller: destinationTimeController,
+                    enabled: false,
+                    showCursor: false,
+                    decoration: const InputDecoration(
+                      labelText: 'Select Destination Time',
+                    ),
+                  ),
+                ),
+                TextFormField(
+                  controller: economySeatsController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Economy Seats'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Seats Required';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: businessSeatsController,
+                  keyboardType: TextInputType.number,
+                  decoration:
+                      const InputDecoration(labelText: 'Business Class Seats'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Seats Required';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: economyPriceController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Economy Price'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Price Required';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: businessPriceController,
+                  keyboardType: TextInputType.number,
+                  decoration:
+                      const InputDecoration(labelText: 'Business Class Price'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Price Required';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(
                   height: 30,
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    elevation: 12.0,
+                    backgroundColor: const Color.fromARGB(255, 29, 165, 153),
+                  ),
+                  onPressed: () {
+                    selectImages();
+                  },
+                  child: const Text(
+                    'Select Images',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  children: selectedImages.map((image) {
+                    return Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Image.file(
+                        File(image.path),
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 30),
+                SizedBox(
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
                       elevation: 12.0,
-                      backgroundColor: const Color.fromARGB(255, 29, 165, 153)),
-                  onPressed: addFlight,
-                  child: const Text('Submit'),
+                      backgroundColor: const Color.fromARGB(255, 29, 165, 153),
+                    ),
+                    onPressed: () {
+                      addFlight();
+                    },
+                    child: loading == true
+                        ? const CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                        : const Text('Add Flight',
+                            style: TextStyle(fontSize: 16)),
+                  ),
                 ),
               ],
             ),

@@ -1,11 +1,13 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:google_place/google_place.dart';
 
 class addHotelScreen extends StatefulWidget {
   const addHotelScreen({super.key});
@@ -15,87 +17,144 @@ class addHotelScreen extends StatefulWidget {
 }
 
 class _addHotelScreenState extends State<addHotelScreen> {
-  File? image;
-  final picker = ImagePicker();
-  String imageUrl = '';
+  List<XFile> _selectedImages = [];
+  List<String> _imageUrls = [];
+  final ImagePicker _imagePicker = ImagePicker();
+  bool loading = false;
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final _formKey = GlobalKey<FormState>();
-  final _Hotelname = TextEditingController();
-  final _Hotelprice = TextEditingController();
-  final _Hotellocation = TextEditingController();
-  final _Hotelroom = TextEditingController();
-  final _Hotelperson = TextEditingController();
-  final _Hoteltype = TextEditingController();
-  final _Hotelcity = TextEditingController();
-  final _Hotelimage = TextEditingController();
   FirebaseAuth user = FirebaseAuth.instance;
-  late int price;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  final _formKey = GlobalKey<FormState>();
+  final hotelNameController = TextEditingController();
+  final hotelTypeController = TextEditingController();
+  final singleRoomPriceController = TextEditingController();
+  final connectedRoomPriceController = TextEditingController();
+  final personPerRoomController = TextEditingController();
+  final cityController = TextEditingController();
+  final hotelImageController = TextEditingController();
+  final hotelLocationController = TextEditingController();
+  final descriptionController = TextEditingController();
+
+  DetailsResult? locationPosition;
+
+  late FocusNode locationFocusNode;
+
+  late GooglePlace googlePlace;
+  List<AutocompletePrediction> predictions = [];
+  Timer? debounce;
+
+  String? selectedHotelType;
   var did = DateTime.now().millisecondsSinceEpoch;
 
-  addHotel() async {
-    _formKey.currentState!.save();
-    if (_formKey.currentState!.validate()) {
-      debugPrint("Form is vaid ");
-
-      debugPrint('Data for login ');
-
-      try {
-        await firestore
-            .collection('app')
-            .doc('Services')
-            .collection('Hotels')
-            .doc('${user.currentUser!.uid}$did')
-            .set({
-          'name': _Hotelname.text,
-          'Hotel_price': int.parse(_Hotelprice.text),
-          'Hotel_location': _Hotellocation.text,
-          'Hotel_rooms': _Hotelroom.text,
-          'Hotel_city': _Hotelcity.text,
-          'Active_rooms': '3',
-          'Stars': _Hoteltype.text,
-          'Room_capacity': _Hotelperson.text,
-          'admin_id': user.currentUser!.uid,
-          'hotel_imageURL': imageUrl,
-          'hotel_id': 'ho${user.currentUser!.uid}'
-        });
-        setState(() {
-          imageUrl = '';
-        });
-      } on FirebaseException catch (e) {
-        Fluttertoast.showToast(msg: e.toString());
-      }
-    }
-    _Hotelname.clear();
-    _Hotelprice.clear();
-    _Hotellocation.clear();
-    _Hotelroom.clear();
-    _Hotelcity.clear();
-    _Hotelimage.clear();
-    _Hoteltype.clear();
-    _Hotelperson.clear();
+  @override
+  void initState() {
+    super.initState();
+    String apiKey = "AIzaSyDNzkszHrT2L0zwdhK0DzVK46aqO7n5lxk";
+    googlePlace = GooglePlace(apiKey);
+    locationFocusNode = FocusNode();
   }
 
-  FirebaseAuth auth = FirebaseAuth.instance;
+  @override
+  void dispose() {
+    super.dispose();
+    locationFocusNode.dispose();
+  }
 
-  Future<void> setImage() async {
-    final image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 512,
-      maxHeight: 512,
-      imageQuality: 75,
-    );
-    firebase_storage.Reference ref =
-        firebase_storage.FirebaseStorage.instance.ref('/hotelimg/$did');
-    await ref.putFile(File(image!.path));
-    ref.getDownloadURL().then((value) {
+  void autoCompleteSearch(String value) async {
+    var result = await googlePlace.autocomplete.get(value);
+    if (result != null && result.predictions != null && mounted) {
       setState(() {
-        imageUrl = value;
+        predictions = result.predictions!;
       });
-      Fluttertoast.showToast(msg: 'image uploaded successfully');
-    }).onError((error, stackTrace) {
-      Fluttertoast.showToast(msg: error.toString());
-    });
+    }
+  }
+
+  Future<void> selectImages() async {
+    final pickedFiles = await _imagePicker.pickMultiImage();
+
+    if (pickedFiles.isNotEmpty) {
+      setState(() {
+        _selectedImages = pickedFiles;
+      });
+    }
+  }
+
+  Future<void> uploadImages(String hotelId) async {
+    try {
+      for (var imageFile in _selectedImages) {
+        final Reference storageReference = _storage.ref().child(
+            'hotel_images/$hotelId/${DateTime.now().millisecondsSinceEpoch}');
+        final UploadTask uploadTask =
+            storageReference.putFile(File(imageFile.path));
+
+        final TaskSnapshot downloadUrl = await uploadTask;
+        final String imageUrl = await downloadUrl.ref.getDownloadURL();
+        _imageUrls.add(imageUrl);
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Error uploading images: $e');
+    }
+  }
+
+  Future<void> addHotel() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        setState(() {
+          loading = true;
+        });
+        User? checkuser = user.currentUser;
+        if (checkuser != null) {
+          final hotelId = 'ho${user.currentUser!.uid}$did';
+          await uploadImages(hotelId);
+
+          await FirebaseFirestore.instance
+              .collection('app')
+              .doc('Services')
+              .collection('Hotels')
+              .doc(hotelId)
+              .set({
+            'name': hotelNameController.text,
+            'single_room_price': int.parse(singleRoomPriceController.text),
+            'connected_room_price':
+                int.parse(connectedRoomPriceController.text),
+            'hotel_location': hotelLocationController.text,
+            'hotel_city': cityController.text,
+            'active_rooms': '3',
+            'stars': selectedHotelType,
+            'room_capacity': personPerRoomController.text,
+            'admin_id': checkuser.uid,
+            'hotel_imageURLs': _imageUrls,
+            'hotel_id': 'ho$did',
+            'location': hotelLocationController.text,
+            'hotel_lng': locationPosition!.geometry!.location!.lng!,
+            'hotel_lat': locationPosition!.geometry!.location!.lat!,
+            'description': descriptionController.text,
+          });
+          setState(() {
+            selectedHotelType = null;
+          });
+          Fluttertoast.showToast(msg: 'Hotel added successfully');
+        }
+      } catch (e) {
+        Fluttertoast.showToast(msg: 'Error adding hotel: $e');
+      }
+
+      // Clear form fields and selected images after adding the hotel
+      hotelNameController.clear();
+      singleRoomPriceController.clear();
+      connectedRoomPriceController.clear();
+      hotelTypeController.clear();
+      personPerRoomController.clear();
+      cityController.clear();
+      hotelLocationController.clear();
+      setState(() {
+        _selectedImages.clear();
+        _imageUrls.clear();
+        loading = false;
+      });
+    }
   }
 
   @override
@@ -126,7 +185,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
                 const SizedBox(height: 20),
                 // Hotel Name Feild
                 TextFormField(
-                  controller: _Hotelname,
+                  controller: hotelNameController,
                   keyboardType: TextInputType.text,
                   decoration: const InputDecoration(
                     labelText: 'Hotel Name',
@@ -138,59 +197,149 @@ class _addHotelScreenState extends State<addHotelScreen> {
                     return null;
                   },
                 ),
-                // Hotel Price Feild
+                //Hotel Type
+                Column(
+                  children: [
+                    DropdownButtonFormField<String>(
+                      value: selectedHotelType,
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedHotelType = newValue;
+                          hotelTypeController.text = newValue!;
+                        });
+                      },
+                      items: const [
+                        DropdownMenuItem(
+                          value: '5 start',
+                          child: Text('5 start'),
+                        ),
+                        DropdownMenuItem(
+                          value: '3 start',
+                          child: Text('3 start'),
+                        ),
+                      ],
+                      decoration: const InputDecoration(
+                        labelText: 'Hotel Type',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Hotel Type Required';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ),
                 TextFormField(
-                  controller: _Hotelprice,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Hotel Price'),
+                  controller: hotelLocationController,
+                  focusNode: locationFocusNode,
+                  decoration: InputDecoration(
+                    labelText: 'Location',
+                    suffixIcon: hotelLocationController.text.isNotEmpty
+                        ? IconButton(
+                            onPressed: () {
+                              setState(() {
+                                predictions = [];
+                                hotelLocationController.clear();
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.clear_outlined,
+                              color: Color.fromARGB(255, 29, 165, 153),
+                            ))
+                        : null,
+                  ),
+                  onChanged: (value) {
+                    if (debounce?.isActive ?? false) debounce!.cancel();
+                    debounce = Timer(const Duration(milliseconds: 1000), () {
+                      if (value.isNotEmpty) {
+                        autoCompleteSearch(value);
+                        setState(() {
+                          predictions = [];
+                        });
+                      } else {
+                        setState(() {
+                          predictions = [];
+                          locationPosition = null;
+                        });
+                      }
+                    });
+                  },
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: predictions.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: const CircleAvatar(
+                        backgroundColor: Color.fromARGB(255, 29, 165, 153),
+                        child: Icon(
+                          Icons.pin_drop,
+                          color: Colors.white,
+                        ),
+                      ),
+                      title: Text(predictions[index].description.toString()),
+                      onTap: () async {
+                        final placeId = predictions[index].placeId!;
+                        final details = await googlePlace.details.get(placeId);
+                        if (details != null &&
+                            details.result != null &&
+                            mounted) {
+                          if (locationFocusNode.hasFocus) {
+                            setState(() {
+                              locationPosition = details.result;
+                              hotelLocationController.text =
+                                  details.result!.name!;
+                              predictions = [];
+                            });
+                          }
+                        }
+                      },
+                    );
+                  },
+                ),
+
+                // Hotel City
+                TextFormField(
+                  controller: cityController,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(labelText: 'City'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Hotel Price Required';
+                      return 'Hotel City  Required';
                     }
                     return null;
                   },
                 ),
-                // Hotel Location Feild
+                // Single Room Price Field
                 TextFormField(
-                  controller: _Hotellocation,
-                  keyboardType: TextInputType.streetAddress,
+                  controller: singleRoomPriceController,
+                  keyboardType: TextInputType.number,
                   decoration:
-                      const InputDecoration(labelText: 'Hotel Location'),
+                      const InputDecoration(labelText: 'Single Room Price'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Location  Required';
+                      return 'Price Required';
                     }
                     return null;
                   },
                 ),
-                // Hotel Type Feild
+                // Connected Room Price Field
                 TextFormField(
-                  controller: _Hoteltype,
+                  controller: connectedRoomPriceController,
                   keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                      labelText: 'Hotel Type ex 5 high - 1 low'),
+                  decoration:
+                      const InputDecoration(labelText: 'Connected Room Price'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Hotel Type  Required';
-                    }
-                    return null;
-                  },
-                ),
-                // Hotel ROoms
-                TextFormField(
-                  controller: _Hotelroom,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(labelText: 'Rooms'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Hotel Type  Required';
+                      return 'Price Required';
                     }
                     return null;
                   },
                 ),
                 // Person per room
                 TextFormField(
-                  controller: _Hotelperson,
+                  controller: personPerRoomController,
                   keyboardType: TextInputType.number,
                   decoration:
                       const InputDecoration(labelText: 'Persons per Room'),
@@ -201,82 +350,69 @@ class _addHotelScreenState extends State<addHotelScreen> {
                     return null;
                   },
                 ),
-                // Hotel City
+                const SizedBox(height: 30),
                 TextFormField(
-                  controller: _Hotelcity,
+                  controller: descriptionController,
+                  maxLines: null,
                   keyboardType: TextInputType.text,
-                  decoration: const InputDecoration(labelText: 'City'),
+                  decoration: const InputDecoration(labelText: 'Description'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Hotel City  Required';
+                      return 'Description Required';
                     }
                     return null;
                   },
                 ),
-
-                const SizedBox(height: 30),
-                SizedBox(
-                  height: 120,
-                  width: 120,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    fit: StackFit.expand,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.teal[300],
-                            borderRadius: BorderRadius.circular(100.0)),
-                        child: Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                color: Colors.teal[300],
-                                borderRadius: BorderRadius.circular(100)),
-                            child: imageUrl == ""
-                                ? ClipOval(
-                                    child: SizedBox.fromSize(
-                                      size: const Size.fromRadius(48.0),
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.teal[300],
-                                      ),
-                                    ),
-                                  )
-                                : ClipOval(
-                                    child: SizedBox.fromSize(
-                                        size: const Size.fromRadius(48.0),
-                                        child: Image.network(imageUrl)),
-                                  )),
-                      ),
-                      Positioned(
-                          bottom: 0,
-                          right: -25,
-                          child: RawMaterialButton(
-                            onPressed: () {
-                              setImage();
-                            },
-                            elevation: 2.0,
-                            fillColor: Colors.white,
-                            padding: const EdgeInsets.all(15.0),
-                            shape: const CircleBorder(),
-                            child: const Icon(
-                              Icons.camera_alt_outlined,
-                              color: Colors.teal,
-                            ),
-                          )),
-                    ],
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 12.0,
+                    backgroundColor: const Color.fromARGB(255, 29, 165, 153),
+                  ),
+                  onPressed: () {
+                    selectImages();
+                  },
+                  child: const Text(
+                    'Select Images',
+                    style: TextStyle(fontSize: 16),
                   ),
                 ),
 
+                const SizedBox(height: 10),
+                // Display Selected Images
+                Wrap(
+                  children: _selectedImages.map((image) {
+                    return Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Image.file(
+                        File(image.path),
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  }).toList(),
+                ),
+
                 const SizedBox(height: 30),
-                // Submit Button
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
+
+                SizedBox(
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
                       elevation: 12.0,
-                      backgroundColor: const Color.fromARGB(255, 29, 165, 153)),
-                  onPressed: () {
-                    addHotel();
-                  },
-                  child: const Text('Submit'),
+                      backgroundColor: const Color.fromARGB(255, 29, 165, 153),
+                    ),
+                    onPressed: () {
+                      addHotel();
+                    },
+                    child: loading == true
+                        ? const CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                        : const Text('Add Hotel',
+                            style: TextStyle(fontSize: 16)),
+                  ),
                 ),
               ],
             ),

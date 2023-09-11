@@ -6,12 +6,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 // ignore: must_be_immutable
-class LoginScreen extends StatelessWidget {
-  FirebaseAuth auth = FirebaseAuth.instance;
-  final TextEditingController _emailcontroller = TextEditingController();
-  final TextEditingController _passwordcontroller = TextEditingController();
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
-  LoginScreen({super.key});
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  FirebaseAuth auth = FirebaseAuth.instance;
+
+  final TextEditingController _emailcontroller = TextEditingController();
+
+  final TextEditingController _passwordcontroller = TextEditingController();
 
   Future<void> checkLogin(BuildContext context) async {
     final user = auth.currentUser;
