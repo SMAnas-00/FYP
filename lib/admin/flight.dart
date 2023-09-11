@@ -282,7 +282,10 @@ class _addFlightScreenState extends State<addFlightScreen> {
                                 departureController.clear();
                               });
                             },
-                            icon: const Icon(Icons.clear_outlined))
+                            icon: const Icon(
+                              Icons.clear_outlined,
+                              color: Color.fromARGB(255, 29, 165, 153),
+                            ))
                         : null,
                   ),
                   onChanged: (value) {
@@ -309,7 +312,11 @@ class _addFlightScreenState extends State<addFlightScreen> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         leading: const CircleAvatar(
-                          child: Icon(Icons.pin_drop),
+                          backgroundColor: Color.fromARGB(255, 29, 165, 153),
+                          child: Icon(
+                            Icons.pin_drop,
+                            color: Colors.white,
+                          ),
                         ),
                         title: Text(predictions[index].description.toString()),
                         onTap: () async {
@@ -347,7 +354,8 @@ class _addFlightScreenState extends State<addFlightScreen> {
                                 midPointController.clear();
                               });
                             },
-                            icon: const Icon(Icons.clear_outlined))
+                            icon: const Icon(Icons.clear_outlined,
+                                color: Color.fromARGB(255, 29, 165, 153)))
                         : null,
                   ),
                   onChanged: (value) {
@@ -374,7 +382,8 @@ class _addFlightScreenState extends State<addFlightScreen> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         leading: const CircleAvatar(
-                          child: Icon(Icons.pin_drop),
+                          backgroundColor: Color.fromARGB(255, 29, 165, 153),
+                          child: Icon(Icons.pin_drop, color: Colors.white),
                         ),
                         title: Text(predictions[index].description.toString()),
                         onTap: () async {
@@ -412,7 +421,8 @@ class _addFlightScreenState extends State<addFlightScreen> {
                                 destinationController.clear();
                               });
                             },
-                            icon: const Icon(Icons.clear_outlined))
+                            icon: const Icon(Icons.clear_outlined,
+                                color: Color.fromARGB(255, 29, 165, 153)))
                         : null,
                   ),
                   onChanged: (value) {
@@ -439,7 +449,8 @@ class _addFlightScreenState extends State<addFlightScreen> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         leading: const CircleAvatar(
-                          child: Icon(Icons.pin_drop),
+                          backgroundColor: Color.fromARGB(255, 29, 165, 153),
+                          child: Icon(Icons.pin_drop, color: Colors.white),
                         ),
                         title: Text(predictions[index].description.toString()),
                         onTap: () async {
