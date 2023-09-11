@@ -243,7 +243,10 @@ class _addHotelScreenState extends State<addHotelScreen> {
                                 hotelLocationController.clear();
                               });
                             },
-                            icon: const Icon(Icons.clear_outlined))
+                            icon: const Icon(
+                              Icons.clear_outlined,
+                              color: Color.fromARGB(255, 29, 165, 153),
+                            ))
                         : null,
                   ),
                   onChanged: (value) {
@@ -269,7 +272,11 @@ class _addHotelScreenState extends State<addHotelScreen> {
                   itemBuilder: (context, index) {
                     return ListTile(
                       leading: const CircleAvatar(
-                        child: Icon(Icons.pin_drop),
+                        backgroundColor: Color.fromARGB(255, 29, 165, 153),
+                        child: Icon(
+                          Icons.pin_drop,
+                          color: Colors.white,
+                        ),
                       ),
                       title: Text(predictions[index].description.toString()),
                       onTap: () async {

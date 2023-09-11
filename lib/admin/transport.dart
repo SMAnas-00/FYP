@@ -1,11 +1,13 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_place/google_place.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:firebase_storage/firebase_storage.dart';
 
 class addTransportScreen extends StatefulWidget {
   const addTransportScreen({super.key});
@@ -15,74 +17,141 @@ class addTransportScreen extends StatefulWidget {
 }
 
 class _addTransportScreenState extends State<addTransportScreen> {
+  List<XFile> selectedImages = [];
+  List<String> imageUrls = [];
+  final ImagePicker imagePicker = ImagePicker();
+  bool loading = false;
+
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseAuth user = FirebaseAuth.instance;
+  final FirebaseStorage storage = FirebaseStorage.instance;
+
   var did = DateTime.now().millisecondsSinceEpoch;
   final _formKey = GlobalKey<FormState>();
-  final _WhereTo = TextEditingController();
-  final _WhereFrom = TextEditingController();
-  final _Fairforthetrip = TextEditingController();
-  final _Transtype = TextEditingController();
-  FirebaseAuth user = FirebaseAuth.instance;
-  File? image;
-  final picker = ImagePicker();
-  String imageUrl = '';
+  final vehicleNameController = TextEditingController();
+  final vehicleNumberController = TextEditingController();
+  final numberOfSeatsControleer = TextEditingController();
+  final priceController = TextEditingController();
+  final pickupCntroller = TextEditingController();
+  final cityController = TextEditingController();
 
-  addTransport() async {
+  DetailsResult? pickupPosition;
+
+  late FocusNode pickupFocusNode;
+
+  late GooglePlace googlePlace;
+
+  List<AutocompletePrediction> predictions = [];
+  Timer? debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    String apiKey = "AIzaSyDNzkszHrT2L0zwdhK0DzVK46aqO7n5lxk";
+    googlePlace = GooglePlace(apiKey);
+    pickupFocusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    pickupFocusNode.dispose();
+  }
+
+  void autoCompleteSearch(String value) async {
+    var result = await googlePlace.autocomplete.get(value);
+    if (result != null && result.predictions != null && mounted) {
+      setState(() {
+        predictions = result.predictions!;
+      });
+    }
+  }
+
+  Future<void> selectImages() async {
+    final pickedFiles = await imagePicker.pickMultiImage();
+
+    if (pickedFiles.isNotEmpty) {
+      setState(() {
+        selectedImages = pickedFiles;
+      });
+    }
+  }
+
+  Future<void> uploadImages(String hotelId) async {
+    try {
+      for (var imageFile in selectedImages) {
+        final Reference storageReference = storage.ref().child(
+            'transport_image/$hotelId/${DateTime.now().millisecondsSinceEpoch}');
+        final UploadTask uploadTask =
+            storageReference.putFile(File(imageFile.path));
+
+        final TaskSnapshot downloadUrl = await uploadTask;
+        final String imageUrl = await downloadUrl.ref.getDownloadURL();
+        imageUrls.add(imageUrl);
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Error uploading images: $e');
+    }
+  }
+
+  Future<void> addTransport() async {
     _formKey.currentState!.save();
     if (_formKey.currentState!.validate()) {
       debugPrint("Form is vaid ");
       debugPrint('Data for login ');
       var did = DateTime.now().microsecondsSinceEpoch;
 
+      final userData = await firestore
+          .collection('app')
+          .doc('Users')
+          .collection('Signup')
+          .doc(user.currentUser!.uid)
+          .get();
+
       try {
+        setState(() {
+          loading = true;
+        });
         await firestore
             .collection('app')
             .doc('Services')
             .collection('Transport')
-            .doc('$did')
+            .doc('${user.currentUser!.uid}$did')
             .set({
-          'Pick_up': _WhereFrom.text,
-          'Destination': _WhereTo.text,
-          'Fair': int.parse(_Fairforthetrip.text),
-          'Transport_type': _Transtype.text,
-          'Trans_id': 'tr${did.toString()}',
+          'vehicle_name': vehicleNameController.text,
+          'vehicle_number': vehicleNumberController.text,
+          'pick_up': pickupCntroller.text,
+          'pickup_lat': pickupPosition!.geometry!.location!.lat!,
+          'pickup_lng': pickupPosition!.geometry!.location!.lng!,
+          'price': int.parse(priceController.text),
+          'total_seats': numberOfSeatsControleer.text,
+          'city': cityController.text,
+          'driver_number': userData['First_name'],
+          'driver_contact': userData['Contact'],
+          'trans_id': 'tr${did.toString()}',
           'admin_id': user.currentUser!.uid,
-          'transport_imageURL': imageUrl,
+          'transport_imageURL': imageUrls,
         });
-        setState(() {
-          imageUrl = '';
-        });
-      } on FirebaseException catch (e) {
+
+        Fluttertoast.showToast(msg: 'Transport Created successfully');
+      } catch (e) {
         debugPrint(e.toString());
       }
-      _WhereFrom.clear();
-      _WhereTo.clear();
-      _Fairforthetrip.clear();
-      _Transtype.clear();
+      vehicleNameController.clear();
+      vehicleNumberController.clear();
+      numberOfSeatsControleer.clear();
+      priceController.clear();
+      pickupCntroller.clear();
+      cityController.clear();
+      setState(() {
+        selectedImages.clear();
+        imageUrls.clear();
+        loading = false;
+      });
     }
   }
 
   FirebaseAuth auth = FirebaseAuth.instance;
-
-  Future<void> setImage() async {
-    final image = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 512,
-      maxHeight: 512,
-      imageQuality: 75,
-    );
-    firebase_storage.Reference ref =
-        firebase_storage.FirebaseStorage.instance.ref('/transportimg/$did');
-    await ref.putFile(File(image!.path));
-    ref.getDownloadURL().then((value) {
-      setState(() {
-        imageUrl = value;
-      });
-      Fluttertoast.showToast(msg: 'image uploaded successfully');
-    }).onError((error, stackTrace) {
-      Fluttertoast.showToast(msg: error.toString());
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,34 +182,126 @@ class _addTransportScreenState extends State<addTransportScreen> {
                   height: 20,
                 ),
                 TextFormField(
-                  controller: _WhereTo,
+                  controller: vehicleNameController,
                   keyboardType: TextInputType.text,
                   decoration: const InputDecoration(
-                    labelText: 'Destination',
+                    labelText: 'Vehicle Name',
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Destination Required';
+                      return 'Vehicle Name Required';
                     }
                     return null;
                   },
                 ),
                 TextFormField(
-                  controller: _WhereFrom,
+                  controller: vehicleNumberController,
                   keyboardType: TextInputType.text,
-                  decoration: const InputDecoration(labelText: 'Pick Up'),
+                  decoration: const InputDecoration(
+                    labelText: 'Vehicle Number',
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Destination Required';
+                      return 'Vehicle Number Required';
                     }
                     return null;
                   },
                 ),
                 TextFormField(
-                  controller: _Fairforthetrip,
+                  controller: pickupCntroller,
+                  focusNode: pickupFocusNode,
+                  decoration: InputDecoration(
+                    labelText: 'Pickup Location',
+                    suffixIcon: pickupCntroller.text.isNotEmpty
+                        ? IconButton(
+                            onPressed: () {
+                              setState(() {
+                                predictions = [];
+                                pickupCntroller.clear();
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.clear_outlined,
+                              color: Color.fromARGB(255, 29, 165, 153),
+                            ))
+                        : null,
+                  ),
+                  onChanged: (value) {
+                    if (debounce?.isActive ?? false) debounce!.cancel();
+                    debounce = Timer(const Duration(milliseconds: 1000), () {
+                      if (value.isNotEmpty) {
+                        autoCompleteSearch(value);
+                        setState(() {
+                          predictions = [];
+                        });
+                      } else {
+                        setState(() {
+                          predictions = [];
+                          pickupPosition = null;
+                        });
+                      }
+                    });
+                  },
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: predictions.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: const CircleAvatar(
+                        backgroundColor: Color.fromARGB(255, 29, 165, 153),
+                        child: Icon(
+                          Icons.pin_drop,
+                          color: Colors.white,
+                        ),
+                      ),
+                      title: Text(predictions[index].description.toString()),
+                      onTap: () async {
+                        final placeId = predictions[index].placeId!;
+                        final details = await googlePlace.details.get(placeId);
+                        if (details != null &&
+                            details.result != null &&
+                            mounted) {
+                          if (pickupFocusNode.hasFocus) {
+                            setState(() {
+                              pickupPosition = details.result;
+                              pickupCntroller.text = details.result!.name!;
+                              predictions = [];
+                            });
+                          }
+                        }
+                      },
+                    );
+                  },
+                ),
+                TextFormField(
+                  controller: cityController,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(labelText: 'City'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'City Required';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: numberOfSeatsControleer,
                   keyboardType: TextInputType.number,
                   decoration:
-                      const InputDecoration(labelText: 'Fair for the trip'),
+                      const InputDecoration(labelText: 'Number of Seats'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Seats Required';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: priceController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                      labelText: 'Fair for the trip per day'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Fair Required';
@@ -148,81 +309,55 @@ class _addTransportScreenState extends State<addTransportScreen> {
                     return null;
                   },
                 ),
-                TextFormField(
-                  controller: _Transtype,
-                  keyboardType: TextInputType.number,
-                  decoration:
-                      const InputDecoration(labelText: 'Type of Transit'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Required';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                SizedBox(
-                  height: 120,
-                  width: 120,
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    fit: StackFit.expand,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.teal[300],
-                            borderRadius: BorderRadius.circular(100.0)),
-                        child: Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                color: Colors.teal[300],
-                                borderRadius: BorderRadius.circular(100)),
-                            child: imageUrl == ""
-                                ? ClipOval(
-                                    child: SizedBox.fromSize(
-                                      size: const Size.fromRadius(48.0),
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.teal[300],
-                                      ),
-                                    ),
-                                  )
-                                : ClipOval(
-                                    child: SizedBox.fromSize(
-                                        size: const Size.fromRadius(48.0),
-                                        child: Image.network(imageUrl)),
-                                  )),
-                      ),
-                      Positioned(
-                          bottom: 0,
-                          right: -25,
-                          child: RawMaterialButton(
-                            onPressed: () {
-                              setImage();
-                            },
-                            elevation: 2.0,
-                            fillColor: Colors.white,
-                            padding: const EdgeInsets.all(15.0),
-                            shape: const CircleBorder(),
-                            child: const Icon(
-                              Icons.camera_alt_outlined,
-                              color: Colors.teal,
-                            ),
-                          )),
-                    ],
-                  ),
-                ),
                 const SizedBox(
                   height: 30,
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
+                    elevation: 12.0,
+                    backgroundColor: const Color.fromARGB(255, 29, 165, 153),
+                  ),
+                  onPressed: () {
+                    selectImages();
+                  },
+                  child: const Text(
+                    'Select Images',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  children: selectedImages.map((image) {
+                    return Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Image.file(
+                        File(image.path),
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 30),
+                SizedBox(
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
                       elevation: 12.0,
-                      backgroundColor: const Color.fromARGB(255, 29, 165, 153)),
-                  onPressed: addTransport,
-                  child: const Text('Submit'),
+                      backgroundColor: const Color.fromARGB(255, 29, 165, 153),
+                    ),
+                    onPressed: () {
+                      addTransport();
+                    },
+                    child: loading == true
+                        ? const CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                        : const Text('Add Transport',
+                            style: TextStyle(fontSize: 16)),
+                  ),
                 ),
               ],
             ),
