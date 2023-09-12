@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -15,6 +16,8 @@ class _AdminHomePageState extends State<AdminHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color.fromARGB(255, 29, 165, 153),
         title: const Text('Admin Dashboard'),
         actions: [
           IconButton(
@@ -69,6 +72,17 @@ class _AdminHomePageState extends State<AdminHomePage> {
               Navigator.pushNamed(context, '/');
             },
           ),
+          AdminDashboardCard(
+            title: 'Qurbani',
+            icon: const FaIcon(
+              FontAwesomeIcons.cow,
+              size: 20,
+            ).icon,
+            onPressed: () {
+              // Navigate to the desired page
+              Navigator.pushNamed(context, '/addanimal');
+            },
+          ),
         ],
       ),
     );
@@ -77,7 +91,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
 
 class AdminDashboardCard extends StatelessWidget {
   final String title;
-  final IconData icon;
+  final icon;
   final VoidCallback onPressed;
 
   const AdminDashboardCard({
@@ -100,9 +114,16 @@ class AdminDashboardCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 48.0),
+              Icon(
+                icon,
+                size: 48.0,
+                color: const Color.fromARGB(255, 29, 165, 153),
+              ),
               const SizedBox(height: 8.0),
-              Text(title, style: const TextStyle(fontSize: 16.0)),
+              Text(title,
+                  style: const TextStyle(
+                      fontSize: 16.0,
+                      color: Color.fromARGB(255, 29, 165, 153))),
             ],
           ),
         ),

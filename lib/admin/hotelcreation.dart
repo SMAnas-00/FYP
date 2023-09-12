@@ -106,7 +106,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
         });
         User? checkuser = user.currentUser;
         if (checkuser != null) {
-          final hotelId = 'ho${user.currentUser!.uid}$did';
+          final hotelId = '${user.currentUser!.uid}$did';
           await uploadImages(hotelId);
 
           await FirebaseFirestore.instance
@@ -210,12 +210,24 @@ class _addHotelScreenState extends State<addHotelScreen> {
                       },
                       items: const [
                         DropdownMenuItem(
-                          value: '5 start',
-                          child: Text('5 start'),
+                          value: '1 start',
+                          child: Text('1 start'),
+                        ),
+                        DropdownMenuItem(
+                          value: '2 start',
+                          child: Text('2 start'),
                         ),
                         DropdownMenuItem(
                           value: '3 start',
                           child: Text('3 start'),
+                        ),
+                        DropdownMenuItem(
+                          value: '4 start',
+                          child: Text('4 start'),
+                        ),
+                        DropdownMenuItem(
+                          value: '5 start',
+                          child: Text('5 start'),
                         ),
                       ],
                       decoration: const InputDecoration(
@@ -350,7 +362,6 @@ class _addHotelScreenState extends State<addHotelScreen> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 30),
                 TextFormField(
                   controller: descriptionController,
                   maxLines: null,
@@ -362,6 +373,9 @@ class _addHotelScreenState extends State<addHotelScreen> {
                     }
                     return null;
                   },
+                ),
+                const SizedBox(
+                  height: 20,
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(

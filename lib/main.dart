@@ -11,6 +11,7 @@ import 'package:newui/Screens/guideScreen.dart';
 import 'package:newui/Screens/local_push_notification.dart';
 import 'package:newui/Screens/transportScreen.dart';
 import 'package:newui/admin/flight.dart';
+import 'package:newui/admin/qurbani.dart';
 import 'package:newui/admin/transport.dart';
 import 'package:newui/admin/users.dart';
 import 'Screens/BottomNav.dart';
@@ -81,7 +82,8 @@ class MyApp extends StatelessWidget {
         '/users': (context) => const ViewUserScreen(),
         '/addtransport': (context) => const addTransportScreen(),
         '/addflight': (context) => const addFlightScreen(),
-        '/animal': (context) => const AnimalBookingPage()
+        '/animal': (context) => const AnimalBookingPage(),
+        '/addanimal': (context) => const Qurbani(),
       },
     );
   }
