@@ -40,11 +40,11 @@ class _QurbaniState extends State<Qurbani> {
     }
   }
 
-  Future<void> uploadImages(String hotelId) async {
+  Future<void> uploadImages(String animalId) async {
     try {
       for (var imageFile in selectedImages) {
         final Reference storageReference = storage.ref().child(
-            'animal_image/$hotelId/${DateTime.now().millisecondsSinceEpoch}');
+            'animal_image/$animalId/${DateTime.now().millisecondsSinceEpoch}');
         final UploadTask uploadTask =
             storageReference.putFile(File(imageFile.path));
 
@@ -67,6 +67,8 @@ class _QurbaniState extends State<Qurbani> {
         setState(() {
           loading = true;
         });
+        final animalId = '${auth.currentUser!.uid}$did';
+        await uploadImages(animalId);
         await firestore
             .collection('app')
             .doc('Services')

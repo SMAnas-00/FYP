@@ -99,11 +99,11 @@ class _addFlightScreenState extends State<addFlightScreen> {
     }
   }
 
-  Future<void> uploadImages(String hotelId) async {
+  Future<void> uploadImages(String flightId) async {
     try {
       for (var imageFile in selectedImages) {
         final Reference storageReference = storage.ref().child(
-            'flight_images/$hotelId/${DateTime.now().millisecondsSinceEpoch}');
+            'flight_images/$flightId/${DateTime.now().millisecondsSinceEpoch}');
         final UploadTask uploadTask =
             storageReference.putFile(File(imageFile.path));
 
@@ -124,6 +124,8 @@ class _addFlightScreenState extends State<addFlightScreen> {
         });
         User? checkuser = user.currentUser;
         if (checkuser != null) {
+          final flightId = '${user.currentUser!.uid}$did';
+          await uploadImages(flightId);
           await firestore
               .collection('app')
               .doc('Services')

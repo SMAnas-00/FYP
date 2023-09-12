@@ -77,11 +77,11 @@ class _addTransportScreenState extends State<addTransportScreen> {
     }
   }
 
-  Future<void> uploadImages(String hotelId) async {
+  Future<void> uploadImages(String transportId) async {
     try {
       for (var imageFile in selectedImages) {
         final Reference storageReference = storage.ref().child(
-            'transport_image/$hotelId/${DateTime.now().millisecondsSinceEpoch}');
+            'transport_image/$transportId/${DateTime.now().millisecondsSinceEpoch}');
         final UploadTask uploadTask =
             storageReference.putFile(File(imageFile.path));
 
@@ -112,6 +112,8 @@ class _addTransportScreenState extends State<addTransportScreen> {
         setState(() {
           loading = true;
         });
+        final transportId = '${user.currentUser!.uid}$did';
+        await uploadImages(transportId);
         await firestore
             .collection('app')
             .doc('Services')
