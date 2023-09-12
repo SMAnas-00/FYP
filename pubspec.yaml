@@ -65,6 +65,8 @@ dependencies:
   snake_button: ^0.0.5
   location:
   google_place:
+  path_provider:
+  carousel_slider:
   
   
 

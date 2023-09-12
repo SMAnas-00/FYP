@@ -6,11 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 
+import 'package:carousel_slider/carousel_slider.dart';
+
 class Hoteldetails extends StatefulWidget {
   String hotelName;
   String hotelLocation;
   String hotelRating;
-  String hotelImageURL;
+  List<dynamic> hotelImageURL;
   int hotelPrice;
   String hotelcapacity;
   DateTime checkin;
@@ -38,6 +40,8 @@ class _HoteldetailsState extends State<Hoteldetails> {
   int selcteddays = 1;
   @override
   Widget build(BuildContext context) {
+    String input = widget.hotelRating;
+    String numpart = input.replaceAll(RegExp(r'[^0-9]'), '');
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
@@ -88,11 +92,35 @@ class _HoteldetailsState extends State<Hoteldetails> {
                         child:
 
                             ///***If you have exported images you must have to copy those images in assets/images directory.
-                            Image(
-                          image: NetworkImage(widget.hotelImageURL),
-                          height: 150,
-                          width: 150,
-                          fit: BoxFit.cover,
+                            //     Image(
+                            //   image: NetworkImage(widget.hotelImageURL),
+                            //   height: 150,
+                            //   width: 150,
+                            //   fit: BoxFit.cover,
+                            // ),
+                            CarouselSlider(
+                          options: CarouselOptions(
+                            height: 200.0, // Adjust the height as needed
+                            enlargeCenterPage: true,
+                            autoPlay: true,
+                          ),
+                          items: widget.hotelImageURL.map((imageUrl) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                  ),
+                                  child: Image.network(
+                                    imageUrl,
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              },
+                            );
+                          }).toList(),
                         ),
                       ),
                     ),
@@ -182,7 +210,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                         color: Colors.amber,
                       ),
                       itemCount: 5,
-                      rating: double.parse(widget.hotelRating),
+                      rating: double.parse(numpart),
                       itemSize: 20,
                     ),
                     const Padding(

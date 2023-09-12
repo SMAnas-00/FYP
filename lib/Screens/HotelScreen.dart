@@ -39,7 +39,10 @@ class _HotelListScreenState extends State<HotelListScreen> {
                 itemCount: listqurey.length,
                 itemBuilder: (context, index) {
                   QueryDocumentSnapshot document = listqurey[index];
-                  final img = document['hotel_imageURL'];
+                  final img = document['hotel_imageURLs'];
+                  String input = document['stars'];
+                  String numpart = input.replaceAll(RegExp(r'[^0-9]'), '');
+                  // int star = int.tryParse(numpart) ?? 0;
                   return Card(
                     margin: const EdgeInsets.all(4),
                     color: const Color(0xffffffff),
@@ -66,7 +69,7 @@ class _HotelListScreenState extends State<HotelListScreen> {
 
                                     ///***If you have exported images you must have to copy those images in assets/images directory.
                                     Image(
-                                  image: NetworkImage("$img"),
+                                  image: NetworkImage("${img[0]}"),
                                   height: 140,
                                   width: MediaQuery.of(context).size.width,
                                   fit: BoxFit.cover,
@@ -91,7 +94,7 @@ class _HotelListScreenState extends State<HotelListScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 4, horizontal: 0),
                                 child: Text(
-                                  '${document['Hotel_location']},${document['Hotel_city']}',
+                                  '${document['hotel_location']},${document['hotel_city']}',
                                   textAlign: TextAlign.start,
                                   overflow: TextOverflow.clip,
                                   style: const TextStyle(
@@ -106,7 +109,7 @@ class _HotelListScreenState extends State<HotelListScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 4, horizontal: 0),
                                 child: RatingBarIndicator(
-                                  rating: double.parse(document['Stars']),
+                                  rating: double.parse(numpart),
                                   itemBuilder: (context, index) => const Icon(
                                     Icons.star,
                                     color: Colors.amber,
@@ -118,7 +121,7 @@ class _HotelListScreenState extends State<HotelListScreen> {
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
                                 child: Text(
-                                  document['Hotel_description'],
+                                  document['description'],
                                   textAlign: TextAlign.start,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
@@ -167,17 +170,17 @@ class _HotelListScreenState extends State<HotelListScreen> {
                                 MaterialPageRoute(
                                     builder: (context) => Hoteldetails(
                                           hotelImageURL:
-                                              document['hotel_imageURL'],
+                                              document['hotel_imageURLs'],
                                           hotelLocation:
-                                              document['Hotel_location'],
+                                              document['hotel_location'],
                                           hotelName: document['name'],
-                                          hotelPrice: document['Hotel_price'],
-                                          hotelRating: document['Stars'],
+                                          hotelPrice:
+                                              document['single_room_price'],
+                                          hotelRating: document['stars'],
                                           hotelcapacity:
-                                              document['Room_capacity'],
+                                              document['room_capacity'],
                                           checkin: _checkInDate!,
-                                          description:
-                                              document['Hotel_description'],
+                                          description: document['description'],
                                           hotelid: document['hotel_id'],
                                         )));
                           },
