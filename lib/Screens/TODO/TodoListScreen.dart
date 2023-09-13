@@ -1,9 +1,7 @@
 // ignore_for_file: file_names
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:newui/Screens/TODO/database.dart';
-import 'package:newui/Screens/TODO/dialogbox.dart';
-import 'note.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class ToDoScreen extends StatefulWidget {
   const ToDoScreen({super.key});
@@ -13,53 +11,99 @@ class ToDoScreen extends StatefulWidget {
 }
 
 class _ToDoScreenState extends State<ToDoScreen> {
-  final _myBox = Hive.box('Task');
-  ToDoDataBase db = ToDoDataBase();
+  final TextEditingController _taskController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  List<TodoItem> _todos = [];
+  DateTime selectedDateTime = DateTime.now();
 
   @override
   void initState() {
-    if (_myBox.get("TODOLIST") == null) {
-      db.createInitialData();
-    } else {
-      // there already exists data
-      db.loadData();
-    }
     super.initState();
+    _readData();
   }
 
-  final controller = TextEditingController();
+  Future<void> _selectDateTime(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: selectedDateTime,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
 
-  void checkboxChanged(bool? val, int index) {
-    setState(() {
-      db.toDoList[index][1] = !db.toDoList[index][1];
-    });
-    db.updateDataBase();
-  }
-
-  void savenewtask() {
-    setState(() {
-      db.toDoList.add([controller.text, false]);
-    });
-    controller.clear();
-  }
-
-  void createnewtask() {
-    showDialog(
+    if (pickedDate != null && pickedDate != selectedDateTime) {
+      final TimeOfDay? pickedTime = await showTimePicker(
         context: context,
-        builder: (context) {
-          return DialogBox(
-            Controller: controller,
-            onsave: savenewtask,
-            oncancel: () => Navigator.of(context).pop(),
+        initialTime: TimeOfDay.fromDateTime(selectedDateTime),
+      );
+
+      if (pickedTime != null) {
+        setState(() {
+          selectedDateTime = DateTime(
+            pickedDate.year,
+            pickedDate.month,
+            pickedDate.day,
+            pickedTime.hour,
+            pickedTime.minute,
           );
         });
+      }
+    }
   }
 
-  void deleteTask(int index) {
+  Future<void> _readData() async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final file = File('${directory.path}/todo_data.txt');
+      final contents = await file.readAsString();
+
+      final List<Map<String, dynamic>> todoDataList =
+          List<Map<String, dynamic>>.from(
+              contents.split('\n').where((line) => line.isNotEmpty).map((line) {
+        final parts = line.split(';');
+        return {
+          'task': parts[0],
+          'dateTime': DateTime.parse(parts[1]),
+        };
+      }));
+
+      setState(() {
+        _todos = todoDataList
+            .map((data) => TodoItem(data['task'], data['dateTime']))
+            .toList();
+      });
+    } catch (e) {
+      print("Error reading data: $e");
+    }
+  }
+
+  Future<void> _saveData() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/todo_data.txt');
+    final data = _todos
+        .map((todo) => "${todo.task};${todo.dateTime.toIso8601String()}")
+        .join('\n');
+    await file.writeAsString(data);
+  }
+
+  void _addTodo() async {
+    if (_formKey.currentState!.validate()) {
+      await _selectDateTime(context);
+      final task = _taskController.text;
+      final dateTime = selectedDateTime;
+      final newTodo = TodoItem(task, dateTime);
+      setState(() {
+        _todos.add(newTodo);
+        _taskController.clear();
+      });
+      _saveData();
+    }
+  }
+
+  void _removeTodo(int index) {
     setState(() {
-      db.toDoList.removeAt(index);
+      _todos.removeAt(index);
     });
-    db.updateDataBase();
+    _saveData();
   }
 
   @override
@@ -67,30 +111,57 @@ class _ToDoScreenState extends State<ToDoScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('TODO'),
-        backgroundColor: const Color(0xFF3A57E8),
-        actions: [
-          TextButton(
-              onPressed: () {
-                createnewtask();
-              },
-              child: const Text(
-                'Add New',
-                style: TextStyle(color: Colors.white),
-              ))
-        ],
+        title: Text('Todo List'),
       ),
-      body: ListView.builder(
-        itemCount: db.toDoList.length,
-        itemBuilder: (context, index) {
-          return Todolist(
-            taskname: db.toDoList[index][0],
-            taskcompleted: db.toDoList[index][1],
-            onChanged: (value) => checkboxChanged(value, index),
-            deleteFunction: (context) => deleteTask(index),
-          );
-        },
+      body: Column(
+        children: [
+          Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextFormField(
+                controller: _taskController,
+                decoration: InputDecoration(labelText: 'Task'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter a task.';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: _addTodo,
+            child: Text('Add Task'),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _todos.length,
+              itemBuilder: (context, index) {
+                final todo = _todos[index];
+                return ListTile(
+                  title: Text(todo.task),
+                  subtitle: Text('Date & Time: ${todo.dateTime.toString()}'),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      _removeTodo(index);
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
+}
+
+class TodoItem {
+  String task;
+  DateTime dateTime;
+
+  TodoItem(this.task, this.dateTime);
 }
