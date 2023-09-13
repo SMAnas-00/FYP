@@ -83,6 +83,17 @@ class _AdminHomePageState extends State<AdminHomePage> {
               Navigator.pushNamed(context, '/addanimal');
             },
           ),
+          AdminDashboardCard(
+            title: 'Services',
+            icon: const FaIcon(
+              FontAwesomeIcons.mosque,
+              size: 20,
+            ).icon,
+            onPressed: () {
+              // Navigate to the desired page
+              Navigator.pushNamed(context, '/servicescreen');
+            },
+          ),
         ],
       ),
     );
