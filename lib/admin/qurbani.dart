@@ -75,6 +75,7 @@ class _QurbaniState extends State<Qurbani> {
             .collection('Animal')
             .doc('${auth.currentUser!.uid}$did')
             .set({
+          'admin_id': auth.currentUser!.uid,
           'animal_price': int.parse(priceController.text),
           'weight': int.parse(weightController.text),
           'animal_images': imageUrls,
@@ -233,7 +234,7 @@ class _QurbaniState extends State<Qurbani> {
                             valueColor:
                                 AlwaysStoppedAnimation<Color>(Colors.white),
                           )
-                        : const Text('Add Hotel',
+                        : const Text('Add Animal',
                             style: TextStyle(fontSize: 16)),
                   ),
                 ),
