@@ -31,6 +31,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
   final hotelTypeController = TextEditingController();
   final singleRoomPriceController = TextEditingController();
   final connectedRoomPriceController = TextEditingController();
+  final activeRoomController = TextEditingController();
   final personPerRoomController = TextEditingController();
   final cityController = TextEditingController();
   final hotelImageController = TextEditingController();
@@ -121,7 +122,7 @@ class _addHotelScreenState extends State<addHotelScreen> {
                 int.parse(connectedRoomPriceController.text),
             'hotel_location': hotelLocationController.text,
             'hotel_city': cityController.text,
-            'active_rooms': '3',
+            'active_rooms': int.parse(activeRoomController.text),
             'stars': selectedHotelType,
             'room_capacity': personPerRoomController.text,
             'admin_id': checkuser.uid,
@@ -319,6 +320,18 @@ class _addHotelScreenState extends State<addHotelScreen> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Hotel City  Required';
+                    }
+                    return null;
+                  },
+                ),
+
+                TextFormField(
+                  controller: activeRoomController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Active Rooms'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Rooms Required';
                     }
                     return null;
                   },

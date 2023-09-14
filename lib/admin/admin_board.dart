@@ -65,14 +65,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
             },
           ),
           AdminDashboardCard(
-            title: 'Requests',
-            icon: Icons.request_page,
-            onPressed: () {
-              // Navigate to flights management page
-              Navigator.pushNamed(context, '/');
-            },
-          ),
-          AdminDashboardCard(
             title: 'Qurbani',
             icon: const FaIcon(
               FontAwesomeIcons.cow,
