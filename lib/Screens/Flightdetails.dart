@@ -4,27 +4,34 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import 'package:carousel_slider/carousel_slider.dart';
 
 class FlightDetails extends StatefulWidget {
   String flight_name;
-  String departure;
+  String departure_time;
+  String destination_time;
   String destination;
-  String departure_city;
-  String destination_city;
-  String flight_time;
-  String FlightImageURL;
-  int FlightPrice;
+  String departure;
+  List<dynamic> FlightImageURL;
+  int FlightPriceEco;
+  int FlightPriceBus;
   String flight_id;
+  double latitude;
+  double longitude;
   FlightDetails(
       {super.key,
       required this.flight_name,
       required this.FlightImageURL,
-      required this.FlightPrice,
-      required this.flight_time,
-      required this.departure,
-      required this.departure_city,
+      required this.FlightPriceEco,
+      required this.FlightPriceBus,
+      required this.departure_time,
+      required this.destination_time,
       required this.destination,
-      required this.destination_city,
+      required this.departure,
+      required this.latitude,
+      required this.longitude,
       required this.flight_id});
 
   @override
@@ -83,14 +90,29 @@ class _FlightDetailsState extends State<FlightDetails> {
                           vertical: 16, horizontal: 0),
                       child: Align(
                         alignment: Alignment.center,
-                        child:
-
-                            ///***If you have exported images you must have to copy those images in assets/images directory.
-                            Image(
-                          image: NetworkImage(widget.FlightImageURL),
-                          height: 150,
-                          width: 150,
-                          fit: BoxFit.contain,
+                        child: CarouselSlider(
+                          options: CarouselOptions(
+                            height: 200.0, // Adjust the height as needed
+                            enlargeCenterPage: true,
+                            autoPlay: true,
+                          ),
+                          items: widget.FlightImageURL.map((imageUrl) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                  ),
+                                  child: Image.network(
+                                    imageUrl,
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              },
+                            );
+                          }).toList(),
                         ),
                       ),
                     ),
@@ -122,7 +144,7 @@ class _FlightDetailsState extends State<FlightDetails> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Text(
-                                "PKR ${widget.FlightPrice}",
+                                "PKR ${widget.FlightPriceEco}",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: const TextStyle(
@@ -173,16 +195,14 @@ class _FlightDetailsState extends State<FlightDetails> {
                               "From",
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
-                            Text(
-                                '${widget.departure},${widget.departure_city}'),
+                            Text('${widget.departure}'),
                             const SizedBox(height: 10),
                             const Divider(),
                             const Text(
                               "To",
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
-                            Text(
-                                '${widget.destination},${widget.destination_city}')
+                            Text('${widget.destination}')
                           ],
                         )
                       ],
@@ -297,7 +317,7 @@ class _FlightDetailsState extends State<FlightDetails> {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          int totalprice = widget.FlightPrice * selcteddays;
+                          int totalprice = widget.FlightPriceEco * selcteddays;
                           return AlertDialog(
                             title: const Text('Confirmatrion'),
                             content: SizedBox(
@@ -335,7 +355,7 @@ class _FlightDetailsState extends State<FlightDetails> {
                                         .set({
                                       'name': widget.flight_name,
                                       'price': totalprice,
-                                      'image': widget.FlightImageURL,
+                                      'image': widget.FlightImageURL[0],
                                       'id': widget.flight_id
                                     }).then((value) => Navigator.pop(context));
                                     await firestore
@@ -349,7 +369,7 @@ class _FlightDetailsState extends State<FlightDetails> {
                                       'fname': widget.flight_name,
                                       'fid': widget.flight_id,
                                       'fprice': totalprice,
-                                      'fimage': widget.FlightImageURL,
+                                      'fimage': widget.FlightImageURL[0],
                                       'fdeparture': datecheckin,
                                       'fPessangers': selcteddays,
                                       'fdays': selcteddays,

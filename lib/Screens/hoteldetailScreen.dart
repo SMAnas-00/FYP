@@ -49,17 +49,11 @@ class _HoteldetailsState extends State<Hoteldetails> {
   int selcteddays = 1;
   String _RoomType = 'Single';
   final List<String> _RoomTypes = ['Single', 'Connected'];
-  @override
-  void initState() {
-    int updatedprice = widget.hotelPrice;
-    super.initState();
-  }
-
   int updatedprice = 0;
   @override
-  void setState(VoidCallback fn) {
-    int updatedprice;
-    super.setState(fn);
+  void initState() {
+    super.initState();
+    updatedprice = widget.hotelPrice;
   }
 
   @override
