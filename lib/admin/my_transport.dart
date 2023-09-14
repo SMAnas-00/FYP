@@ -137,7 +137,7 @@ class _MyTransportState extends State<MyTransport> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: 4, horizontal: 0),
                               child: Text(
-                                'Fair: ${document['price']} Per Day',
+                                'Fair: ${document['price']} PKR Per Day',
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: const TextStyle(
