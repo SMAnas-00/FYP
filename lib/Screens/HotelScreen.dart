@@ -181,7 +181,11 @@ class _HotelListScreenState extends State<HotelListScreen> {
                                               document['room_capacity'],
                                           checkin: _checkInDate!,
                                           description: document['description'],
+                                          latitude: document['hotel_lat'],
+                                          longitude: document['hotel_lng'],
                                           hotelid: document['hotel_id'],
+                                          hotelpriceConn:
+                                              document['connected_room_price'],
                                         )));
                           },
                         ),

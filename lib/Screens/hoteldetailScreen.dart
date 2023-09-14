@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -18,6 +19,9 @@ class Hoteldetails extends StatefulWidget {
   DateTime checkin;
   String description;
   String hotelid;
+  double latitude;
+  double longitude;
+  int hotelpriceConn;
 
   Hoteldetails(
       {super.key,
@@ -29,6 +33,9 @@ class Hoteldetails extends StatefulWidget {
       required this.hotelPrice,
       required this.checkin,
       required this.description,
+      required this.latitude,
+      required this.longitude,
+      required this.hotelpriceConn,
       required this.hotelid});
 
   @override
@@ -36,12 +43,43 @@ class Hoteldetails extends StatefulWidget {
 }
 
 class _HoteldetailsState extends State<Hoteldetails> {
+  GoogleMapController? _controller;
+
   int selctedrooms = 1;
   int selcteddays = 1;
+  String _RoomType = 'Single';
+  final List<String> _RoomTypes = ['Single', 'Connected'];
+  @override
+  void initState() {
+    int updatedprice = widget.hotelPrice;
+    super.initState();
+  }
+
+  int updatedprice = 0;
+  @override
+  void setState(VoidCallback fn) {
+    int updatedprice;
+    super.setState(fn);
+  }
+
   @override
   Widget build(BuildContext context) {
     String input = widget.hotelRating;
     String numpart = input.replaceAll(RegExp(r'[^0-9]'), '');
+    CameraPosition _initialPosition = CameraPosition(
+      target: LatLng(widget.latitude, widget.longitude),
+      zoom: 12.0,
+    );
+    Set<Marker> _markers = {
+      Marker(
+        markerId: MarkerId('marker_1'),
+        position: LatLng(widget.latitude, widget.longitude),
+        infoWindow: InfoWindow(
+          title: widget.hotelName,
+          snippet: widget.hotelLocation,
+        ),
+      ),
+    };
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
@@ -89,16 +127,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                           vertical: 16, horizontal: 0),
                       child: Align(
                         alignment: Alignment.center,
-                        child:
-
-                            ///***If you have exported images you must have to copy those images in assets/images directory.
-                            //     Image(
-                            //   image: NetworkImage(widget.hotelImageURL),
-                            //   height: 150,
-                            //   width: 150,
-                            //   fit: BoxFit.cover,
-                            // ),
-                            CarouselSlider(
+                        child: CarouselSlider(
                           options: CarouselOptions(
                             height: 200.0, // Adjust the height as needed
                             enlargeCenterPage: true,
@@ -152,7 +181,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Text(
-                                "PKR ${widget.hotelPrice}",
+                                "PKR ${updatedprice}",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: const TextStyle(
@@ -212,6 +241,47 @@ class _HoteldetailsState extends State<Hoteldetails> {
                       itemCount: 5,
                       rating: double.parse(numpart),
                       itemSize: 20,
+                    ),
+                    SizedBox(height: 30),
+                    Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20)),
+                        width: 200,
+                        height: 200,
+                        child: GoogleMap(
+                          initialCameraPosition: _initialPosition,
+                          onMapCreated: (GoogleMapController controller) {
+                            _controller = controller;
+                          },
+                          markers: _markers,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Text("Room Type:"),
+                        DropdownButton(
+                          value: _RoomType,
+                          items: _RoomTypes.map((RoomType) {
+                            return DropdownMenuItem(
+                              value: RoomType,
+                              child: Text(RoomType),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _RoomType = value!;
+                              print(value);
+                              if (value == 'Connected') {
+                                updatedprice = widget.hotelpriceConn;
+                              } else {
+                                updatedprice = widget.hotelPrice;
+                              }
+                            });
+                          },
+                        ),
+                      ],
                     ),
                     const Padding(
                       padding:
@@ -413,8 +483,14 @@ class _HoteldetailsState extends State<Hoteldetails> {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          int totalprice =
-                              widget.hotelPrice * selctedrooms * selcteddays;
+                          int totalprice;
+                          if (updatedprice == 0) {
+                            totalprice =
+                                widget.hotelPrice * selctedrooms * selcteddays;
+                          } else {
+                            totalprice =
+                                updatedprice * selctedrooms * selcteddays;
+                          }
                           return AlertDialog(
                             title: const Text('Confirmatrion'),
                             content: SizedBox(
@@ -422,15 +498,21 @@ class _HoteldetailsState extends State<Hoteldetails> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('NAME: ${widget.hotelName}'),
-                                  Text('Hotel Id:${widget.hotelid}'),
+                                  Expanded(
+                                      child: Text('NAME: ${widget.hotelName}')),
+                                  Expanded(
+                                      child:
+                                          Text('Hotel Id:${widget.hotelid}')),
                                   const SizedBox(height: 5),
-                                  Text('Rooms: $selctedrooms'),
+                                  Expanded(child: Text('Rooms: $selctedrooms')),
                                   const SizedBox(height: 10),
-                                  Text('Check In: $datecheckin'),
-                                  Text('Check OUT: $datecheckout'),
+                                  Expanded(
+                                      child: Text('Check In: $datecheckin')),
+                                  Expanded(
+                                      child: Text('Check OUT: $datecheckout')),
                                   const SizedBox(height: 10),
-                                  Text('Total Price: $totalprice'),
+                                  Expanded(
+                                      child: Text('Total Price: $totalprice')),
                                 ],
                               ),
                             ),
@@ -450,7 +532,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                                         .set({
                                       'name': widget.hotelName,
                                       'price': totalprice,
-                                      'image': widget.hotelImageURL,
+                                      'image': widget.hotelImageURL[0],
                                       'id': widget.hotelid
                                     }).then((value) => Navigator.pop(context));
                                     await firestore
