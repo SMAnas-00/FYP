@@ -262,67 +262,67 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                        child: TypeAheadField(
-                          textFieldConfiguration: TextFieldConfiguration(
-                              obscureText: false,
-                              textAlign: TextAlign.start,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                                fontSize: 14,
-                                color: Color(0xffffffff),
-                              ),
-                              decoration: InputDecoration(
-                                disabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  borderSide: const BorderSide(
-                                      color: Color(0x00ffffff), width: 1),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  borderSide: const BorderSide(
-                                      color: Color(0x00ffffff), width: 1),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  borderSide: const BorderSide(
-                                      color: Color(0x00ffffff), width: 1),
-                                ),
-                                hintText: "Type Something...",
-                                hintStyle: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 14,
-                                  color: Color(0x55ffffff),
-                                ),
-                                filled: true,
-                                fillColor: const Color(0xff4c67ee),
-                                isDense: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 12),
-                                prefixIcon: const Icon(Icons.search,
-                                    color: Color(0x55ffffff), size: 20),
-                              ),
-                              controller: _searchController),
-                          suggestionsCallback: (pattern) =>
-                              _getPredictions(pattern),
-                          itemBuilder: (context, itemData) {
-                            return ListTile(title: Text(itemData));
-                          },
-                          onSuggestionSelected: (suggestion) {
-                            _searchController.text = suggestion;
-                          },
-                          suggestionsBoxDecoration: SuggestionsBoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            elevation: 8.0,
-                          ),
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      //   child: TypeAheadField(
+                      //     textFieldConfiguration: TextFieldConfiguration(
+                      //         obscureText: false,
+                      //         textAlign: TextAlign.start,
+                      //         maxLines: 1,
+                      //         style: const TextStyle(
+                      //           fontWeight: FontWeight.w400,
+                      //           fontStyle: FontStyle.normal,
+                      //           fontSize: 14,
+                      //           color: Color(0xffffffff),
+                      //         ),
+                      //         decoration: InputDecoration(
+                      //           disabledBorder: OutlineInputBorder(
+                      //             borderRadius: BorderRadius.circular(12.0),
+                      //             borderSide: const BorderSide(
+                      //                 color: Color(0x00ffffff), width: 1),
+                      //           ),
+                      //           focusedBorder: OutlineInputBorder(
+                      //             borderRadius: BorderRadius.circular(12.0),
+                      //             borderSide: const BorderSide(
+                      //                 color: Color(0x00ffffff), width: 1),
+                      //           ),
+                      //           enabledBorder: OutlineInputBorder(
+                      //             borderRadius: BorderRadius.circular(12.0),
+                      //             borderSide: const BorderSide(
+                      //                 color: Color(0x00ffffff), width: 1),
+                      //           ),
+                      //           hintText: "Type Something...",
+                      //           hintStyle: const TextStyle(
+                      //             fontWeight: FontWeight.w400,
+                      //             fontStyle: FontStyle.normal,
+                      //             fontSize: 14,
+                      //             color: Color(0x55ffffff),
+                      //           ),
+                      //           filled: true,
+                      //           fillColor: const Color(0xff4c67ee),
+                      //           isDense: true,
+                      //           contentPadding: const EdgeInsets.symmetric(
+                      //               vertical: 8, horizontal: 12),
+                      //           prefixIcon: const Icon(Icons.search,
+                      //               color: Color(0x55ffffff), size: 20),
+                      //         ),
+                      //         controller: _searchController),
+                      //     suggestionsCallback: (pattern) =>
+                      //         _getPredictions(pattern),
+                      //     itemBuilder: (context, itemData) {
+                      //       return ListTile(title: Text(itemData));
+                      //     },
+                      //     onSuggestionSelected: (suggestion) {
+                      //       _searchController.text = suggestion;
+                      //     },
+                      //     suggestionsBoxDecoration: SuggestionsBoxDecoration(
+                      //       borderRadius: BorderRadius.circular(10.0),
+                      //       elevation: 8.0,
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.3,
+                        height: MediaQuery.of(context).size.height * 0.35,
                         child: Stack(
                           children: [
                             PageView.builder(
