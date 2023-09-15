@@ -43,6 +43,8 @@ class _addFlightScreenState extends State<addFlightScreen> {
   final businessSeatsController = TextEditingController();
   final economyPriceController = TextEditingController();
   final businessPriceController = TextEditingController();
+  final departureCityController = TextEditingController();
+  final destinationCityController = TextEditingController();
 
   DateTime selectedDateTime = DateTime.now();
 
@@ -154,7 +156,9 @@ class _addFlightScreenState extends State<addFlightScreen> {
                 int.parse(businessSeatsController.text),
             'admin_id': user.currentUser!.uid,
             'flight_imageURL': imageUrls,
-            'flight_id': 'fo$did'
+            'flight_id': 'fo$did',
+            'departure_city': departureCityController.text,
+            'destination_city': destinationCityController.text,
           });
           setState(() {
             selectedFlightType = null;
@@ -477,6 +481,32 @@ class _addFlightScreenState extends State<addFlightScreen> {
                       );
                     },
                   ),
+                TextFormField(
+                  controller: departureCityController,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(
+                    labelText: 'Departure City',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Departure city required';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: destinationCityController,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(
+                    labelText: 'Destination City',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Destination city required';
+                    }
+                    return null;
+                  },
+                ),
                 GestureDetector(
                   onTap: () async {
                     DateTime? datePicked = await showDatePicker(
