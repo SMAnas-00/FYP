@@ -197,9 +197,6 @@ class _CartScreenState extends State<CartScreen> {
               itemBuilder: (context, index) {
                 int price = snapshot.data!.docs[index].get('price');
                 total = price + total;
-                // setState(() {
-                //   total += price;
-                // });
                 return CartItem(
                   title: snapshot.data!.docs[index].get('name'),
                   image: snapshot.data!.docs[index].get('image'),
