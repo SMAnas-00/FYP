@@ -22,7 +22,6 @@ class NoCartScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            ///***If you have exported images you must have to copy those images in assets/images directory.
             const Image(
               image: NetworkImage(
                   "https://image.freepik.com/free-vector/no-data-concept-illustration_114360-2506.jpg"),
@@ -192,13 +191,14 @@ class _CartScreenState extends State<CartScreen> {
             if (snapshot.data!.docs == null) {
               return const NoCartScreen();
             }
-            total = 0;
 
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
                 int price = snapshot.data!.docs[index].get('price');
-                total += price;
+                setState(() {
+                  total += price;
+                });
                 return CartItem(
                   title: snapshot.data!.docs[index].get('name'),
                   image: snapshot.data!.docs[index].get('image'),
@@ -215,18 +215,14 @@ class _CartScreenState extends State<CartScreen> {
   Future<void> makePayment() async {
     try {
       paymentIntent = await createPaymentIntent('$total', 'PKR');
-      //Payment Sheet
       await Stripe.instance
           .initPaymentSheet(
               paymentSheetParameters: SetupPaymentSheetParameters(
                   paymentIntentClientSecret: paymentIntent!['client_secret'],
-                  // applePay: const PaymentSheetApplePay(merchantCountryCode: '+92',),
-                  // googlePay: const PaymentSheetGooglePay(testEnv: true, currencyCode: "US", merchantCountryCode: "+92"),
                   style: ThemeMode.dark,
                   merchantDisplayName: 'Anas'))
           .then((value) {});
 
-      ///now finally display payment sheeet
       displayPaymentSheet();
     } catch (e, s) {
       debugPrint('exception:$e$s');
@@ -268,18 +264,7 @@ class _CartScreenState extends State<CartScreen> {
             .collection(user.currentUser!.uid)
             .doc('request')
             .update({'status': 'success', 'totalPrice': total});
-        // await firestore
-        //     .collection('app')
-        //     .doc('bookings')
-        //     .collection('${user.currentUser!.uid}')
-        //     .doc('hotel')
-        //     .update({'status': 'success'});
-        // await firestore
-        //     .collection('app')
-        //     .doc('bookings')
-        //     .collection('${user.currentUser!.uid}')
-        //     .doc('transport')
-        //     .update({'status': 'success'});
+
         var usertoken = await firestore
             .collection('app')
             .doc('Users')
