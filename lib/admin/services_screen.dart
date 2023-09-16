@@ -36,7 +36,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
             indicatorColor: Colors.white,
             tabs: [
               Tab(
-                child: Text("Hotels"),
+                child: Text("Hotel"),
               ),
               Tab(
                 child: Text("Flight"),
