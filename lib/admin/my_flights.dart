@@ -32,75 +32,77 @@ class _MyFlightsState extends State<MyFlights> {
   @override
   Widget build(BuildContext context) {
     final user = auth.currentUser;
-    return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-          stream: flightitems.snapshots(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasError) {
-              return const Center(child: Text("Something wrong"));
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                  child: CircularProgressIndicator(
-                color: Color.fromARGB(255, 29, 165, 153),
-              ));
-            }
-            final now = DateTime.now();
-            final sortedDocs = snapshot.data!.docs.where((doc) {
-              final airlineDate =
-                  DateFormat('dd-MM-yyyy').parse(doc['departure_date']);
-              final airlineDateTime = DateTime(
-                  airlineDate.year, airlineDate.month, airlineDate.day);
-              final adminID = doc['admin_id'];
-              final userID = user!.uid;
-              return userID == adminID &&
-                  airlineDateTime
-                      .isAfter(now.subtract(const Duration(days: 1)));
-            }).toList();
+    return SingleChildScrollView(
+      child: Scaffold(
+        body: StreamBuilder<QuerySnapshot>(
+            stream: flightitems.snapshots(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasError) {
+                return const Center(child: Text("Something wrong"));
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                    child: CircularProgressIndicator(
+                  color: Color.fromARGB(255, 29, 165, 153),
+                ));
+              }
+              final now = DateTime.now();
+              final sortedDocs = snapshot.data!.docs.where((doc) {
+                final airlineDate =
+                    DateFormat('dd-MM-yyyy').parse(doc['departure_date']);
+                final airlineDateTime = DateTime(
+                    airlineDate.year, airlineDate.month, airlineDate.day);
+                final adminID = doc['admin_id'];
+                final userID = user!.uid;
+                return userID == adminID &&
+                    airlineDateTime
+                        .isAfter(now.subtract(const Duration(days: 1)));
+              }).toList();
 
-            if (sortedDocs.isEmpty) {
-              return const Center(child: Text("No Airline Created Yet"));
-            }
+              if (sortedDocs.isEmpty) {
+                return const Center(child: Text("No Airline Created Yet"));
+              }
 
-            return Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  ListView.builder(
-                      physics: const ClampingScrollPhysics(),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: sortedDocs.length,
-                      itemBuilder: (context, index) {
-                        QueryDocumentSnapshot document = sortedDocs[index];
-                        return GestureDetector(
-                          child: FlightCard(
-                            economy_seats: document['economy_seats'],
-                            business_Seats: document['business_seats'],
-                            economy_price: document['economy_price'],
-                            business_price: document['business_price'],
-                            departure: document['departure'],
-                            destination: document['destination'],
-                            departure_date: document['departure_date'],
-                            departure_time: document['departure_time'],
-                            destination_date: document['destination_date'],
-                            destination_time: document['destination_time'],
-                            flight_name: document['airline_name'],
-                            flight_type: document['type'],
-                            flight_number: document['airline_number'],
-                            mid_point: document['mid_point'],
-                          ),
-                          onTap: () {},
-                        );
-                      })
-                ],
-              ),
-            );
-          }),
+              return Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ListView.builder(
+                        physics: const ClampingScrollPhysics(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: sortedDocs.length,
+                        itemBuilder: (context, index) {
+                          QueryDocumentSnapshot document = sortedDocs[index];
+                          return GestureDetector(
+                            child: FlightCard(
+                              economy_seats: document['economy_seats'],
+                              business_Seats: document['business_seats'],
+                              economy_price: document['economy_price'],
+                              business_price: document['business_price'],
+                              departure: document['departure'],
+                              destination: document['destination'],
+                              departure_date: document['departure_date'],
+                              departure_time: document['departure_time'],
+                              destination_date: document['destination_date'],
+                              destination_time: document['destination_time'],
+                              flight_name: document['airline_name'],
+                              flight_type: document['type'],
+                              flight_number: document['airline_number'],
+                              mid_point: document['mid_point'],
+                            ),
+                            onTap: () {},
+                          );
+                        })
+                  ],
+                ),
+              );
+            }),
+      ),
     );
   }
 }
