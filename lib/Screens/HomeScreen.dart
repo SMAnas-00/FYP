@@ -31,27 +31,27 @@ class _HomeScreenState extends State<HomeScreen> {
   String weatherIconUrl = '';
   bool isLoading = false;
 
-  final TextEditingController _searchController = TextEditingController();
-  final List<String> _predictions = [
-    'Hotels',
-    'Transports',
-    'Flights',
-    '360 View',
-    'Mina Camps',
-    'List of Hotels',
-    'List of Transports',
-    'List of Flights'
-  ];
+  // final TextEditingController _searchController = TextEditingController();
+  // final List<String> _predictions = [
+  //   'Hotels',
+  //   'Transports',
+  //   'Flights',
+  //   '360 View',
+  //   'Mina Camps',
+  //   'List of Hotels',
+  //   'List of Transports',
+  //   'List of Flights'
+  // ];
 
-  List<String> _getPredictions(String query) {
-    if (query.isEmpty) {
-      return [];
-    }
-    return _predictions
-        .where((prediction) =>
-            prediction.toLowerCase().contains(query.toLowerCase()))
-        .toList();
-  }
+  // List<String> _getPredictions(String query) {
+  //   if (query.isEmpty) {
+  //     return [];
+  //   }
+  //   return _predictions
+  //       .where((prediction) =>
+  //           prediction.toLowerCase().contains(query.toLowerCase()))
+  //       .toList();
+  // }
 
   Future<void> _getCurrentLocation() async {
     try {
@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isLoading = true;
     });
 
-    const apiKey = '940bfc66d0aafd682bb9f4384af1ef67';
+    const apiKey = 'bfcf223ce603dc35e373a27092feaa2f';
     final apiUrl =
         'https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$apiKey';
 
@@ -223,18 +223,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ],
                             ),
-                            IconButton(
-                                icon: const Icon(
-                                  Icons.dashboard,
-                                  color: Color(0xffffffff),
-                                  size: 20,
-                                ),
-                                onPressed: () {}),
                           ],
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -322,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       //   ),
                       // ),
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.35,
+                        height: MediaQuery.of(context).size.height * 0.28,
                         child: Stack(
                           children: [
                             PageView.builder(
@@ -388,7 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             const Padding(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,5 +1,3 @@
-// ignore_for_file: file_names
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +20,9 @@ class Hoteldetails extends StatefulWidget {
   double latitude;
   double longitude;
   int hotelpriceConn;
+  String adminid;
+  String userid;
+  String docid;
 
   Hoteldetails(
       {super.key,
@@ -36,6 +37,9 @@ class Hoteldetails extends StatefulWidget {
       required this.latitude,
       required this.longitude,
       required this.hotelpriceConn,
+      required this.adminid,
+      required this.userid,
+      required this.docid,
       required this.hotelid});
 
   @override
@@ -538,6 +542,9 @@ class _HoteldetailsState extends State<Hoteldetails> {
                                         .collection(user.currentUser!.uid)
                                         .doc('request')
                                         .set({
+                                      'adminid': widget.adminid,
+                                      'userid': widget.userid,
+                                      'hotel_docid': widget.docid,
                                       'hname': widget.hotelName,
                                       'hid': widget.hotelid,
                                       'hprice': totalprice,
@@ -547,6 +554,8 @@ class _HoteldetailsState extends State<Hoteldetails> {
                                       'hrooms': selctedrooms,
                                       'hdays': selcteddays,
                                       'status': 'pending',
+                                      'hlatitude': widget.latitude,
+                                      'hlongitude': widget.longitude,
                                       'date': DateTime.now(),
                                     }, SetOptions(merge: true));
                                   },

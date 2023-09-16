@@ -20,6 +20,10 @@ class FlightDetails extends StatefulWidget {
   String flight_id;
   double latitude;
   double longitude;
+  String adminid;
+  String userid;
+  String docid;
+
   FlightDetails(
       {super.key,
       required this.flight_name,
@@ -32,6 +36,9 @@ class FlightDetails extends StatefulWidget {
       required this.departure,
       required this.latitude,
       required this.longitude,
+      required this.adminid,
+      required this.userid,
+      required this.docid,
       required this.flight_id});
 
   @override
@@ -367,6 +374,9 @@ class _FlightDetailsState extends State<FlightDetails> {
                                         .collection(user.currentUser!.uid)
                                         .doc('request')
                                         .set({
+                                      'admin_id': widget.adminid,
+                                      'userid': widget.userid,
+                                      'flight_docid': widget.docid,
                                       'fname': widget.flight_name,
                                       'fid': widget.flight_id,
                                       'fprice': totalprice,
@@ -375,6 +385,8 @@ class _FlightDetailsState extends State<FlightDetails> {
                                       'fPessangers': selcteddays,
                                       'fdays': selcteddays,
                                       'status': 'pending',
+                                      'flatitude': widget.latitude,
+                                      'flongitude': widget.longitude,
                                       'date': DateTime.now(),
                                     }, SetOptions(merge: true));
                                   },

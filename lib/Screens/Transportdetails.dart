@@ -4,22 +4,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class TransportDetails extends StatefulWidget {
   String transtype;
-  String destination;
   String pickup;
-  // ignore: non_constant_identifier_names
-  String trans_imgURL;
+  List<dynamic> trans_imgURL;
   int fareprice;
   String transId;
+  String adminid;
+  String userid;
+  double latitude;
+  double longitude;
+  String docid;
   TransportDetails(
       {super.key,
       required this.transtype,
-      required this.destination,
       required this.pickup,
       required this.trans_imgURL,
       required this.fareprice,
+      required this.latitude,
+      required this.longitude,
+      required this.adminid,
+      required this.userid,
+      required this.docid,
       required this.transId});
 
   @override
@@ -27,11 +36,28 @@ class TransportDetails extends StatefulWidget {
 }
 
 class _TransportDetailsState extends State<TransportDetails> {
+  final departureDateController = TextEditingController();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth user = FirebaseAuth.instance;
   int selcteddays = 1;
+  GoogleMapController? _controller;
+
   @override
   Widget build(BuildContext context) {
+    CameraPosition _initialPosition = CameraPosition(
+      target: LatLng(widget.latitude, widget.longitude),
+      zoom: 12.0,
+    );
+    Set<Marker> _markers = {
+      Marker(
+        markerId: const MarkerId('marker_1'),
+        position: LatLng(widget.latitude, widget.longitude),
+        infoWindow: InfoWindow(
+          title: widget.transtype,
+          snippet: widget.pickup,
+        ),
+      ),
+    };
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
@@ -79,11 +105,30 @@ class _TransportDetailsState extends State<TransportDetails> {
                           vertical: 16, horizontal: 0),
                       child: Align(
                         alignment: Alignment.center,
-                        child: Image(
-                          image: NetworkImage(widget.trans_imgURL),
-                          height: 150,
-                          width: 150,
-                          fit: BoxFit.contain,
+                        child: CarouselSlider(
+                          options: CarouselOptions(
+                            height: 200.0, // Adjust the height as needed
+                            enlargeCenterPage: true,
+                            autoPlay: true,
+                          ),
+                          items: widget.trans_imgURL.map((imageUrl) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.grey,
+                                  ),
+                                  child: Image.network(
+                                    imageUrl,
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              },
+                            );
+                          }).toList(),
                         ),
                       ),
                     ),
@@ -126,7 +171,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                                 ),
                               ),
                               const Text(
-                                "/Ride",
+                                "/day",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
@@ -163,26 +208,34 @@ class _TransportDetailsState extends State<TransportDetails> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text(
-                              "From",
+                              "Available on:",
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
                             Text(widget.pickup),
-                            const SizedBox(height: 10),
-                            const Divider(),
-                            const Text(
-                              "To",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            Text(widget.destination)
                           ],
                         )
                       ],
+                    ),
+                    Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20)),
+                        width: 200,
+                        height: 200,
+                        child: GoogleMap(
+                          initialCameraPosition: _initialPosition,
+                          onMapCreated: (GoogleMapController controller) {
+                            _controller = controller;
+                          },
+                          markers: _markers,
+                        ),
+                      ),
                     ),
                     const Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
-                        "Number of Passangers",
+                        "Number of Days",
                         textAlign: TextAlign.start,
                         overflow: TextOverflow.clip,
                         style: TextStyle(
@@ -270,8 +323,28 @@ class _TransportDetailsState extends State<TransportDetails> {
                       ],
                     ),
                     const SizedBox(height: 30),
-                    const Row(
-                      children: [DateTimePick()],
+                    GestureDetector(
+                      onTap: () async {
+                        DateTime? datePicked = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime(2024));
+                        if (datePicked != null) {
+                          setState(() {
+                            departureDateController.text =
+                                '${datePicked.day}-${datePicked.month}-${datePicked.year}';
+                          });
+                        }
+                      },
+                      child: TextFormField(
+                        controller: departureDateController,
+                        enabled: false,
+                        showCursor: false,
+                        decoration: const InputDecoration(
+                          labelText: 'Select Booking Date',
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -283,16 +356,13 @@ class _TransportDetailsState extends State<TransportDetails> {
                 alignment: Alignment.bottomCenter,
                 child: MaterialButton(
                   onPressed: () {
-                    String datecheckin =
-                        DateFormat('EEEE, MMM dd, yyyy').format(_checkInDate!);
-                    if (_checkInDate == null) {
+                    if (departureDateController.text == null) {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: const Text("Error"),
-                            content:
-                                const Text("Please select booking date date"),
+                            content: const Text("Please select booking date"),
                             actions: <Widget>[
                               TextButton(
                                 child: const Text("Ok"),
@@ -321,9 +391,9 @@ class _TransportDetailsState extends State<TransportDetails> {
                                     Text('ID: ${widget.transId}'),
                                     const SizedBox(height: 10),
                                     Text('DEPART: ${widget.pickup}'),
-                                    Text('DES: ${widget.destination}'),
                                     const SizedBox(height: 10),
-                                    Text('NAME: $datecheckin'),
+                                    Text(
+                                        'Date: ${departureDateController.text}'),
                                     const SizedBox(height: 5),
                                     Text('Total Price: $totalprice'),
                                   ],
@@ -357,14 +427,20 @@ class _TransportDetailsState extends State<TransportDetails> {
                                         .collection(user.currentUser!.uid)
                                         .doc('request')
                                         .set({
+                                      'adminid': widget.adminid,
+                                      'userid': widget.userid,
+                                      'transport_docid': widget.docid,
                                       'tname': widget.transtype,
                                       'tid': widget.transId,
                                       'tprice': totalprice,
                                       'timage': widget.trans_imgURL,
-                                      'tdeparture': datecheckin,
+                                      'tdeparture':
+                                          departureDateController.text,
                                       'tPessangers': selcteddays,
                                       'tnum_of_passenger': selcteddays,
                                       'status': 'pending',
+                                      'tlatitude': widget.latitude,
+                                      'tlongitude': widget.longitude,
                                       'date': DateTime.now(),
                                     }, SetOptions(merge: true));
                                   },
@@ -401,49 +477,6 @@ class _TransportDetailsState extends State<TransportDetails> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-DateTime? _checkInDate;
-
-class DateTimePick extends StatefulWidget {
-  const DateTimePick({super.key});
-
-  @override
-  State<DateTimePick> createState() => _DateTimePickState();
-}
-
-class _DateTimePickState extends State<DateTimePick> {
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 80),
-          primary: const Color(0xFF3A57E8),
-          onPrimary: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          shadowColor: Colors.black26),
-      onPressed: () async {
-        final DateTime? selectedDate = await showDatePicker(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime.now(),
-          lastDate: DateTime.now().add(const Duration(days: 365)),
-        );
-        if (selectedDate != null) {
-          setState(() {
-            _checkInDate = selectedDate;
-          });
-        }
-      },
-      child: Text(
-        _checkInDate != null
-            ? 'PickUp: ${_checkInDate.toString().substring(0, 10)}'
-            : 'Select Departure',
       ),
     );
   }

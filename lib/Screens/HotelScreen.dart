@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -10,6 +11,7 @@ class HotelListScreen extends StatefulWidget {
 }
 
 class _HotelListScreenState extends State<HotelListScreen> {
+  FirebaseAuth auth = FirebaseAuth.instance;
   CollectionReference Hotelitems = FirebaseFirestore.instance
       .collection('app')
       .doc('Services')
@@ -186,6 +188,9 @@ class _HotelListScreenState extends State<HotelListScreen> {
                                           hotelid: document['hotel_id'],
                                           hotelpriceConn:
                                               document['connected_room_price'],
+                                          adminid: document['admin_id'],
+                                          docid: document.id,
+                                          userid: auth.currentUser!.uid,
                                         )));
                           },
                         ),
