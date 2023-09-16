@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class ToDoScreen extends StatefulWidget {
   const ToDoScreen({super.key});
@@ -16,10 +19,14 @@ class _ToDoScreenState extends State<ToDoScreen> {
   List<TodoItem> _todos = [];
   DateTime selectedDateTime = DateTime.now();
 
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   @override
   void initState() {
     super.initState();
     _readData();
+    tz.initializeTimeZones();
   }
 
   Future<void> _selectDateTime(BuildContext context) async {
@@ -96,6 +103,26 @@ class _ToDoScreenState extends State<ToDoScreen> {
         _taskController.clear();
       });
       _saveData();
+
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        _todos.length,
+        'Palmeer Task Remainder',
+        task,
+        tz.TZDateTime.from(dateTime, tz.local),
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'Palmeer',
+            'Palmeer',
+            importance: Importance.high,
+            priority: Priority.high,
+          ),
+        ),
+        // ignore: deprecated_member_use
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: 'task_$_todos.length',
+      );
     }
   }
 
