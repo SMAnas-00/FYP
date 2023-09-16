@@ -101,8 +101,9 @@ class _FlightDetailsState extends State<FlightDetails> {
                               builder: (BuildContext context) {
                                 return Container(
                                   width: MediaQuery.of(context).size.width,
-                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                  decoration: BoxDecoration(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  decoration: const BoxDecoration(
                                     color: Colors.grey,
                                   ),
                                   child: Image.network(

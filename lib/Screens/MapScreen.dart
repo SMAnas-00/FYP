@@ -1,11 +1,11 @@
-// ignore_for_file: unnecessary_null_comparison, unused_local_variable
-
+// ignore_for_file: unnecessary_null_comparison, unused_local_variable, depend_on_referenced_packages
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,6 +18,8 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 class MapView extends StatefulWidget {
+  const MapView({super.key});
+
   @override
   _MapViewState createState() => _MapViewState();
 }
@@ -26,6 +28,9 @@ class _MapViewState extends State<MapView> {
   final CameraPosition _initialLocation =
       const CameraPosition(target: LatLng(0.0, 0.0));
   late GoogleMapController mapController;
+
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseAuth userAuth = FirebaseAuth.instance;
 
   NOTIFY notify = NOTIFY();
   bool isinNotification = false;
@@ -39,8 +44,6 @@ class _MapViewState extends State<MapView> {
 
   final startAddressController = TextEditingController();
   final destinationAddressController = TextEditingController();
-  // final FocusNode _focusNode = FocusNode();
-  // bool _isfocus = false;
   var uuid = const Uuid();
   bool isInselected = true;
   String _sessionToken = '1223344';
@@ -173,9 +176,6 @@ class _MapViewState extends State<MapView> {
       List<Location> destinationPlacemark =
           await locationFromAddress(_destinationAddress);
 
-      // Use the retrieved coordinates of the current position,
-      // instead of the address if the start position is user's
-      // current position, as it results in better accuracy.
       double startLatitude = _startAddress == _currentAddress
           ? _currentPosition.latitude
           : startPlacemark[0].latitude;
@@ -224,8 +224,6 @@ class _MapViewState extends State<MapView> {
         'DESTINATION COORDINATES: ($destinationLatitude, $destinationLongitude)',
       );
 
-      // Calculating to check that the position relative
-      // to the frame, and pan & zoom the camera accordingly.
       double miny = (startLatitude <= destinationLatitude)
           ? startLatitude
           : destinationLatitude;
@@ -245,8 +243,6 @@ class _MapViewState extends State<MapView> {
       double northEastLatitude = maxy;
       double northEastLongitude = maxx;
 
-      // Accommodate the two locations within the
-      // camera view of the map
       mapController.animateCamera(
         CameraUpdate.newLatLngBounds(
           LatLngBounds(
@@ -257,22 +253,11 @@ class _MapViewState extends State<MapView> {
         ),
       );
 
-      // Calculating the distance between the start and the end positions
-      // with a straight path, without considering any route
-      // double distanceInMeters = await Geolocator.bearingBetween(
-      //   startLatitude,
-      //   startLongitude,
-      //   destinationLatitude,
-      //   destinationLongitude,
-      // );
-
       await _createPolylines(startLatitude, startLongitude, destinationLatitude,
           destinationLongitude);
 
       double totalDistance = 0.0;
 
-      // Calculating the total distance by adding the distance
-      // between small segments
       for (int i = 0; i < polylineCoordinates.length - 1; i++) {
         totalDistance += _coordinateDistance(
           polylineCoordinates[i].latitude,
@@ -345,12 +330,6 @@ class _MapViewState extends State<MapView> {
   void initState() {
     super.initState();
     startLocationService();
-    // _focusNode.addListener(() {
-    //   setState(() {
-    //     _isfocus = _focusNode.hasFocus;
-    //   });
-    // });
-
     _checkLocation();
     _getCurrentLocation();
     startAddressController.addListener(() {
@@ -373,12 +352,9 @@ class _MapViewState extends State<MapView> {
           : destinationAddressController.text;
       getsuggestion(value1);
     });
-
-    // getsuggestion(destinationAddressController.text);
   }
 
   void stopLocationService() {
-    // Stop listening to location changes
     if (positionStreamSubscription != null) {
       positionStreamSubscription.cancel();
     }
@@ -417,8 +393,50 @@ class _MapViewState extends State<MapView> {
     }
   }
 
+  sendNotification(String title, String token, String msg) async {
+    final data = {
+      'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      'id': 1,
+      'status': 'done',
+      'message': title
+    };
+    try {
+      http.Response response =
+          await http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
+              headers: <String, String>{
+                'Content-Type': 'application/json',
+                'Authorization':
+                    'key=AAAAxEir0ZA:APA91bEjKav5v9gOfz-abN9-zuQwE2LKFQ8wT-cKwoHUTYCUxB3162YVY8j4hX3fGNAy23Qd07vXYmxipYst-RDQV3xvENgJ5DWH2JfxXk_Pl7qNJnVx3DAtZ9_fFmQ3nKC_UqcG0-jH'
+              },
+              body: jsonEncode(<String, dynamic>{
+                'notification': <String, dynamic>{
+                  'title': title,
+                  'body': msg,
+                },
+                'priority': 'high',
+                'data': data,
+                'to': token
+              }));
+
+      if (response.statusCode == 200) {
+        debugPrint("Notification has been send");
+      } else {
+        debugPrint("Somethin went wrong");
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   Future<void> startLocationService() async {
-    // Request permission to access location
+    final userDoc = await firestore
+        .collection('app')
+        .doc('Users')
+        .collection('Signup')
+        .doc(userAuth.currentUser!.uid)
+        .get();
+    String userToken = await userDoc.data()?['token'];
+
     var permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
@@ -427,7 +445,6 @@ class _MapViewState extends State<MapView> {
 
     if (permission == LocationPermission.denied ||
         permission == LocationPermission.deniedForever) {
-      // Handle location permission denied
       debugPrint('Location permission denied.');
       return;
     }
@@ -441,12 +458,14 @@ class _MapViewState extends State<MapView> {
           isInPolygon = isInsidePolygon;
           if (isInPolygon == true && isinNotification == false) {
             debugPrint('In boundary============================');
-            await Fluttertoast.showToast(msg: 'In Boundary');
+            sendNotification(
+                'Inside Boundary', userToken, 'You are Inside the Boundary');
             isinNotification = true;
           }
           if (isInPolygon == false && isinNotification == true) {
             debugPrint('OUTSIDE boundary============================');
-            await Fluttertoast.showToast(msg: 'OUTSIDE Boundary');
+            sendNotification(
+                'Outside Boundary', userToken, 'You are Outside the Boundary');
             isinNotification = false;
           }
         });

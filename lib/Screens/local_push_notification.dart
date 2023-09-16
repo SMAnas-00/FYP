@@ -29,7 +29,7 @@ class LocalNotificationService {
           message.notification!.body,
           notificationDetails);
     } on Exception catch (e) {
-      Fluttertoast.showToast(msg: '${e.toString()}');
+      Fluttertoast.showToast(msg: e.toString());
     }
   }
 }

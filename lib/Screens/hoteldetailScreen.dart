@@ -66,7 +66,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
     );
     Set<Marker> _markers = {
       Marker(
-        markerId: MarkerId('marker_1'),
+        markerId: const MarkerId('marker_1'),
         position: LatLng(widget.latitude, widget.longitude),
         infoWindow: InfoWindow(
           title: widget.hotelName,
@@ -132,8 +132,9 @@ class _HoteldetailsState extends State<Hoteldetails> {
                               builder: (BuildContext context) {
                                 return Container(
                                   width: MediaQuery.of(context).size.width,
-                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                  decoration: BoxDecoration(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  decoration: const BoxDecoration(
                                     color: Colors.grey,
                                   ),
                                   child: Image.network(
@@ -236,7 +237,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                       rating: double.parse(numpart),
                       itemSize: 20,
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     Center(
                       child: Container(
                         decoration: BoxDecoration(
@@ -254,7 +255,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                     ),
                     Row(
                       children: [
-                        Text("Room Type:"),
+                        const Text("Room Type:"),
                         DropdownButton(
                           value: _RoomType,
                           items: _RoomTypes.map((RoomType) {

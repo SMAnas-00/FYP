@@ -111,7 +111,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Todo List'),
+        title: const Text('Todo List'),
       ),
       body: Column(
         children: [
@@ -121,7 +121,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
               padding: const EdgeInsets.all(16.0),
               child: TextFormField(
                 controller: _taskController,
-                decoration: InputDecoration(labelText: 'Task'),
+                decoration: const InputDecoration(labelText: 'Task'),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter a task.';
@@ -133,7 +133,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
           ),
           ElevatedButton(
             onPressed: _addTodo,
-            child: Text('Add Task'),
+            child: const Text('Add Task'),
           ),
           Expanded(
             child: ListView.builder(
@@ -144,7 +144,7 @@ class _ToDoScreenState extends State<ToDoScreen> {
                   title: Text(todo.task),
                   subtitle: Text('Date & Time: ${todo.dateTime.toString()}'),
                   trailing: IconButton(
-                    icon: Icon(Icons.delete),
+                    icon: const Icon(Icons.delete),
                     onPressed: () {
                       _removeTodo(index);
                     },
