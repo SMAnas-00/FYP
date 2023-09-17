@@ -56,7 +56,7 @@ class _SearchFlightState extends State<SearchFlight> {
               final departureCity = doc['departure_city'];
               final destinationCity = doc['destination_city'];
               return widget.departuereDay.toLowerCase() ==
-                      day.toString().toLowerCase() ||
+                      day.toString().toLowerCase() &&
                   (widget.departureCity == departureCity ||
                       widget.departureCity.toLowerCase() ==
                               departureCity.toString().toLowerCase() &&

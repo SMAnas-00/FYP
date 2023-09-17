@@ -114,18 +114,17 @@ class _SearchFlightScreenState extends State<SearchFlightScreen> {
                     ),
                   ),
                   onTap: () {
-                    // DateTime now = DateTime.now();
                     String dateString = dateController.text;
                     List<String> dateParts = dateString.split('-');
                     if (dateParts.length == 3) {
-                      int year = 2000 + int.parse(dateParts[0]);
+                      int year = int.parse(dateParts[2]);
                       int month = int.parse(dateParts[1]);
-                      int day = int.parse(dateParts[2]);
-
+                      int day = int.parse(dateParts[0]);
                       try {
                         DateTime depDate = DateTime(year, month, day);
                         int dayOfWeek = depDate.weekday;
                         String dayName = '';
+
                         switch (dayOfWeek) {
                           case 1:
                             dayName = 'Monday';
@@ -149,7 +148,6 @@ class _SearchFlightScreenState extends State<SearchFlightScreen> {
                             dayName = 'Sunday';
                             break;
                         }
-
                         Navigator.push(
                             context,
                             MaterialPageRoute(
