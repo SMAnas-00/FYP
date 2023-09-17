@@ -217,6 +217,13 @@ class HotelScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xff3a57e8),
         title: const Text('Hotels'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, 'hotelkeywords');
+              },
+              icon: const Icon(Icons.search))
+        ],
       ),
       body: Column(
         children: [

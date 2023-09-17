@@ -9,6 +9,8 @@ import 'package:newui/Screens/TODO/TodoListScreen.dart';
 import 'package:newui/Screens/animalBookscreen.dart';
 import 'package:newui/Screens/guideScreen.dart';
 import 'package:newui/Screens/local_push_notification.dart';
+import 'package:newui/Screens/search_hotel_keywords.dart';
+import 'package:newui/Screens/search_transport_keyword.dart';
 import 'package:newui/Screens/transportScreen.dart';
 import 'package:newui/admin/flight.dart';
 import 'package:newui/admin/qurbani.dart';
@@ -25,6 +27,7 @@ import 'Screens/SigninScreen.dart';
 import 'Screens/SignupScreen.dart';
 import 'Screens/SplashScreen.dart';
 import 'Screens/WelcomeScreen.dart';
+import 'Screens/search_flight_keyword.dart';
 import 'admin/admin_board.dart';
 import 'admin/hotelcreation.dart';
 
@@ -71,7 +74,7 @@ class MyApp extends StatelessWidget {
         '/forget': (context) => const ForgetScreen(),
         '/home': (context) => const HomeScreen(),
         '/navbar': (context) => const BottomNavBar(),
-        '/map': (context) => MapView(),
+        '/map': (context) => const MapView(),
         '/camp': (context) => const CricketStadium(),
         '/hotel': (context) => const HotelScreen(),
         '/admindash': (context) => const AdminHomePage(),
@@ -85,7 +88,10 @@ class MyApp extends StatelessWidget {
         '/addflight': (context) => const addFlightScreen(),
         '/animal': (context) => const AnimalBookingPage(),
         '/addanimal': (context) => const Qurbani(),
-        '/servicescreen': (context) => const ServicesScreen()
+        '/servicescreen': (context) => const ServicesScreen(),
+        'hotelkeywords': (context) => const HotelKeyWords(),
+        '/flightkeyword': (context) => const SearchFlightScreen(),
+        '/searchtransport': (context) => const SearchTranportKeyword(),
       },
     );
   }

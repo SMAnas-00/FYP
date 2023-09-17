@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:newui/Screens/chiewe.dart';
 import 'package:video_player/video_player.dart';
