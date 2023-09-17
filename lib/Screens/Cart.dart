@@ -196,12 +196,15 @@ class _CartScreenState extends State<CartScreen> {
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
                 int price = snapshot.data!.docs[index].get('price');
+
                 total = price + total;
                 return CartItem(
                   title: snapshot.data!.docs[index].get('name'),
                   image: snapshot.data!.docs[index].get('image'),
                   price: snapshot.data!.docs[index].get('price'),
                   id: snapshot.data!.docs[index].get('id'),
+                  quatity: snapshot.data!.docs[index].get('quantity'),
+                  docid: snapshot.data!.docs[index].get('docid'),
                   total: total,
                 );
               },
@@ -262,7 +265,11 @@ class _CartScreenState extends State<CartScreen> {
             .collection(user.currentUser!.uid)
             .doc('request')
             .update({'status': 'success', 'totalPrice': total});
-
+        var transportid = await firestore
+            .collection('app')
+            .doc('bookings')
+            .collection('transport')
+            .get();
         var usertoken = await firestore
             .collection('app')
             .doc('Users')
@@ -349,6 +356,8 @@ class CartItem extends StatefulWidget {
   final int price;
   final String id;
   final int total;
+  final int quatity;
+  final String docid;
 
   const CartItem(
       {Key? key,
@@ -356,6 +365,8 @@ class CartItem extends StatefulWidget {
       required this.title,
       required this.price,
       required this.id,
+      required this.docid,
+      required this.quatity,
       required this.total})
       : super(key: key);
 
@@ -373,11 +384,47 @@ class _CartItemState extends State<CartItem> {
           backgroundImage: NetworkImage(widget.image),
         ),
         title: Text(widget.title),
-        subtitle: Text('Rs${widget.price}'),
+        subtitle: Text('PKR ${widget.price}/-'),
+        trailing: Text('QTY: x${widget.quatity}'),
         onTap: () {
           debugPrint(widget.id);
           if (widget.id.isNotEmpty) {
-            if (widget.id.startsWith('fl')) {
+            if (widget.id.startsWith('an')) {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Delete'),
+                      content: Text('Do you want to Delete ${widget.title}'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () async {
+                            final user = FirebaseAuth.instance;
+                            await FirebaseFirestore.instance
+                                .collection('app')
+                                .doc('bookings')
+                                .collection('cart')
+                                .doc('request')
+                                .collection(user.currentUser!.uid)
+                                .doc('animal')
+                                .delete();
+                            Navigator.of(context).pop();
+                            setState(() {
+                              totalpricesub(widget.total, widget.price);
+                            });
+                          },
+                          child: const Text('Yes'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('No'),
+                        ),
+                      ],
+                    );
+                  });
+            } else if (widget.id.startsWith('fo')) {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -396,8 +443,6 @@ class _CartItemState extends State<CartItem> {
                                 .collection(user.currentUser!.uid)
                                 .doc('flight')
                                 .delete();
-
-                            // ignore: use_build_context_synchronously
                             Navigator.of(context).pop();
                             setState(() {
                               totalpricesub(widget.total, widget.price);
@@ -414,8 +459,7 @@ class _CartItemState extends State<CartItem> {
                       ],
                     );
                   });
-            }
-            if (widget.id.startsWith('ho')) {
+            } else if (widget.id.startsWith('ho')) {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -452,8 +496,7 @@ class _CartItemState extends State<CartItem> {
                       ],
                     );
                   });
-            }
-            if (widget.id.startsWith('tr')) {
+            } else if (widget.id.startsWith('tr')) {
               showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -503,4 +546,14 @@ int totalpricesub(int total, int price) {
   totalprice = total - price;
 
   return totalprice;
+}
+
+String hotel_docid(String docid) {
+  String id = docid;
+  return id;
+}
+
+String flight_docid(String docid) {
+  String id = docid;
+  return id;
 }

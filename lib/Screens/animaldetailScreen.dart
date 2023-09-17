@@ -1,50 +1,37 @@
-// ignore_for_file: must_be_immutable, file_names, non_constant_identifier_names
+// ignore_for_file: file_names, deprecated_member_use
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-class FlightDetails extends StatefulWidget {
-  String flight_name;
-  String departure_time;
-  String destination_time;
-  String destination;
-  String departure;
-  List<dynamic> FlightImageURL;
-  int FlightPriceEco;
-  int FlightPriceBus;
-  String flight_id;
-  double latitude;
-  double longitude;
+class AnimalDetails extends StatefulWidget {
+  String animaltype;
+  List<dynamic> animal_imgURL;
+  int animalprice;
+  String animalId;
   String adminid;
   String userid;
-  String dep_time;
   String docid;
-
-  FlightDetails(
+  int weight;
+  AnimalDetails(
       {super.key,
-      required this.flight_name,
-      required this.FlightImageURL,
-      required this.FlightPriceEco,
-      required this.FlightPriceBus,
-      required this.departure_time,
-      required this.destination_time,
-      required this.destination,
-      required this.departure,
-      required this.latitude,
-      required this.longitude,
-      required this.dep_time,
+      required this.animaltype,
+      required this.animal_imgURL,
+      required this.animalprice,
       required this.adminid,
       required this.userid,
       required this.docid,
-      required this.flight_id});
+      required this.weight,
+      required this.animalId});
 
   @override
-  State<FlightDetails> createState() => _FlightDetailsState();
+  State<AnimalDetails> createState() => _AnimalDetailsState();
 }
 
-class _FlightDetailsState extends State<FlightDetails> {
+class _AnimalDetailsState extends State<AnimalDetails> {
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseAuth user = FirebaseAuth.instance;
   int selcteddays = 1;
 
   @override
@@ -102,7 +89,7 @@ class _FlightDetailsState extends State<FlightDetails> {
                             enlargeCenterPage: true,
                             autoPlay: true,
                           ),
-                          items: widget.FlightImageURL.map((imageUrl) {
+                          items: widget.animal_imgURL.map((imageUrl) {
                             return Builder(
                               builder: (BuildContext context) {
                                 return Container(
@@ -134,7 +121,7 @@ class _FlightDetailsState extends State<FlightDetails> {
                           Expanded(
                             flex: 1,
                             child: Text(
-                              widget.flight_name,
+                              widget.animaltype.toUpperCase(),
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
                               style: const TextStyle(
@@ -151,7 +138,7 @@ class _FlightDetailsState extends State<FlightDetails> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Text(
-                                "PKR ${widget.FlightPriceEco}",
+                                "PKR ${widget.animalprice}",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: const TextStyle(
@@ -162,7 +149,7 @@ class _FlightDetailsState extends State<FlightDetails> {
                                 ),
                               ),
                               const Text(
-                                "/Person",
+                                "/Animal",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
@@ -181,7 +168,7 @@ class _FlightDetailsState extends State<FlightDetails> {
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
-                        "AIRPORT",
+                        "Weight:",
                         textAlign: TextAlign.start,
                         overflow: TextOverflow.clip,
                         style: TextStyle(
@@ -192,55 +179,15 @@ class _FlightDetailsState extends State<FlightDetails> {
                         ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        const SizedBox(width: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "From",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            Container(
-                                width: MediaQuery.of(context).size.width * 0.7,
-                                child: Text('${widget.departure}')),
-                            // const SizedBox(height: 10),
-                            const Divider(height: 20),
-                            const Text(
-                              "To",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.7,
-                              child: Text(
-                                '${widget.destination}',
-                              ),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 0),
-                      child: Text(
-                        'Time: ' + '${widget.dep_time}',
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.clip,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 15,
-                          color: Color(0xff000000),
-                        ),
-                      ),
+                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                      child: Text('${widget.weight}'),
                     ),
                     const Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
-                        "Number of Passangers",
+                        "Number of Animals",
                         textAlign: TextAlign.start,
                         overflow: TextOverflow.clip,
                         style: TextStyle(
@@ -328,9 +275,6 @@ class _FlightDetailsState extends State<FlightDetails> {
                       ],
                     ),
                     const SizedBox(height: 30),
-                    const Row(
-                      children: [DateTimePick()],
-                    ),
                   ],
                 ),
               ),
@@ -340,13 +284,11 @@ class _FlightDetailsState extends State<FlightDetails> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: MaterialButton(
-                  onPressed: () {
-                    String datecheckin =
-                        DateFormat('EEEE, MMM dd, yyyy').format(_checkInDate!);
+                  onPressed: () async {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          int totalprice = widget.FlightPriceEco * selcteddays;
+                          int totalprice = widget.animalprice * selcteddays;
                           return AlertDialog(
                             title: const Text('Confirmatrion'),
                             content: SizedBox(
@@ -355,14 +297,12 @@ class _FlightDetailsState extends State<FlightDetails> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('NAME: ${widget.flight_name}'),
-                                    Text('ID: ${widget.flight_id}'),
+                                    Text(
+                                      'NAME: ${widget.animaltype}',
+                                      overflow: TextOverflow.clip,
+                                    ),
+                                    Text('ID: ${widget.animalId}'),
                                     const SizedBox(height: 10),
-                                    Text('DEPART: ${widget.departure}'),
-                                    Text('DES: ${widget.destination}'),
-                                    const SizedBox(height: 10),
-                                    Text('Date: $datecheckin'),
-                                    const SizedBox(height: 5),
                                     Text('Total Price: $totalprice'),
                                   ],
                                 ),
@@ -380,35 +320,31 @@ class _FlightDetailsState extends State<FlightDetails> {
                                         .collection('cart')
                                         .doc('request')
                                         .collection(user.currentUser!.uid)
-                                        .doc('flight')
+                                        .doc('animal')
                                         .set({
-                                      'name': widget.flight_name,
+                                      'name': widget.animaltype,
                                       'price': totalprice,
-                                      'image': widget.FlightImageURL[0],
-                                      'id': widget.flight_id,
+                                      'image': widget.animal_imgURL[0],
+                                      'id': widget.animalId,
                                       'quantity': selcteddays,
                                       'docid': widget.docid
                                     }).then((value) => Navigator.pop(context));
                                     await firestore
                                         .collection('app')
                                         .doc('bookings')
-                                        .collection('flight')
+                                        .collection('animal')
                                         .doc('${user.currentUser!.uid}' +
                                             '${DateTime.now()}')
                                         .set({
-                                      'admin_id': widget.adminid,
+                                      'adminid': widget.adminid,
                                       'userid': widget.userid,
                                       'docid': widget.docid,
-                                      'name': widget.flight_name,
-                                      'id': widget.flight_id,
+                                      'name': widget.animaltype,
+                                      'id': widget.animalId,
                                       'price': totalprice,
-                                      'image': widget.FlightImageURL[0],
-                                      'departure': datecheckin,
-                                      'Pessangers': selcteddays,
-                                      'days': selcteddays,
+                                      'image': widget.animal_imgURL,
+                                      'num_of_animals': selcteddays,
                                       'status': 'pending',
-                                      'latitude': widget.latitude,
-                                      'longitude': widget.longitude,
                                       'date': DateTime.now(),
                                     }, SetOptions(merge: true));
                                   },
@@ -445,49 +381,6 @@ class _FlightDetailsState extends State<FlightDetails> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-DateTime? _checkInDate;
-
-class DateTimePick extends StatefulWidget {
-  const DateTimePick({super.key});
-
-  @override
-  State<DateTimePick> createState() => _DateTimePickState();
-}
-
-class _DateTimePickState extends State<DateTimePick> {
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white,
-          backgroundColor: const Color(0xFF3A57E8),
-          padding: const EdgeInsets.symmetric(horizontal: 80),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          shadowColor: Colors.black26),
-      onPressed: () async {
-        final DateTime? selectedDate = await showDatePicker(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime.now(),
-          lastDate: DateTime.now().add(const Duration(days: 365)),
-        );
-        if (selectedDate != null) {
-          setState(() {
-            _checkInDate = selectedDate;
-          });
-        }
-      },
-      child: Text(
-        _checkInDate != null
-            ? 'Departure: ${_checkInDate.toString().substring(0, 10)}'
-            : 'Select Departure',
       ),
     );
   }

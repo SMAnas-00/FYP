@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
         '/users': (context) => const ViewUserScreen(),
         '/addtransport': (context) => const addTransportScreen(),
         '/addflight': (context) => const addFlightScreen(),
-        '/animal': (context) => const AnimalBookingPage(),
+        '/animal': (context) => const AnimalScreen(),
         '/addanimal': (context) => const Qurbani(),
         '/servicescreen': (context) => const ServicesScreen(),
         'hotelkeywords': (context) => const HotelKeyWords(),

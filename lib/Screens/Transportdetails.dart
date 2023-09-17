@@ -18,6 +18,7 @@ class TransportDetails extends StatefulWidget {
   double latitude;
   double longitude;
   String docid;
+  String total_seats;
   TransportDetails(
       {super.key,
       required this.transtype,
@@ -29,6 +30,7 @@ class TransportDetails extends StatefulWidget {
       required this.adminid,
       required this.userid,
       required this.docid,
+      required this.total_seats,
       required this.transId});
 
   @override
@@ -355,9 +357,9 @@ class _TransportDetailsState extends State<TransportDetails> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: MaterialButton(
-                  onPressed: () {
-                    if (departureDateController.text == null) {
-                      showDialog(
+                  onPressed: () async {
+                    if (departureDateController.text == '') {
+                      await showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
@@ -374,85 +376,89 @@ class _TransportDetailsState extends State<TransportDetails> {
                           );
                         },
                       );
-                    }
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          int totalprice = widget.fareprice;
-                          return AlertDialog(
-                            title: const Text('Confirmatrion'),
-                            content: SizedBox(
-                              height: 150,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('NAME: ${widget.transtype}'),
-                                    Text('ID: ${widget.transId}'),
-                                    const SizedBox(height: 10),
-                                    Text('DEPART: ${widget.pickup}'),
-                                    const SizedBox(height: 10),
-                                    Text(
-                                        'Date: ${departureDateController.text}'),
-                                    const SizedBox(height: 5),
-                                    Text('Total Price: $totalprice'),
-                                  ],
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            int totalprice = widget.fareprice * selcteddays;
+                            return AlertDialog(
+                              title: const Text('Confirmatrion'),
+                              content: SizedBox(
+                                height: 150,
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'NAME: ${widget.transtype}',
+                                        overflow: TextOverflow.clip,
+                                      ),
+                                      Text('ID: ${widget.transId}'),
+                                      const SizedBox(height: 10),
+                                      Text(
+                                          'Date: ${departureDateController.text}'),
+                                      const SizedBox(height: 5),
+                                      Text('Total Price: $totalprice'),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                  onPressed: () async {
-                                    FirebaseAuth user = FirebaseAuth.instance;
-                                    FirebaseFirestore firestore =
-                                        FirebaseFirestore.instance;
-                                    await firestore
-                                        .collection('app')
-                                        .doc('bookings')
-                                        .collection('cart')
-                                        .doc('request')
-                                        .collection(user.currentUser!.uid)
-                                        .doc('transport')
-                                        .set({
-                                      'name': widget.transtype,
-                                      'price': totalprice,
-                                      'image': widget.trans_imgURL,
-                                      'id': widget.transId
-                                    }).then((value) => Navigator.pop(context));
-                                    await firestore
-                                        .collection('app')
-                                        .doc('bookings')
-                                        .collection('admin')
-                                        .doc('request')
-                                        .collection(user.currentUser!.uid)
-                                        .doc('request')
-                                        .set({
-                                      'adminid': widget.adminid,
-                                      'userid': widget.userid,
-                                      'transport_docid': widget.docid,
-                                      'tname': widget.transtype,
-                                      'tid': widget.transId,
-                                      'tprice': totalprice,
-                                      'timage': widget.trans_imgURL,
-                                      'tdeparture':
-                                          departureDateController.text,
-                                      'tPessangers': selcteddays,
-                                      'tnum_of_passenger': selcteddays,
-                                      'status': 'pending',
-                                      'tlatitude': widget.latitude,
-                                      'tlongitude': widget.longitude,
-                                      'date': DateTime.now(),
-                                    }, SetOptions(merge: true));
-                                  },
-                                  child: const Text('OK')),
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('CLOSE')),
-                            ],
-                          );
-                        });
+                              actions: <Widget>[
+                                TextButton(
+                                    onPressed: () async {
+                                      FirebaseAuth user = FirebaseAuth.instance;
+                                      FirebaseFirestore firestore =
+                                          FirebaseFirestore.instance;
+                                      await firestore
+                                          .collection('app')
+                                          .doc('bookings')
+                                          .collection('cart')
+                                          .doc('request')
+                                          .collection(user.currentUser!.uid)
+                                          .doc('transport')
+                                          .set({
+                                        'name': widget.transtype,
+                                        'price': totalprice,
+                                        'image': widget.trans_imgURL[0],
+                                        'id': widget.transId,
+                                        'quantity': selcteddays,
+                                        'docid': widget.docid
+                                      }).then((value) =>
+                                              Navigator.pop(context));
+                                      await firestore
+                                          .collection('app')
+                                          .doc('bookings')
+                                          .collection('transport')
+                                          .doc('${user.currentUser!.uid}' +
+                                              '${DateTime.now()}')
+                                          .set({
+                                        'adminid': widget.adminid,
+                                        'userid': widget.userid,
+                                        'docid': widget.docid,
+                                        'name': widget.transtype,
+                                        'id': widget.transId,
+                                        'price': totalprice,
+                                        'image': widget.trans_imgURL,
+                                        'booking date':
+                                            departureDateController.text,
+                                        'seats': widget.total_seats,
+                                        'status': 'pending',
+                                        'latitude': widget.latitude,
+                                        'longitude': widget.longitude,
+                                        'date': DateTime.now(),
+                                      }, SetOptions(merge: true));
+                                    },
+                                    child: const Text('OK')),
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('CLOSE')),
+                              ],
+                            );
+                          });
+                    }
                   },
                   color: const Color(0xff3a57e8),
                   elevation: 0,

@@ -532,15 +532,16 @@ class _HoteldetailsState extends State<Hoteldetails> {
                                       'name': widget.hotelName,
                                       'price': totalprice,
                                       'image': widget.hotelImageURL[0],
-                                      'id': widget.hotelid
+                                      'id': widget.hotelid,
+                                      'quantity': selctedrooms,
+                                      'docid': widget.docid,
                                     }).then((value) => Navigator.pop(context));
                                     await firestore
                                         .collection('app')
                                         .doc('bookings')
-                                        .collection('admin')
-                                        .doc('request')
-                                        .collection(user.currentUser!.uid)
-                                        .doc('request')
+                                        .collection('hotel')
+                                        .doc('${user.currentUser!.uid}' +
+                                            '${DateTime.now()}')
                                         .set({
                                       'adminid': widget.adminid,
                                       'userid': widget.userid,
