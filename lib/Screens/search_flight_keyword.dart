@@ -73,7 +73,7 @@ class _SearchFlightScreenState extends State<SearchFlightScreen> {
                   padding:
                       const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
                   child: TextFormField(
-                    controller: departureController,
+                    controller: dateController,
                     enabled: false,
                     showCursor: false,
                     decoration: const InputDecoration(
@@ -114,14 +114,57 @@ class _SearchFlightScreenState extends State<SearchFlightScreen> {
                     ),
                   ),
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SearchFlight(
-                                  departureDat: dateController.text,
-                                  departureCity: departureController.text,
-                                  destinationCity: destinationController.text,
-                                )));
+                    // DateTime now = DateTime.now();
+                    String dateString = dateController.text;
+                    List<String> dateParts = dateString.split('-');
+                    if (dateParts.length == 3) {
+                      int year = 2000 + int.parse(dateParts[0]);
+                      int month = int.parse(dateParts[1]);
+                      int day = int.parse(dateParts[2]);
+
+                      try {
+                        DateTime depDate = DateTime(year, month, day);
+                        int dayOfWeek = depDate.weekday;
+                        String dayName = '';
+                        switch (dayOfWeek) {
+                          case 1:
+                            dayName = 'Monday';
+                            break;
+                          case 2:
+                            dayName = 'Tuesday';
+                            break;
+                          case 3:
+                            dayName = 'Wednesday';
+                            break;
+                          case 4:
+                            dayName = 'Thursday';
+                            break;
+                          case 5:
+                            dayName = 'Friday';
+                            break;
+                          case 6:
+                            dayName = 'Saturday';
+                            break;
+                          case 7:
+                            dayName = 'Sunday';
+                            break;
+                        }
+
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SearchFlight(
+                                      departuereDay: dayName,
+                                      departureCity: departureController.text,
+                                      destinationCity:
+                                          destinationController.text,
+                                    )));
+                      } catch (e) {
+                        debugPrint('Invalid date: $dateString');
+                      }
+                    } else {
+                      debugPrint('Invalid date format: $dateString');
+                    }
                   },
                 ),
               ),
