@@ -34,6 +34,13 @@ class _TransportServiceState extends State<TransportService> {
           'Transport',
           style: TextStyle(color: Colors.white),
         ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/searchtransport');
+              },
+              icon: const Icon(Icons.search))
+        ],
         backgroundColor: const Color(0xff3a57e8),
       ),
       body: StreamBuilder(

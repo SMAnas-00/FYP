@@ -8,23 +8,23 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 class Hoteldetails extends StatefulWidget {
-  String hotelName;
-  String hotelLocation;
-  String hotelRating;
-  List<dynamic> hotelImageURL;
-  int hotelPrice;
-  String hotelcapacity;
-  DateTime checkin;
-  String description;
-  String hotelid;
-  double latitude;
-  double longitude;
-  int hotelpriceConn;
-  String adminid;
-  String userid;
-  String docid;
+  final String hotelName;
+  final String hotelLocation;
+  final String hotelRating;
+  final List<dynamic> hotelImageURL;
+  final int hotelPrice;
+  final String hotelcapacity;
+  final DateTime? checkin;
+  final String description;
+  final String hotelid;
+  final double latitude;
+  final double longitude;
+  final int hotelpriceConn;
+  final String adminid;
+  final String userid;
+  final String docid;
 
-  Hoteldetails(
+  const Hoteldetails(
       {super.key,
       required this.hotelName,
       required this.hotelLocation,
@@ -32,7 +32,7 @@ class Hoteldetails extends StatefulWidget {
       required this.hotelImageURL,
       required this.hotelcapacity,
       required this.hotelPrice,
-      required this.checkin,
+      this.checkin,
       required this.description,
       required this.latitude,
       required this.longitude,
@@ -474,11 +474,11 @@ class _HoteldetailsState extends State<Hoteldetails> {
                 alignment: Alignment.bottomCenter,
                 child: MaterialButton(
                   onPressed: () {
-                    String datecheckin =
-                        DateFormat('EEEE, MMM dd, yyyy').format(widget.checkin);
+                    String datecheckin = DateFormat('EEEE, MMM dd, yyyy')
+                        .format(widget.checkin!);
                     String datecheckout = DateFormat('EEEE, MMM dd, yyyy')
                         .format(
-                            widget.checkin.add(Duration(days: selcteddays)));
+                            widget.checkin!.add(Duration(days: selcteddays)));
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {

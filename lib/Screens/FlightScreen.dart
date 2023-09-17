@@ -38,6 +38,14 @@ class _FlightListState extends State<FlightList> {
       appBar: AppBar(
         title: const Text('Flights'),
         backgroundColor: const Color(0xff3a57e8),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/flightkeyword');
+                ;
+              },
+              icon: const Icon(Icons.search))
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
           stream: _streamflightlist,
