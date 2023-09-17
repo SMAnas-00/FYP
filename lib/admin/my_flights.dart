@@ -32,9 +32,9 @@ class _MyFlightsState extends State<MyFlights> {
   @override
   Widget build(BuildContext context) {
     final user = auth.currentUser;
-    return SingleChildScrollView(
-      child: Scaffold(
-        body: StreamBuilder<QuerySnapshot>(
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: StreamBuilder<QuerySnapshot>(
             stream: flightitems.snapshots(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasError) {
@@ -206,14 +206,6 @@ class _FlightCardState extends State<FlightCard> {
                 const SizedBox(
                   height: 15,
                 ),
-                // ElevatedButton(
-                //     style: ElevatedButton.styleFrom(
-                //         backgroundColor:
-                //             const Color.fromARGB(255, 29, 165, 153)),
-                //     onPressed: () async {},
-                //     child:
-                //         const Text("Bookings", style: TextStyle(fontSize: 12)))
-
                 GestureDetector(
                   child: Container(
                     alignment: Alignment.center,
