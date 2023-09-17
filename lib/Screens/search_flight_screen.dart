@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'Flightdetails.dart';
 
 class SearchFlight extends StatefulWidget {
-  final String departureDat;
+  final String departuereDay;
   final String departureCity;
   final String destinationCity;
   const SearchFlight(
       {super.key,
-      required this.departureDat,
+      required this.departuereDay,
       required this.departureCity,
       required this.destinationCity});
 
@@ -52,12 +52,17 @@ class _SearchFlightState extends State<SearchFlight> {
               ));
             }
             final sortedDocs = snapshot.data!.docs.where((doc) {
-              final departureDate = doc['departure_date'];
+              final day = doc['day'];
               final departureCity = doc['departure_city'];
               final destinationCity = doc['destination_city'];
-              return widget.departureDat == departureDate ||
-                  (widget.departureCity == departureCity &&
-                      widget.destinationCity == destinationCity);
+              return widget.departuereDay.toLowerCase() ==
+                      day.toString().toLowerCase() &&
+                  (widget.departureCity == departureCity ||
+                      widget.departureCity.toLowerCase() ==
+                              departureCity.toString().toLowerCase() &&
+                          widget.destinationCity == destinationCity ||
+                      widget.destinationCity.toLowerCase() ==
+                          destinationCity.toString().toLowerCase());
             }).toList();
 
             if (sortedDocs.isEmpty) {

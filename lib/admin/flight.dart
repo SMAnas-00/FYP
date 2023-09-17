@@ -45,6 +45,7 @@ class _addFlightScreenState extends State<addFlightScreen> {
   final businessPriceController = TextEditingController();
   final departureCityController = TextEditingController();
   final destinationCityController = TextEditingController();
+  final dayController = TextEditingController();
 
   DateTime selectedDateTime = DateTime.now();
 
@@ -142,7 +143,6 @@ class _addFlightScreenState extends State<addFlightScreen> {
             'departure_lat': departurePosition!.geometry!.location!.lat!,
             'destination_lng': destinationPosition!.geometry!.location!.lng!,
             'destination_lat': destinationPosition!.geometry!.location!.lat!,
-            'departure_date': departureDateController.text,
             'departure_time': departureTimeController.text,
             'mid_point': midPointController.text,
             'destination': destinationController.text,
@@ -159,6 +159,7 @@ class _addFlightScreenState extends State<addFlightScreen> {
             'flight_id': 'fo$did',
             'departure_city': departureCityController.text,
             'destination_city': destinationCityController.text,
+            'day': dayController.text,
           });
           setState(() {
             selectedFlightType = null;
@@ -507,6 +508,19 @@ class _addFlightScreenState extends State<addFlightScreen> {
                     return null;
                   },
                 ),
+                TextFormField(
+                  controller: dayController,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(
+                    labelText: 'Enter Day',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Day required';
+                    }
+                    return null;
+                  },
+                ),
                 GestureDetector(
                   onTap: () async {
                     DateTime? datePicked = await showDatePicker(
@@ -549,29 +563,6 @@ class _addFlightScreenState extends State<addFlightScreen> {
                     showCursor: false,
                     decoration: const InputDecoration(
                       labelText: 'Select Departure Time',
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    DateTime? datePicked = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime(2024));
-                    if (datePicked != null) {
-                      setState(() {
-                        destinationDateController.text =
-                            '${datePicked.day}-${datePicked.month}-${datePicked.year}';
-                      });
-                    }
-                  },
-                  child: TextFormField(
-                    controller: destinationDateController,
-                    enabled: false,
-                    showCursor: false,
-                    decoration: const InputDecoration(
-                      labelText: 'Select Destination Date',
                     ),
                   ),
                 ),
