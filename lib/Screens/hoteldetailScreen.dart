@@ -532,7 +532,8 @@ class _HoteldetailsState extends State<Hoteldetails> {
                                       'name': widget.hotelName,
                                       'price': totalprice,
                                       'image': widget.hotelImageURL[0],
-                                      'id': widget.hotelid
+                                      'id': widget.hotelid,
+                                      'docid': widget.docid,
                                     }).then((value) => Navigator.pop(context));
                                     await firestore
                                         .collection('app')

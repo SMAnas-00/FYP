@@ -364,7 +364,8 @@ class _FlightDetailsState extends State<FlightDetails> {
                                       'name': widget.flight_name,
                                       'price': totalprice,
                                       'image': widget.FlightImageURL[0],
-                                      'id': widget.flight_id
+                                      'id': widget.flight_id,
+                                      'docid': widget.docid
                                     }).then((value) => Navigator.pop(context));
                                     await firestore
                                         .collection('app')

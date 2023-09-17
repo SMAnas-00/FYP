@@ -417,7 +417,8 @@ class _TransportDetailsState extends State<TransportDetails> {
                                       'name': widget.transtype,
                                       'price': totalprice,
                                       'image': widget.trans_imgURL,
-                                      'id': widget.transId
+                                      'id': widget.transId,
+                                      'docid': widget.docid
                                     }).then((value) => Navigator.pop(context));
                                     await firestore
                                         .collection('app')
