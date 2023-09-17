@@ -200,6 +200,7 @@ class _SearchFlightState extends State<SearchFlight> {
                                         adminid: document['admin_id'],
                                         docid: document.id,
                                         userid: auth.currentUser!.uid,
+                                        dep_time: document['departure_time'],
                                       )));
                         },
                       ),

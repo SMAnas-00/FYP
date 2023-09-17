@@ -200,6 +200,7 @@ class _SearchTransportScreenState extends State<SearchTransportScreen> {
                                         latitude: document['pickup_lat'],
                                         longitude: document['pickup_lng'],
                                         docid: document.id,
+                                        total_seats: document['total_seats'],
                                       )));
                         },
                       ),
