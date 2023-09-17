@@ -128,6 +128,21 @@ class _TransportServiceState extends State<TransportService> {
                                   ),
                                 ),
                               ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 0),
+                                child: Text(
+                                  'PKR: ' + '${document['price']}/-',
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.clip,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 15,
+                                    color: Color(0xff000000),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),

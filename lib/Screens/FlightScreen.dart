@@ -100,32 +100,55 @@ class _FlightListState extends State<FlightList> {
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 4, horizontal: 0),
-                                child: Text(
-                                  '${document['departure']}',
-                                  textAlign: TextAlign.start,
-                                  overflow: TextOverflow.clip,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontStyle: FontStyle.normal,
-                                    fontSize: 12,
-                                    color: Color(0xff000000),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 0),
+                                  child: Text(
+                                    'Departure:  ${document['departure']},' +
+                                        '${document['departure_city']}',
+                                    textAlign: TextAlign.start,
+                                    overflow: TextOverflow.clip,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 12,
+                                      color: Color(0xff000000),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 0),
+                                  child: Text(
+                                    'Destination:  ${document['destination']},' +
+                                        '${document['destination_city']}',
+                                    textAlign: TextAlign.start,
+                                    overflow: TextOverflow.clip,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontStyle: FontStyle.normal,
+                                      fontSize: 12,
+                                      color: Color(0xff000000),
+                                    ),
                                   ),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 4, horizontal: 0),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 0),
                                 child: Text(
-                                  '${document['destination']}',
+                                  'PKR: ' + '${document['economy_price']}/-',
                                   textAlign: TextAlign.start,
                                   overflow: TextOverflow.clip,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w400,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
                                     fontStyle: FontStyle.normal,
-                                    fontSize: 12,
+                                    fontSize: 15,
                                     color: Color(0xff000000),
                                   ),
                                 ),
