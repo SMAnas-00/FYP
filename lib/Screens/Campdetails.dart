@@ -7,65 +7,59 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 
-class Hoteldetails extends StatefulWidget {
-  final String hotelName;
-  final String hotelLocation;
-  final String hotelRating;
-  final List<dynamic> hotelImageURL;
-  final int hotelPrice;
-  final String hotelcapacity;
+class Minadetails extends StatefulWidget {
+  final String campName;
+  final String campLocation;
+  final String campRating;
+  final List<dynamic> campImageURL;
+  final int campPrice;
+  final String campcapacity;
 
   final String description;
-  final String hotelid;
+  final String campid;
   final double latitude;
   final double longitude;
-  final int hotelpriceConn;
   final String adminid;
   final String userid;
   final String docid;
 
-  const Hoteldetails(
+  const Minadetails(
       {super.key,
-      required this.hotelName,
-      required this.hotelLocation,
-      required this.hotelRating,
-      required this.hotelImageURL,
-      required this.hotelcapacity,
-      required this.hotelPrice,
+      required this.campImageURL,
+      required this.campName,
+      required this.campPrice,
+      required this.campLocation,
+      required this.campcapacity,
+      required this.campRating,
       required this.description,
       required this.latitude,
       required this.longitude,
-      required this.hotelpriceConn,
       required this.adminid,
       required this.userid,
       required this.docid,
-      required this.hotelid});
+      required this.campid});
 
   @override
-  State<Hoteldetails> createState() => _HoteldetailsState();
+  State<Minadetails> createState() => _MinadetailsState();
 }
 
-DateTime? checkin;
-
-class _HoteldetailsState extends State<Hoteldetails> {
+class _MinadetailsState extends State<Minadetails> {
   GoogleMapController? _controller;
   final BookingDateController = TextEditingController();
   int selctedrooms = 1;
   int selcteddays = 1;
-  String _RoomType = 'Single';
-  final List<String> _RoomTypes = ['Single', 'Connected'];
   int updatedprice = 0;
   @override
   void initState() {
     super.initState();
-    updatedprice = widget.hotelPrice;
+    updatedprice = widget.campPrice;
   }
 
   late DateTime selecteddate;
 
   @override
   Widget build(BuildContext context) {
-    String input = widget.hotelRating;
+    String input = widget.campRating;
     String numpart = input.replaceAll(RegExp(r'[^0-9]'), '');
     CameraPosition _initialPosition = CameraPosition(
       target: LatLng(widget.latitude, widget.longitude),
@@ -76,8 +70,8 @@ class _HoteldetailsState extends State<Hoteldetails> {
         markerId: const MarkerId('marker_1'),
         position: LatLng(widget.latitude, widget.longitude),
         infoWindow: InfoWindow(
-          title: widget.hotelName,
-          snippet: widget.hotelLocation,
+          title: widget.campName,
+          snippet: widget.campLocation,
         ),
       ),
     };
@@ -92,7 +86,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
           borderRadius: BorderRadius.zero,
         ),
         title: const Text(
-          "Hotel details",
+          "Camp details",
           style: TextStyle(
             fontWeight: FontWeight.w700,
             fontStyle: FontStyle.normal,
@@ -134,7 +128,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                             enlargeCenterPage: true,
                             autoPlay: true,
                           ),
-                          items: widget.hotelImageURL.map((imageUrl) {
+                          items: widget.campImageURL.map((imageUrl) {
                             return Builder(
                               builder: (BuildContext context) {
                                 return Container(
@@ -166,7 +160,7 @@ class _HoteldetailsState extends State<Hoteldetails> {
                           Expanded(
                             flex: 1,
                             child: Text(
-                              widget.hotelName,
+                              widget.campName,
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
                               style: const TextStyle(
@@ -260,127 +254,127 @@ class _HoteldetailsState extends State<Hoteldetails> {
                         ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        const Text("Room Type:"),
-                        DropdownButton(
-                          value: _RoomType,
-                          items: _RoomTypes.map((RoomType) {
-                            return DropdownMenuItem(
-                              value: RoomType,
-                              child: Text(RoomType),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _RoomType = value!;
-                              print(value);
-                              if (value == 'Connected') {
-                                updatedprice = widget.hotelpriceConn;
-                              } else {
-                                updatedprice = widget.hotelPrice;
-                              }
-                            });
-                          },
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     const Text("Room Type:"),
+                    //     DropdownButton(
+                    //       value: _RoomType,
+                    //       items: _RoomTypes.map((RoomType) {
+                    //         return DropdownMenuItem(
+                    //           value: RoomType,
+                    //           child: Text(RoomType),
+                    //         );
+                    //       }).toList(),
+                    //       onChanged: (value) {
+                    //         setState(() {
+                    //           _RoomType = value!;
+                    //           print(value);
+                    //           if (value == 'Connected') {
+                    //             updatedprice = widget.hotelpriceConn;
+                    //           } else {
+                    //             updatedprice = widget.hotelPrice;
+                    //           }
+                    //         });
+                    //       },
+                    //     ),
+                    //   ],
+                    // ),
+                    // const Padding(
+                    //   padding:
+                    //       EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+                    //   child: Text(
+                    //     "Number of days",
+                    //     textAlign: TextAlign.start,
+                    //     overflow: TextOverflow.clip,
+                    //     style: TextStyle(
+                    //       fontWeight: FontWeight.w700,
+                    //       fontStyle: FontStyle.normal,
+                    //       fontSize: 15,
+                    //       color: Color(0xff000000),
+                    //     ),
+                    //   ),
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.start,
+                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                    //   mainAxisSize: MainAxisSize.max,
+                    //   children: [
+                    //     Container(
+                    //       alignment: Alignment.center,
+                    //       margin: const EdgeInsets.all(0),
+                    //       padding: const EdgeInsets.all(4),
+                    //       decoration: BoxDecoration(
+                    //         color: const Color(0xfff0efef),
+                    //         shape: BoxShape.rectangle,
+                    //         borderRadius: BorderRadius.circular(8.0),
+                    //       ),
+                    //       child: IconButton(
+                    //         icon: const Icon(
+                    //           Icons.remove,
+                    //           color: Color(0xff000000),
+                    //           size: 20,
+                    //         ),
+                    //         onPressed: () {
+                    //           setState(() {
+                    //             if (selcteddays > 1) {
+                    //               selcteddays--;
+                    //             }
+                    //             if (selcteddays <= 0) {
+                    //               selcteddays = 0;
+                    //             }
+                    //           });
+                    //         },
+                    //       ),
+                    //     ),
+                    //     Padding(
+                    //       padding: const EdgeInsets.symmetric(
+                    //           vertical: 0, horizontal: 8),
+                    //       child: Text(
+                    //         selcteddays.toString(),
+                    //         textAlign: TextAlign.start,
+                    //         overflow: TextOverflow.clip,
+                    //         style: const TextStyle(
+                    //           fontWeight: FontWeight.w400,
+                    //           fontStyle: FontStyle.normal,
+                    //           fontSize: 16,
+                    //           color: Color(0xff000000),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     Container(
+                    //       alignment: Alignment.center,
+                    //       margin: const EdgeInsets.all(0),
+                    //       padding: const EdgeInsets.all(4),
+                    //       decoration: BoxDecoration(
+                    //         color: const Color(0xfff0efef),
+                    //         shape: BoxShape.rectangle,
+                    //         borderRadius: BorderRadius.circular(8.0),
+                    //       ),
+                    //       child: IconButton(
+                    //         iconSize: 20,
+                    //         icon: const Icon(
+                    //           Icons.add,
+                    //           color: Color(0xff000000),
+                    //           size: 20,
+                    //         ),
+                    //         onPressed: () {
+                    //           setState(() {
+                    //             if (selcteddays >= 10) {
+                    //               selcteddays = 10;
+                    //             } else {
+                    //               selcteddays++;
+                    //             }
+                    //           });
+                    //         },
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                     const Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
-                        "Number of days",
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.clip,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 15,
-                          color: Color(0xff000000),
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Container(
-                          alignment: Alignment.center,
-                          margin: const EdgeInsets.all(0),
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: const Color(0xfff0efef),
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.remove,
-                              color: Color(0xff000000),
-                              size: 20,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                if (selcteddays > 1) {
-                                  selcteddays--;
-                                }
-                                if (selcteddays <= 0) {
-                                  selcteddays = 0;
-                                }
-                              });
-                            },
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 8),
-                          child: Text(
-                            selcteddays.toString(),
-                            textAlign: TextAlign.start,
-                            overflow: TextOverflow.clip,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
-                              fontSize: 16,
-                              color: Color(0xff000000),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          margin: const EdgeInsets.all(0),
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: const Color(0xfff0efef),
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: IconButton(
-                            iconSize: 20,
-                            icon: const Icon(
-                              Icons.add,
-                              color: Color(0xff000000),
-                              size: 20,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                if (selcteddays >= 10) {
-                                  selcteddays = 10;
-                                } else {
-                                  selcteddays++;
-                                }
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 0),
-                      child: Text(
-                        "Number of Rooms",
+                        "Number of Slots",
                         textAlign: TextAlign.start,
                         overflow: TextOverflow.clip,
                         style: TextStyle(
@@ -467,30 +461,6 @@ class _HoteldetailsState extends State<Hoteldetails> {
                         ),
                       ],
                     ),
-                    GestureDetector(
-                      onTap: () async {
-                        DateTime? datePicked = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime(2024));
-                        if (datePicked != null) {
-                          setState(() {
-                            checkin = datePicked;
-                            BookingDateController.text =
-                                '${datePicked.day}-${datePicked.month}-${datePicked.year}';
-                          });
-                        }
-                      },
-                      child: TextFormField(
-                        controller: BookingDateController,
-                        enabled: false,
-                        showCursor: false,
-                        decoration: const InputDecoration(
-                          labelText: 'Select Booking Date',
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -501,20 +471,14 @@ class _HoteldetailsState extends State<Hoteldetails> {
                 alignment: Alignment.bottomCenter,
                 child: MaterialButton(
                   onPressed: () {
-                    String datecheckin =
-                        DateFormat('EEEE, MMM dd, yyyy').format(checkin!);
-                    String datecheckout = DateFormat('EEEE, MMM dd, yyyy')
-                        .format(checkin!.add(Duration(days: selcteddays)));
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           int totalprice;
                           if (updatedprice == 0) {
-                            totalprice =
-                                widget.hotelPrice * selctedrooms * selcteddays;
+                            totalprice = widget.campPrice * selctedrooms;
                           } else {
-                            totalprice =
-                                updatedprice * selctedrooms * selcteddays;
+                            totalprice = updatedprice * selctedrooms;
                           }
                           return AlertDialog(
                             title: const Text('Confirmatrion'),
@@ -524,17 +488,11 @@ class _HoteldetailsState extends State<Hoteldetails> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
-                                      child: Text('NAME: ${widget.hotelName}')),
+                                      child: Text('NAME: ${widget.campName}')),
                                   Expanded(
-                                      child:
-                                          Text('Hotel Id:${widget.hotelid}')),
+                                      child: Text('Hotel Id:${widget.campid}')),
                                   const SizedBox(height: 5),
-                                  Expanded(child: Text('Rooms: $selctedrooms')),
-                                  const SizedBox(height: 10),
-                                  Expanded(
-                                      child: Text('Check In: $datecheckin')),
-                                  Expanded(
-                                      child: Text('Check OUT: $datecheckout')),
+                                  Expanded(child: Text('Slots: $selctedrooms')),
                                   const SizedBox(height: 10),
                                   Expanded(
                                       child: Text('Total Price: $totalprice')),
@@ -553,36 +511,33 @@ class _HoteldetailsState extends State<Hoteldetails> {
                                         .collection('cart')
                                         .doc('request')
                                         .collection(user.currentUser!.uid)
-                                        .doc('hotel')
+                                        .doc('minacamp')
                                         .set({
-                                      'name': widget.hotelName,
+                                      'name': widget.campName,
                                       'price': totalprice,
-                                      'image': widget.hotelImageURL[0],
-                                      'id': widget.hotelid,
+                                      'image': widget.campImageURL[0],
+                                      'id': widget.campid,
                                       'quantity': selctedrooms,
                                       'docid': widget.docid,
                                     }).then((value) => Navigator.pop(context));
                                     await firestore
                                         .collection('app')
                                         .doc('bookings')
-                                        .collection('hotel')
+                                        .collection('minacamp')
                                         .doc('${user.currentUser!.uid}' +
                                             '${DateTime.now()}')
                                         .set({
                                       'adminid': widget.adminid,
                                       'userid': widget.userid,
-                                      'hotel_docid': widget.docid,
-                                      'hname': widget.hotelName,
-                                      'hid': widget.hotelid,
-                                      'hprice': totalprice,
-                                      'himage': widget.hotelImageURL,
-                                      'hcheckin': datecheckin,
-                                      'hcheckout': datecheckout,
-                                      'hrooms': selctedrooms,
-                                      'hdays': selcteddays,
+                                      'camp_docid': widget.docid,
+                                      'name': widget.campName,
+                                      'id': widget.campid,
+                                      'price': totalprice,
+                                      'image': widget.campImageURL,
+                                      'campslot': selctedrooms,
                                       'status': 'pending',
-                                      'hlatitude': widget.latitude,
-                                      'hlongitude': widget.longitude,
+                                      'latitude': widget.latitude,
+                                      'longitude': widget.longitude,
                                       'date': DateTime.now(),
                                     }, SetOptions(merge: true));
                                   },

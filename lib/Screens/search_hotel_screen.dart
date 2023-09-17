@@ -147,6 +147,21 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
                             ),
                           ),
                           Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 16, horizontal: 0),
+                            child: Text(
+                              'PKR: ' + '${document['single_room_price']}/-',
+                              textAlign: TextAlign.start,
+                              overflow: TextOverflow.clip,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 15,
+                                color: Color(0xff000000),
+                              ),
+                            ),
+                          ),
+                          Padding(
                             padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
                             child: Text(
                               document['description'],
