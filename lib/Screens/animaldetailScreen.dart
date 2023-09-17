@@ -3,63 +3,39 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-class TransportDetails extends StatefulWidget {
-  String transtype;
-  String pickup;
-  List<dynamic> trans_imgURL;
-  int fareprice;
-  String transId;
+class AnimalDetails extends StatefulWidget {
+  String animaltype;
+  List<dynamic> animal_imgURL;
+  int animalprice;
+  String animalId;
   String adminid;
   String userid;
-  double latitude;
-  double longitude;
   String docid;
-  String total_seats;
-  TransportDetails(
+  int weight;
+  AnimalDetails(
       {super.key,
-      required this.transtype,
-      required this.pickup,
-      required this.trans_imgURL,
-      required this.fareprice,
-      required this.latitude,
-      required this.longitude,
+      required this.animaltype,
+      required this.animal_imgURL,
+      required this.animalprice,
       required this.adminid,
       required this.userid,
       required this.docid,
-      required this.total_seats,
-      required this.transId});
+      required this.weight,
+      required this.animalId});
 
   @override
-  State<TransportDetails> createState() => _TransportDetailsState();
+  State<AnimalDetails> createState() => _AnimalDetailsState();
 }
 
-class _TransportDetailsState extends State<TransportDetails> {
-  final departureDateController = TextEditingController();
+class _AnimalDetailsState extends State<AnimalDetails> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth user = FirebaseAuth.instance;
   int selcteddays = 1;
-  GoogleMapController? _controller;
 
   @override
   Widget build(BuildContext context) {
-    CameraPosition _initialPosition = CameraPosition(
-      target: LatLng(widget.latitude, widget.longitude),
-      zoom: 12.0,
-    );
-    Set<Marker> _markers = {
-      Marker(
-        markerId: const MarkerId('marker_1'),
-        position: LatLng(widget.latitude, widget.longitude),
-        infoWindow: InfoWindow(
-          title: widget.transtype,
-          snippet: widget.pickup,
-        ),
-      ),
-    };
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
@@ -113,7 +89,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                             enlargeCenterPage: true,
                             autoPlay: true,
                           ),
-                          items: widget.trans_imgURL.map((imageUrl) {
+                          items: widget.animal_imgURL.map((imageUrl) {
                             return Builder(
                               builder: (BuildContext context) {
                                 return Container(
@@ -145,7 +121,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                           Expanded(
                             flex: 1,
                             child: Text(
-                              widget.transtype.toUpperCase(),
+                              widget.animaltype.toUpperCase(),
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
                               style: const TextStyle(
@@ -162,7 +138,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Text(
-                                "PKR ${widget.fareprice}",
+                                "PKR ${widget.animalprice}",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: const TextStyle(
@@ -173,7 +149,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                                 ),
                               ),
                               const Text(
-                                "/day",
+                                "/Animal",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
@@ -192,7 +168,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
-                        "Location:",
+                        "Weight:",
                         textAlign: TextAlign.start,
                         overflow: TextOverflow.clip,
                         style: TextStyle(
@@ -203,41 +179,15 @@ class _TransportDetailsState extends State<TransportDetails> {
                         ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        const SizedBox(width: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Available on:",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            Text(widget.pickup),
-                          ],
-                        )
-                      ],
-                    ),
-                    Center(
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20)),
-                        width: 200,
-                        height: 200,
-                        child: GoogleMap(
-                          initialCameraPosition: _initialPosition,
-                          onMapCreated: (GoogleMapController controller) {
-                            _controller = controller;
-                          },
-                          markers: _markers,
-                        ),
-                      ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                      child: Text('${widget.weight}'),
                     ),
                     const Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
-                        "Number of Days",
+                        "Number of Animals",
                         textAlign: TextAlign.start,
                         overflow: TextOverflow.clip,
                         style: TextStyle(
@@ -325,29 +275,6 @@ class _TransportDetailsState extends State<TransportDetails> {
                       ],
                     ),
                     const SizedBox(height: 30),
-                    GestureDetector(
-                      onTap: () async {
-                        DateTime? datePicked = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime(2024));
-                        if (datePicked != null) {
-                          setState(() {
-                            departureDateController.text =
-                                '${datePicked.day}-${datePicked.month}-${datePicked.year}';
-                          });
-                        }
-                      },
-                      child: TextFormField(
-                        controller: departureDateController,
-                        enabled: false,
-                        showCursor: false,
-                        decoration: const InputDecoration(
-                          labelText: 'Select Booking Date',
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -358,107 +285,78 @@ class _TransportDetailsState extends State<TransportDetails> {
                 alignment: Alignment.bottomCenter,
                 child: MaterialButton(
                   onPressed: () async {
-                    if (departureDateController.text == '') {
-                      await showDialog(
+                    showDialog(
                         context: context,
                         builder: (BuildContext context) {
+                          int totalprice = widget.animalprice * selcteddays;
                           return AlertDialog(
-                            title: const Text("Error"),
-                            content: const Text("Please select booking date"),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text("Ok"),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    } else {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            int totalprice = widget.fareprice * selcteddays;
-                            return AlertDialog(
-                              title: const Text('Confirmatrion'),
-                              content: SizedBox(
-                                height: 150,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'NAME: ${widget.transtype}',
-                                        overflow: TextOverflow.clip,
-                                      ),
-                                      Text('ID: ${widget.transId}'),
-                                      const SizedBox(height: 10),
-                                      Text(
-                                          'Date: ${departureDateController.text}'),
-                                      const SizedBox(height: 5),
-                                      Text('Total Price: $totalprice'),
-                                    ],
-                                  ),
+                            title: const Text('Confirmatrion'),
+                            content: SizedBox(
+                              height: 150,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'NAME: ${widget.animaltype}',
+                                      overflow: TextOverflow.clip,
+                                    ),
+                                    Text('ID: ${widget.animalId}'),
+                                    const SizedBox(height: 10),
+                                    Text('Total Price: $totalprice'),
+                                  ],
                                 ),
                               ),
-                              actions: <Widget>[
-                                TextButton(
-                                    onPressed: () async {
-                                      FirebaseAuth user = FirebaseAuth.instance;
-                                      FirebaseFirestore firestore =
-                                          FirebaseFirestore.instance;
-                                      await firestore
-                                          .collection('app')
-                                          .doc('bookings')
-                                          .collection('cart')
-                                          .doc('request')
-                                          .collection(user.currentUser!.uid)
-                                          .doc('transport')
-                                          .set({
-                                        'name': widget.transtype,
-                                        'price': totalprice,
-                                        'image': widget.trans_imgURL[0],
-                                        'id': widget.transId,
-                                        'quantity': selcteddays,
-                                        'docid': widget.docid
-                                      }).then((value) =>
-                                              Navigator.pop(context));
-                                      await firestore
-                                          .collection('app')
-                                          .doc('bookings')
-                                          .collection('transport')
-                                          .doc('${user.currentUser!.uid}' +
-                                              '${DateTime.now()}')
-                                          .set({
-                                        'adminid': widget.adminid,
-                                        'userid': widget.userid,
-                                        'docid': widget.docid,
-                                        'name': widget.transtype,
-                                        'id': widget.transId,
-                                        'price': totalprice,
-                                        'image': widget.trans_imgURL,
-                                        'booking date':
-                                            departureDateController.text,
-                                        'seats': widget.total_seats,
-                                        'status': 'pending',
-                                        'latitude': widget.latitude,
-                                        'longitude': widget.longitude,
-                                        'date': DateTime.now(),
-                                      }, SetOptions(merge: true));
-                                    },
-                                    child: const Text('OK')),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('CLOSE')),
-                              ],
-                            );
-                          });
-                    }
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                  onPressed: () async {
+                                    FirebaseAuth user = FirebaseAuth.instance;
+                                    FirebaseFirestore firestore =
+                                        FirebaseFirestore.instance;
+                                    await firestore
+                                        .collection('app')
+                                        .doc('bookings')
+                                        .collection('cart')
+                                        .doc('request')
+                                        .collection(user.currentUser!.uid)
+                                        .doc('animal')
+                                        .set({
+                                      'name': widget.animaltype,
+                                      'price': totalprice,
+                                      'image': widget.animal_imgURL[0],
+                                      'id': widget.animalId,
+                                      'quantity': selcteddays,
+                                      'docid': widget.docid
+                                    }).then((value) => Navigator.pop(context));
+                                    await firestore
+                                        .collection('app')
+                                        .doc('bookings')
+                                        .collection('animal')
+                                        .doc('${user.currentUser!.uid}' +
+                                            '${DateTime.now()}')
+                                        .set({
+                                      'adminid': widget.adminid,
+                                      'userid': widget.userid,
+                                      'docid': widget.docid,
+                                      'name': widget.animaltype,
+                                      'id': widget.animalId,
+                                      'price': totalprice,
+                                      'image': widget.animal_imgURL,
+                                      'num_of_animals': selcteddays,
+                                      'status': 'pending',
+                                      'date': DateTime.now(),
+                                    }, SetOptions(merge: true));
+                                  },
+                                  child: const Text('OK')),
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('CLOSE')),
+                            ],
+                          );
+                        });
                   },
                   color: const Color(0xff3a57e8),
                   elevation: 0,

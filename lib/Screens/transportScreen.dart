@@ -173,6 +173,7 @@ class _TransportServiceState extends State<TransportService> {
                                           pickup: document['pick_up'],
                                           latitude: document['pickup_lat'],
                                           longitude: document['pickup_lng'],
+                                          total_seats: document['total_seats'],
                                           docid: document.id,
                                         )));
                           },

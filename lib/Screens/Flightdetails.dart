@@ -22,6 +22,7 @@ class FlightDetails extends StatefulWidget {
   double longitude;
   String adminid;
   String userid;
+  String dep_time;
   String docid;
 
   FlightDetails(
@@ -36,6 +37,7 @@ class FlightDetails extends StatefulWidget {
       required this.departure,
       required this.latitude,
       required this.longitude,
+      required this.dep_time,
       required this.adminid,
       required this.userid,
       required this.docid,
@@ -203,17 +205,39 @@ class _FlightDetailsState extends State<FlightDetails> {
                               "From",
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
-                            Text('${widget.departure}'),
-                            const SizedBox(height: 10),
-                            const Divider(),
+                            Container(
+                                width: MediaQuery.of(context).size.width * 0.7,
+                                child: Text('${widget.departure}')),
+                            // const SizedBox(height: 10),
+                            const Divider(height: 20),
                             const Text(
                               "To",
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
-                            Text('${widget.destination}')
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.7,
+                              child: Text(
+                                '${widget.destination}',
+                              ),
+                            )
                           ],
                         )
                       ],
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+                      child: Text(
+                        'Time: ' + '${widget.dep_time}',
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.normal,
+                          fontSize: 15,
+                          color: Color(0xff000000),
+                        ),
+                      ),
                     ),
                     const Padding(
                       padding:
@@ -340,7 +364,7 @@ class _FlightDetailsState extends State<FlightDetails> {
                                     Text('DEPART: ${widget.departure}'),
                                     Text('DES: ${widget.destination}'),
                                     const SizedBox(height: 10),
-                                    Text('NAME: $datecheckin'),
+                                    Text('Date: $datecheckin'),
                                     const SizedBox(height: 5),
                                     Text('Total Price: $totalprice'),
                                   ],
@@ -365,29 +389,29 @@ class _FlightDetailsState extends State<FlightDetails> {
                                       'price': totalprice,
                                       'image': widget.FlightImageURL[0],
                                       'id': widget.flight_id,
+                                      'quantity': selcteddays,
                                       'docid': widget.docid
                                     }).then((value) => Navigator.pop(context));
                                     await firestore
                                         .collection('app')
                                         .doc('bookings')
-                                        .collection('admin')
-                                        .doc('request')
-                                        .collection(user.currentUser!.uid)
-                                        .doc('request')
+                                        .collection('flight')
+                                        .doc('${user.currentUser!.uid}' +
+                                            '${DateTime.now()}')
                                         .set({
                                       'admin_id': widget.adminid,
                                       'userid': widget.userid,
-                                      'flight_docid': widget.docid,
-                                      'fname': widget.flight_name,
-                                      'fid': widget.flight_id,
-                                      'fprice': totalprice,
-                                      'fimage': widget.FlightImageURL[0],
-                                      'fdeparture': datecheckin,
-                                      'fPessangers': selcteddays,
-                                      'fdays': selcteddays,
+                                      'docid': widget.docid,
+                                      'name': widget.flight_name,
+                                      'id': widget.flight_id,
+                                      'price': totalprice,
+                                      'image': widget.FlightImageURL[0],
+                                      'departure': datecheckin,
+                                      'Pessangers': selcteddays,
+                                      'days': selcteddays,
                                       'status': 'pending',
-                                      'flatitude': widget.latitude,
-                                      'flongitude': widget.longitude,
+                                      'latitude': widget.latitude,
+                                      'longitude': widget.longitude,
                                       'date': DateTime.now(),
                                     }, SetOptions(merge: true));
                                   },
