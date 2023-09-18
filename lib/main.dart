@@ -63,24 +63,9 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  Future<Map<String, dynamic>?> getuserdata() async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    FirebaseAuth auth = FirebaseAuth.instance;
-    final userdata = await firestore
-        .collection('app')
-        .doc('Users')
-        .collection('Signup')
-        .doc(auth.currentUser!.uid)
-        .get();
-        
-    return userdata.data();
-  }
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final user = getuserdata();
-    String usercontact = user.
     return MaterialApp(
       title: "NewUI",
       debugShowCheckedModeBanner: false,
