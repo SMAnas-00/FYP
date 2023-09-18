@@ -222,13 +222,13 @@ class _FlightDetailsState extends State<FlightDetails> {
                       ],
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 0),
                       child: Text(
-                        'Time: ' + '${widget.dep_time}',
+                        'Time: ' '${widget.dep_time}',
                         textAlign: TextAlign.start,
                         overflow: TextOverflow.clip,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.w700,
                           fontStyle: FontStyle.normal,
                           fontSize: 15,

@@ -113,6 +113,12 @@ class _addTransportScreenState extends State<addTransportScreen> {
           loading = true;
         });
         final transportId = '${user.currentUser!.uid}$did';
+        final userDOc = await firestore
+            .collection('app')
+            .doc('Users')
+            .collection('Signup')
+            .doc(auth.currentUser!.uid)
+            .get();
         await uploadImages(transportId);
         await firestore
             .collection('app')
@@ -133,6 +139,8 @@ class _addTransportScreenState extends State<addTransportScreen> {
           'trans_id': 'tr${did.toString()}',
           'admin_id': user.currentUser!.uid,
           'transport_imageURL': imageUrls,
+          'driver_name': userDOc.data()?['First_name'],
+          'driver_phone': userDOc.data()?['Contact'],
         });
 
         Fluttertoast.showToast(msg: 'Transport Created successfully');

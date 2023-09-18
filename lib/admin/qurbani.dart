@@ -68,6 +68,12 @@ class _QurbaniState extends State<Qurbani> {
           loading = true;
         });
         final animalId = '${auth.currentUser!.uid}$did';
+        final userDOc = await firestore
+            .collection('app')
+            .doc('Users')
+            .collection('Signup')
+            .doc(auth.currentUser!.uid)
+            .get();
         await uploadImages(animalId);
         await firestore
             .collection('app')
@@ -81,6 +87,8 @@ class _QurbaniState extends State<Qurbani> {
           'animal_images': imageUrls,
           'animal_name': selectedAnimalType,
           'animal_id': 'an$did',
+          'manager_name': userDOc.data()?['First_name'],
+          'manager_phone': userDOc.data()?['Contact'],
         });
         setState(() {
           selectedAnimalType = null;

@@ -222,7 +222,7 @@ class _CricketStadiumState extends State<CricketStadium> {
         appBar: AppBar(
           title: const Text("Book CAMP"),
         ),
-        body: CampCategoriesPage()
+        body: const CampCategoriesPage()
         // GridView.count(
         //   crossAxisCount: 5,
         //   children: seats.map((seat) => _buildSeat(seat)).toList(),
@@ -261,11 +261,13 @@ class _CricketStadiumState extends State<CricketStadium> {
 }
 
 class CampCategoriesPage extends StatelessWidget {
+  const CampCategoriesPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mina Camp Booking'),
+        title: const Text('Mina Camp Booking'),
       ),
       body: Center(
         child: Column(
@@ -276,30 +278,33 @@ class CampCategoriesPage extends StatelessWidget {
                 // Navigate to Category A
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CategoryPage('A')),
+                  MaterialPageRoute(
+                      builder: (context) => const CategoryPage('A')),
                 );
               },
-              child: Text('Category A'),
+              child: const Text('Category A'),
             ),
             ElevatedButton(
               onPressed: () {
                 // Navigate to Category B
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CategoryPage('B')),
+                  MaterialPageRoute(
+                      builder: (context) => const CategoryPage('B')),
                 );
               },
-              child: Text('Category B'),
+              child: const Text('Category B'),
             ),
             ElevatedButton(
               onPressed: () {
                 // Navigate to Category C
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CategoryPage('C')),
+                  MaterialPageRoute(
+                      builder: (context) => const CategoryPage('C')),
                 );
               },
-              child: Text('Category C'),
+              child: const Text('Category C'),
             ),
           ],
         ),
@@ -311,7 +316,7 @@ class CampCategoriesPage extends StatelessWidget {
 class CategoryPage extends StatelessWidget {
   final String category;
 
-  CategoryPage(this.category);
+  const CategoryPage(this.category, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -344,7 +349,7 @@ class CategoryPage extends StatelessWidget {
               onPressed: () {
                 // Implement slot booking logic here
               },
-              child: Text('Book a Slot'),
+              child: const Text('Book a Slot'),
             ),
           ],
         ),

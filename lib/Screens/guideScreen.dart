@@ -20,7 +20,7 @@ class _guideScreenState extends State<guideScreen> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.only(top: 20),
+          margin: const EdgeInsets.only(top: 20),
           child: Column(
             children: [
               Row(
@@ -29,7 +29,7 @@ class _guideScreenState extends State<guideScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        margin: EdgeInsets.only(left: 20),
+                        margin: const EdgeInsets.only(left: 20),
                         child: Text(
                           '1. Hajj Takbeer',
                           style: TextStyle(
@@ -37,7 +37,7 @@ class _guideScreenState extends State<guideScreen> {
                               fontWeight: FontWeight.w700),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Container(
                         child: SizedBox(
                           height: 250,
@@ -49,14 +49,14 @@ class _guideScreenState extends State<guideScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Container(
-                        margin: EdgeInsets.symmetric(horizontal: 20),
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: Text(
-                          'The Hajj Takbeer holds profound significance in the hearts of Muslims worldwide. This melodious and resonant chant, recited in unison by pilgrims during the annual Hajj pilgrimage, symbolizes the unity and devotion of the Islamic community. It serves as a reminder of the diversity and oneness of the Muslim Ummah, transcending geographical, linguistic, and cultural boundaries. ' +
-                              'The Hajj Takbeer echoes the triumphant praise of Allah, celebrating the fulfillment of a fundamental pillar of Islam and the spiritual journey of a lifetime. It encapsulates the essence of submission, faith, and the ultimate quest for closeness to God, making it a cherished and ' +
-                              'spiritually uplifting tradition for Muslims around the world.',
+                          'The Hajj Takbeer holds profound significance in the hearts of Muslims worldwide. This melodious and resonant chant, recited in unison by pilgrims during the annual Hajj pilgrimage, symbolizes the unity and devotion of the Islamic community. It serves as a reminder of the diversity and oneness of the Muslim Ummah, transcending geographical, linguistic, and cultural boundaries. '
+                          'The Hajj Takbeer echoes the triumphant praise of Allah, celebrating the fulfillment of a fundamental pillar of Islam and the spiritual journey of a lifetime. It encapsulates the essence of submission, faith, and the ultimate quest for closeness to God, making it a cherished and '
+                          'spiritually uplifting tradition for Muslims around the world.',
                           style: TextStyle(color: Colors.grey[600]),
                         ),
                       ),
@@ -64,14 +64,14 @@ class _guideScreenState extends State<guideScreen> {
                   ),
                 ],
               ),
-              Divider(height: 30, thickness: 1),
+              const Divider(height: 30, thickness: 1),
               Row(
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        margin: EdgeInsets.only(left: 20),
+                        margin: const EdgeInsets.only(left: 20),
                         child: Text(
                           '2. Hajj Perform Guide',
                           style: TextStyle(
@@ -79,21 +79,19 @@ class _guideScreenState extends State<guideScreen> {
                               fontWeight: FontWeight.w700),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Container(
-                        child: SizedBox(
-                          height: 250,
-                          child: ChewieListItem(
-                            videoPlayerController: VideoPlayerController.asset(
-                              'assets/images/hajjvideo.mp4',
-                            ),
-                            looping: true,
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 250,
+                        child: ChewieListItem(
+                          videoPlayerController: VideoPlayerController.asset(
+                            'assets/images/hajjvideo.mp4',
                           ),
+                          looping: true,
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Container(
-                        margin: EdgeInsets.symmetric(horizontal: 20),
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: Text(
                           'The process of Hajj follows a meticulously structured schedule, with specific dates and rituals that millions of Muslims undertake each year. It begins with the pilgrim\'s intention, known as niyyah, to embark on this sacred expedition. Pilgrims then wear the simple, white attire of ihram, signifying a state of purity and equality before God. The pilgrimage typically starts in Mecca, where participants perform Tawaf, circumambulating the Kaaba, Islam\'s holiest shrine, seven times. This is followed by Sa\'i, the act of walking seven times between the hills of Safa and Marwah, commemorating Hagar\'s search for water.'
@@ -108,14 +106,14 @@ class _guideScreenState extends State<guideScreen> {
                   ),
                 ],
               ),
-              Divider(height: 30, thickness: 1),
+              const Divider(height: 30, thickness: 1),
               Row(
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        margin: EdgeInsets.only(left: 20),
+                        margin: const EdgeInsets.only(left: 20),
                         child: Text(
                           '3. Ummrah Perform Guide',
                           style: TextStyle(
@@ -123,22 +121,20 @@ class _guideScreenState extends State<guideScreen> {
                               fontWeight: FontWeight.w700),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Container(
-                        child: SizedBox(
-                          height: 250,
-                          child: ChewieListItem(
-                            videoPlayerController: VideoPlayerController.asset(
-                              'assets/images/ummrahguide.mp4',
-                            ),
-                            looping: true,
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        height: 250,
+                        child: ChewieListItem(
+                          videoPlayerController: VideoPlayerController.asset(
+                            'assets/images/ummrahguide.mp4',
                           ),
+                          looping: true,
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Container(
                         // padding: EdgeInsets.all(16),
-                        margin: EdgeInsets.symmetric(horizontal: 20),
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: Text(
                           'Performing Umrah, a significant pilgrimage for Muslims, involves several distinct steps, each imbued with spiritual significance.'
@@ -157,7 +153,7 @@ class _guideScreenState extends State<guideScreen> {
                   ),
                 ],
               ),
-              Divider(height: 30, thickness: 1),
+              const Divider(height: 30, thickness: 1),
             ],
           ),
         ),

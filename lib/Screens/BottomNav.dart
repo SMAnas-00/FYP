@@ -21,7 +21,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   /// widget list
   final List<Widget> bottomBarPages = [
-    MapView(),
+    const MapView(),
     const ToDoScreen(),
     const HomeScreen(),
     const CartScreen(),

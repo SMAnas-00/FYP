@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:newui/admin/admin_hotel_booking.dart';
 
 class MyHotels extends StatefulWidget {
   const MyHotels({super.key});
@@ -409,7 +410,14 @@ class _MyHotelsState extends State<MyHotels> {
                           ),
                         ),
                       ),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AdminHotelBooking(
+                                      docId: document.id,
+                                    )));
+                      },
                     ),
                   ],
                 ),
