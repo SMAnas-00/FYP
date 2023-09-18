@@ -9,13 +9,15 @@ class guideScreen extends StatefulWidget {
   State<guideScreen> createState() => _guideScreenState();
 }
 
+Color blue = const Color(0xff3a57e8);
+
 // ignore: camel_case_types
 class _guideScreenState extends State<guideScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.teal[300],
+        backgroundColor: blue,
         title: const Text('GUIDE'),
       ),
       body: SingleChildScrollView(
@@ -33,8 +35,7 @@ class _guideScreenState extends State<guideScreen> {
                         child: Text(
                           '1. Hajj Takbeer',
                           style: TextStyle(
-                              color: Colors.teal[300],
-                              fontWeight: FontWeight.w700),
+                              color: blue, fontWeight: FontWeight.w700),
                         ),
                       ),
                       SizedBox(height: 10),
@@ -75,8 +76,7 @@ class _guideScreenState extends State<guideScreen> {
                         child: Text(
                           '2. Hajj Perform Guide',
                           style: TextStyle(
-                              color: Colors.teal[300],
-                              fontWeight: FontWeight.w700),
+                              color: blue, fontWeight: FontWeight.w700),
                         ),
                       ),
                       SizedBox(height: 10),
@@ -119,8 +119,7 @@ class _guideScreenState extends State<guideScreen> {
                         child: Text(
                           '3. Ummrah Perform Guide',
                           style: TextStyle(
-                              color: Colors.teal[300],
-                              fontWeight: FontWeight.w700),
+                              color: blue, fontWeight: FontWeight.w700),
                         ),
                       ),
                       SizedBox(height: 10),

@@ -78,7 +78,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
           AdminDashboardCard(
             title: 'Mina Camp',
             icon: const FaIcon(
-              FontAwesomeIcons.cow,
+              FontAwesomeIcons.tent,
               size: 20,
             ).icon,
             onPressed: () {
