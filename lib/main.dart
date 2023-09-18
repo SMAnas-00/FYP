@@ -14,6 +14,7 @@ import 'package:newui/Screens/local_push_notification.dart';
 import 'package:newui/Screens/search_hotel_keywords.dart';
 import 'package:newui/Screens/search_transport_keyword.dart';
 import 'package:newui/Screens/transportScreen.dart';
+import 'package:newui/Screens/user_bookings.dart';
 import 'package:newui/admin/flight.dart';
 import 'package:newui/admin/minacampcreate.dart';
 import 'package:newui/admin/qurbani.dart';
@@ -96,6 +97,7 @@ class MyApp extends StatelessWidget {
         '/flightkeyword': (context) => const SearchFlightScreen(),
         '/searchtransport': (context) => const SearchTranportKeyword(),
         '/addmina': (context) => const addMinaScreen(),
+        '/userbooking': (context) => const UserBookings(),
       },
     );
   }

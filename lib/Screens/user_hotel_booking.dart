@@ -1,33 +1,30 @@
-// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+// ignore_for_file: deprecated_member_use
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class AdminHotelBooking extends StatefulWidget {
-  final String docId;
-  const AdminHotelBooking({super.key, required this.docId});
+class UserHotelBooking extends StatefulWidget {
+  const UserHotelBooking({super.key});
 
   @override
-  State<AdminHotelBooking> createState() => _AdminHotelBookingState();
+  State<UserHotelBooking> createState() => _UserHotelBookingState();
 }
 
-class _AdminHotelBookingState extends State<AdminHotelBooking> {
+class _UserHotelBookingState extends State<UserHotelBooking> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
   CollectionReference hotelCollection = FirebaseFirestore.instance
       .collection('app')
       .doc('bookings')
       .collection('hotel');
 
-  // Function to launch WhatsApp with the specified phone number
   void launchWhatsApp(String phoneNumber) async {
     final whatsappUrl = "whatsapp://send?phone=$phoneNumber";
     if (await canLaunch(whatsappUrl)) {
       await launch(whatsappUrl);
     } else {
-      // Handle error: unable to launch WhatsApp
+      // ignore: use_build_context_synchronously
       showDialog(
         context: context,
         builder: (context) {
@@ -56,10 +53,6 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bookings'),
-        backgroundColor: const Color.fromARGB(255, 29, 165, 153),
-      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: hotelCollection.snapshots(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -74,8 +67,9 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
           }
 
           final sortedDocs = snapshot.data!.docs.where((doc) {
-            final hotelDocid = doc['hotel_docid'];
-            return hotelDocid == widget.docId;
+            final userId = auth.currentUser!.uid;
+            final docUserId = doc['userid'];
+            return userId == docUserId;
           }).toList();
 
           if (sortedDocs.isEmpty) {
@@ -107,7 +101,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Text(
-                            'Name : ${document['user_name']}',
+                            'Manager : ${document['manager_name']}',
                             textAlign: TextAlign.start,
                             maxLines: 1,
                             overflow: TextOverflow.clip,
@@ -125,7 +119,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: GestureDetector(
                               onTap: () {
-                                final userPhone = document['user_phone'];
+                                final userPhone = document['hotel_phone'];
                                 launchWhatsApp(userPhone);
                               },
                               child: Row(
@@ -138,7 +132,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                                     width: 7,
                                   ),
                                   Text(
-                                    '${document['user_phone']}',
+                                    '${document['hotel_phone']}',
                                     textAlign: TextAlign.start,
                                     maxLines: 1,
                                     overflow: TextOverflow.clip,

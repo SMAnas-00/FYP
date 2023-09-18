@@ -837,7 +837,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    Navigator.pushNamed(context, '/animal');
+                    Navigator.pushNamed(context, '/userbooking');
                   },
                   child: Container(
                     alignment: Alignment.center,
@@ -866,12 +866,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: const Icon(FontAwesomeIcons.cow),
+                          child: const FaIcon(FontAwesomeIcons.bookmark),
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
-                            "My Bookings",
+                            "Bookings",
                             textAlign: TextAlign.start,
                             overflow: TextOverflow.clip,
                             style: TextStyle(

@@ -1,27 +1,25 @@
 // ignore_for_file: use_build_context_synchronously, deprecated_member_use
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class AdminHotelBooking extends StatefulWidget {
-  final String docId;
-  const AdminHotelBooking({super.key, required this.docId});
+class UserTransportBooking extends StatefulWidget {
+  const UserTransportBooking({super.key});
 
   @override
-  State<AdminHotelBooking> createState() => _AdminHotelBookingState();
+  State<UserTransportBooking> createState() => _UserTransportBookingState();
 }
 
-class _AdminHotelBookingState extends State<AdminHotelBooking> {
+class _UserTransportBookingState extends State<UserTransportBooking> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
   CollectionReference hotelCollection = FirebaseFirestore.instance
       .collection('app')
       .doc('bookings')
-      .collection('hotel');
+      .collection('transport');
 
-  // Function to launch WhatsApp with the specified phone number
   void launchWhatsApp(String phoneNumber) async {
     final whatsappUrl = "whatsapp://send?phone=$phoneNumber";
     if (await canLaunch(whatsappUrl)) {
@@ -56,10 +54,6 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bookings'),
-        backgroundColor: const Color.fromARGB(255, 29, 165, 153),
-      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: hotelCollection.snapshots(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -74,8 +68,9 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
           }
 
           final sortedDocs = snapshot.data!.docs.where((doc) {
-            final hotelDocid = doc['hotel_docid'];
-            return hotelDocid == widget.docId;
+            final userDocId = doc['userid'];
+            final userId = auth.currentUser!.uid;
+            return userDocId == userId;
           }).toList();
 
           if (sortedDocs.isEmpty) {
@@ -106,16 +101,19 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          Text(
-                            'Name : ${document['user_name']}',
-                            textAlign: TextAlign.start,
-                            maxLines: 1,
-                            overflow: TextOverflow.clip,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontStyle: FontStyle.normal,
-                              fontSize: 16,
-                              color: Color(0xff000000),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                            child: Text(
+                              'Driver : ${document['driver_name']}',
+                              textAlign: TextAlign.start,
+                              maxLines: 1,
+                              overflow: TextOverflow.clip,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 16,
+                                color: Color(0xff000000),
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -125,7 +123,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: GestureDetector(
                               onTap: () {
-                                final userPhone = document['user_phone'];
+                                final userPhone = document['driver_phone'];
                                 launchWhatsApp(userPhone);
                               },
                               child: Row(
@@ -138,7 +136,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                                     width: 7,
                                   ),
                                   Text(
-                                    '${document['user_phone']}',
+                                    '${document['driver_phone']}',
                                     textAlign: TextAlign.start,
                                     maxLines: 1,
                                     overflow: TextOverflow.clip,
@@ -160,7 +158,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 0),
                             child: Text(
-                              'Hotel Checkin: ${document['hcheckin']}',
+                              'Booking Date : ${document['booking date']}',
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
                               style: const TextStyle(
@@ -175,7 +173,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 0),
                             child: Text(
-                              'Hotel Checkout: ${document['hcheckout']}',
+                              'Car : ${document['name']}',
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
                               style: const TextStyle(
@@ -190,7 +188,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 0),
                             child: Text(
-                              'Room : ${document['hrooms']}',
+                              'Seats : ${document['seats']}',
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
                               style: const TextStyle(
@@ -205,7 +203,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 0),
                             child: Text(
-                              'price: ${document['hprice']}',
+                              'Price/Km: ${document['price']}',
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
                               style: const TextStyle(

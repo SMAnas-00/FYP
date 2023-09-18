@@ -1,27 +1,26 @@
 // ignore_for_file: use_build_context_synchronously, deprecated_member_use
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class AdminHotelBooking extends StatefulWidget {
-  final String docId;
-  const AdminHotelBooking({super.key, required this.docId});
+class UserAnimalBooking extends StatefulWidget {
+  const UserAnimalBooking({super.key});
 
   @override
-  State<AdminHotelBooking> createState() => _AdminHotelBookingState();
+  State<UserAnimalBooking> createState() => _UserAnimalBookingState();
 }
 
-class _AdminHotelBookingState extends State<AdminHotelBooking> {
+class _UserAnimalBookingState extends State<UserAnimalBooking> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   CollectionReference hotelCollection = FirebaseFirestore.instance
       .collection('app')
       .doc('bookings')
-      .collection('hotel');
+      .collection('animal');
 
-  // Function to launch WhatsApp with the specified phone number
   void launchWhatsApp(String phoneNumber) async {
     final whatsappUrl = "whatsapp://send?phone=$phoneNumber";
     if (await canLaunch(whatsappUrl)) {
@@ -56,10 +55,6 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Bookings'),
-        backgroundColor: const Color.fromARGB(255, 29, 165, 153),
-      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: hotelCollection.snapshots(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -74,8 +69,9 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
           }
 
           final sortedDocs = snapshot.data!.docs.where((doc) {
-            final hotelDocid = doc['hotel_docid'];
-            return hotelDocid == widget.docId;
+            final userDocid = doc['userid'];
+            final userId = auth.currentUser!.uid;
+            return userDocid == userId;
           }).toList();
 
           if (sortedDocs.isEmpty) {
@@ -106,16 +102,19 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          Text(
-                            'Name : ${document['user_name']}',
-                            textAlign: TextAlign.start,
-                            maxLines: 1,
-                            overflow: TextOverflow.clip,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontStyle: FontStyle.normal,
-                              fontSize: 16,
-                              color: Color(0xff000000),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                            child: Text(
+                              'Manager : ${document['manager_name']}',
+                              textAlign: TextAlign.start,
+                              maxLines: 1,
+                              overflow: TextOverflow.clip,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontStyle: FontStyle.normal,
+                                fontSize: 16,
+                                color: Color(0xff000000),
+                              ),
                             ),
                           ),
                           const SizedBox(
@@ -125,7 +124,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                             padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             child: GestureDetector(
                               onTap: () {
-                                final userPhone = document['user_phone'];
+                                final userPhone = document['manager_phone'];
                                 launchWhatsApp(userPhone);
                               },
                               child: Row(
@@ -138,7 +137,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                                     width: 7,
                                   ),
                                   Text(
-                                    '${document['user_phone']}',
+                                    '${document['manager_phone']}',
                                     textAlign: TextAlign.start,
                                     maxLines: 1,
                                     overflow: TextOverflow.clip,
@@ -160,7 +159,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 0),
                             child: Text(
-                              'Hotel Checkin: ${document['hcheckin']}',
+                              'Animal Type: ${document['name']}',
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
                               style: const TextStyle(
@@ -175,7 +174,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 0),
                             child: Text(
-                              'Hotel Checkout: ${document['hcheckout']}',
+                              'No of Animals: ${document['num_of_animals']}',
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
                               style: const TextStyle(
@@ -190,22 +189,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 0),
                             child: Text(
-                              'Room : ${document['hrooms']}',
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.clip,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                                fontSize: 12,
-                                color: Color(0xff000000),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 0),
-                            child: Text(
-                              'price: ${document['hprice']}',
+                              'price: ${document['price']}',
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
                               style: const TextStyle(
