@@ -14,7 +14,7 @@ class Hoteldetails extends StatefulWidget {
   final List<dynamic> hotelImageURL;
   final int hotelPrice;
   final String hotelcapacity;
-  final DateTime? checkin;
+
   final String description;
   final String hotelid;
   final double latitude;
@@ -32,7 +32,6 @@ class Hoteldetails extends StatefulWidget {
       required this.hotelImageURL,
       required this.hotelcapacity,
       required this.hotelPrice,
-      this.checkin,
       required this.description,
       required this.latitude,
       required this.longitude,
@@ -46,9 +45,11 @@ class Hoteldetails extends StatefulWidget {
   State<Hoteldetails> createState() => _HoteldetailsState();
 }
 
+DateTime? checkin;
+
 class _HoteldetailsState extends State<Hoteldetails> {
   GoogleMapController? _controller;
-
+  final BookingDateController = TextEditingController();
   int selctedrooms = 1;
   int selcteddays = 1;
   String _RoomType = 'Single';
@@ -59,6 +60,8 @@ class _HoteldetailsState extends State<Hoteldetails> {
     super.initState();
     updatedprice = widget.hotelPrice;
   }
+
+  late DateTime selecteddate;
 
   @override
   Widget build(BuildContext context) {
@@ -464,6 +467,30 @@ class _HoteldetailsState extends State<Hoteldetails> {
                         ),
                       ],
                     ),
+                    GestureDetector(
+                      onTap: () async {
+                        DateTime? datePicked = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime(2024));
+                        if (datePicked != null) {
+                          setState(() {
+                            checkin = datePicked;
+                            BookingDateController.text =
+                                '${datePicked.day}-${datePicked.month}-${datePicked.year}';
+                          });
+                        }
+                      },
+                      child: TextFormField(
+                        controller: BookingDateController,
+                        enabled: false,
+                        showCursor: false,
+                        decoration: const InputDecoration(
+                          labelText: 'Select Booking Date',
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -474,11 +501,10 @@ class _HoteldetailsState extends State<Hoteldetails> {
                 alignment: Alignment.bottomCenter,
                 child: MaterialButton(
                   onPressed: () {
-                    String datecheckin = DateFormat('EEEE, MMM dd, yyyy')
-                        .format(widget.checkin!);
+                    String datecheckin =
+                        DateFormat('EEEE, MMM dd, yyyy').format(checkin!);
                     String datecheckout = DateFormat('EEEE, MMM dd, yyyy')
-                        .format(
-                            widget.checkin!.add(Duration(days: selcteddays)));
+                        .format(checkin!.add(Duration(days: selcteddays)));
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {

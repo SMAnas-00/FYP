@@ -76,6 +76,17 @@ class _AdminHomePageState extends State<AdminHomePage> {
             },
           ),
           AdminDashboardCard(
+            title: 'Mina Camp',
+            icon: const FaIcon(
+              FontAwesomeIcons.tent,
+              size: 20,
+            ).icon,
+            onPressed: () {
+              // Navigate to the desired page
+              Navigator.pushNamed(context, '/addmina');
+            },
+          ),
+          AdminDashboardCard(
             title: 'Services',
             icon: const FaIcon(
               FontAwesomeIcons.mosque,
