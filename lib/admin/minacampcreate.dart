@@ -109,7 +109,12 @@ class _addMinaScreenState extends State<addMinaScreen> {
         if (checkuser != null) {
           final campId = '${user.currentUser!.uid}$did';
           await uploadImages(campId);
-
+          final userDOc = await firestore
+              .collection('app')
+              .doc('Users')
+              .collection('Signup')
+              .doc(checkuser.uid)
+              .get();
           await FirebaseFirestore.instance
               .collection('app')
               .doc('Services')
@@ -130,6 +135,8 @@ class _addMinaScreenState extends State<addMinaScreen> {
             'camp_lng': locationPosition!.geometry!.location!.lng!,
             'camp_lat': locationPosition!.geometry!.location!.lat!,
             'description': descriptionController.text,
+            'manager_name': userDOc.data()?['First_name'],
+            'manager_phone': userDOc.data()?['Contact'],
           });
           setState(() {
             selectedHotelType = null;
@@ -211,24 +218,24 @@ class _addMinaScreenState extends State<addMinaScreen> {
                       },
                       items: const [
                         DropdownMenuItem(
-                          value: '1 start',
-                          child: Text('1 start'),
+                          value: '1 stars',
+                          child: Text('1 stars'),
                         ),
                         DropdownMenuItem(
-                          value: '2 start',
-                          child: Text('2 start'),
+                          value: '2 stars',
+                          child: Text('2 stars'),
                         ),
                         DropdownMenuItem(
-                          value: '3 start',
-                          child: Text('3 start'),
+                          value: '3 stars',
+                          child: Text('3 stars'),
                         ),
                         DropdownMenuItem(
-                          value: '4 start',
-                          child: Text('4 start'),
+                          value: '4 stars',
+                          child: Text('4 stars'),
                         ),
                         DropdownMenuItem(
-                          value: '5 start',
-                          child: Text('5 start'),
+                          value: '5 stars',
+                          child: Text('5 stars'),
                         ),
                       ],
                       decoration: const InputDecoration(

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:newui/admin/my_animal.dart';
 import 'package:newui/admin/my_flights.dart';
 import 'package:newui/admin/my_hotels.dart';
+import 'package:newui/admin/my_mina.dart';
 import 'package:newui/admin/my_transport.dart';
 
 class ServicesScreen extends StatefulWidget {
@@ -15,7 +17,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 5,
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -36,22 +38,35 @@ class _ServicesScreenState extends State<ServicesScreen> {
             indicatorColor: Colors.white,
             tabs: [
               Tab(
-                child: Text("Hotel"),
+                child: Icon(Icons.hotel),
               ),
               Tab(
-                child: Text("Flight"),
+                child: Icon(Icons.flight),
               ),
               Tab(
-                child: Text("Transport"),
+                child: Icon(Icons.car_rental),
               ),
               Tab(
-                child: Text("Animal"),
+                child: FaIcon(
+                  FontAwesomeIcons.cow,
+                ),
+              ),
+              Tab(
+                child: FaIcon(
+                  FontAwesomeIcons.tent,
+                ),
               )
             ],
           ),
         ),
         body: const TabBarView(
-          children: [MyHotels(), MyFlights(), MyTransport(), MyAnimal()],
+          children: [
+            MyHotels(),
+            MyFlights(),
+            MyTransport(),
+            MyAnimal(),
+            MyMina()
+          ],
         ),
       ),
     );
