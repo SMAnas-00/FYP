@@ -835,6 +835,57 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
+                GestureDetector(
+                  onTap: () async {
+                    Navigator.pushNamed(context, '/animal');
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.all(0),
+                    width: 200,
+                    height: 100,
+                    decoration: const BoxDecoration(
+                      color: Color(0x00000000),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            color: const Color(0xffffffff),
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: const Icon(FontAwesomeIcons.cow),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                          child: Text(
+                            "My Bookings",
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.clip,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              fontSize: 14,
+                              color: Color(0xff000000),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.004),
               ],
             ),

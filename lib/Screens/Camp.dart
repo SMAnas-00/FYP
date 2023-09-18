@@ -200,6 +200,10 @@ class _MinaListScreenState extends State<MinaListScreen> {
                                           longitude: document['camp_lng'],
                                           campid: document['camp_id'],
                                           adminid: document['admin_id'],
+                                          manager_name:
+                                              document['manager_name'],
+                                          manager_phone:
+                                              document['manager_phone'],
                                           docid: document.id,
                                           userid: auth.currentUser!.uid,
                                         )));
