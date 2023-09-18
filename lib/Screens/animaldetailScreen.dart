@@ -14,6 +14,8 @@ class AnimalDetails extends StatefulWidget {
   String userid;
   String docid;
   int weight;
+  String manager_name;
+  String manager_phone;
   AnimalDetails(
       {super.key,
       required this.animaltype,
@@ -23,6 +25,8 @@ class AnimalDetails extends StatefulWidget {
       required this.userid,
       required this.docid,
       required this.weight,
+      required this.manager_name,
+      required this.manager_phone,
       required this.animalId});
 
   @override
@@ -315,6 +319,12 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                                     FirebaseAuth user = FirebaseAuth.instance;
                                     FirebaseFirestore firestore =
                                         FirebaseFirestore.instance;
+                                    final userdata = await firestore
+                                        .collection('app')
+                                        .doc('Users')
+                                        .collection('Signup')
+                                        .doc(user.currentUser!.uid)
+                                        .get();
                                     await firestore
                                         .collection('app')
                                         .doc('bookings')
@@ -346,6 +356,11 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                                       'image': widget.animal_imgURL,
                                       'num_of_animals': selcteddays,
                                       'status': 'pending',
+                                      'user_name':
+                                          userdata.data()?['First_name'],
+                                      'user_phone': userdata.data()?['Contact'],
+                                      'manager_name': widget.manager_name,
+                                      'manager_phone': widget.manager_phone,
                                       'date': DateTime.now(),
                                     }, SetOptions(merge: true));
                                   },

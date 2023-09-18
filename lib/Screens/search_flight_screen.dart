@@ -218,6 +218,9 @@ class _SearchFlightState extends State<SearchFlight> {
                                         latitude: document['departure_lat'],
                                         longitude: document['departure_lng'],
                                         adminid: document['admin_id'],
+                                        manager_name: document['manager_name'],
+                                        manager_phone:
+                                            document['manager_phone'],
                                         docid: document.id,
                                         userid: auth.currentUser!.uid,
                                         dep_time: document['departure_time'],

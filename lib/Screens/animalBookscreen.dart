@@ -155,6 +155,9 @@ class _AnimalScreenState extends State<AnimalScreen> {
                                         animal_imgURL: img,
                                         animalprice: document['animal_price'],
                                         adminid: document['admin_id'],
+                                        manager_name: document['manager_name'],
+                                        manager_phone:
+                                            document['manager_phone'],
                                         userid: auth.currentUser!.uid,
                                         docid: document.id,
                                         weight: document['weight'],

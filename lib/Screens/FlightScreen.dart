@@ -215,6 +215,10 @@ class _FlightListState extends State<FlightList> {
                                           longitude: document['departure_lng'],
                                           dep_time: document['departure_time'],
                                           adminid: document['admin_id'],
+                                          manager_name:
+                                              document['manager_name'],
+                                          manager_phone:
+                                              document['manager_phone'],
                                           docid: document.id,
                                           userid: auth.currentUser!.uid,
                                         )));
