@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lottie/lottie.dart';
 
 class ForgetScreen extends StatelessWidget {
@@ -6,6 +8,8 @@ class ForgetScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController email = TextEditingController();
+    FirebaseAuth auth = FirebaseAuth.instance;
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
@@ -91,7 +95,7 @@ class ForgetScreen extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(vertical: 30, horizontal: 0),
                 child: TextField(
-                  controller: TextEditingController(),
+                  controller: email,
                   obscureText: false,
                   textAlign: TextAlign.start,
                   maxLines: 1,
@@ -133,7 +137,15 @@ class ForgetScreen extends StatelessWidget {
                 ),
               ),
               MaterialButton(
-                onPressed: () {},
+                onPressed: () {
+                  auth
+                      .sendPasswordResetEmail(email: email.text.toString())
+                      .then((value) {
+                    email.clear();
+                    Fluttertoast.showToast(
+                        msg: 'Check your email or try to enter Correct email');
+                  });
+                },
                 color: const Color(0xff3a57e8),
                 elevation: 0,
                 shape: RoundedRectangleBorder(

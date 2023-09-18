@@ -154,6 +154,21 @@ class _SearchTransportScreenState extends State<SearchTransportScreen> {
                                 ),
                               ),
                             ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 0),
+                              child: Text(
+                                'PKR: ' + '${document['price']}/-',
+                                textAlign: TextAlign.start,
+                                overflow: TextOverflow.clip,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 15,
+                                  color: Color(0xff000000),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -201,6 +216,8 @@ class _SearchTransportScreenState extends State<SearchTransportScreen> {
                                         longitude: document['pickup_lng'],
                                         docid: document.id,
                                         total_seats: document['total_seats'],
+                                        number: document['driver_contact'],
+                                        driver_name: document['driver_name'],
                                       )));
                         },
                       ),

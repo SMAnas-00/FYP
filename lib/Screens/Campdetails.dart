@@ -1,56 +1,66 @@
-// ignore_for_file: file_names, deprecated_member_use
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class TransportDetails extends StatefulWidget {
-  String transtype;
-  String pickup;
-  List<dynamic> trans_imgURL;
-  int fareprice;
-  String number;
-  String transId;
-  String adminid;
-  String userid;
-  double latitude;
-  double longitude;
-  String docid;
-  String total_seats;
-  String driver_name;
-  TransportDetails(
+import 'package:carousel_slider/carousel_slider.dart';
+
+class Minadetails extends StatefulWidget {
+  final String campName;
+  final String campLocation;
+  final String campRating;
+  final List<dynamic> campImageURL;
+  final int campPrice;
+  final String campcapacity;
+
+  final String description;
+  final String campid;
+  final double latitude;
+  final double longitude;
+  final String adminid;
+  final String userid;
+  final String docid;
+
+  const Minadetails(
       {super.key,
-      required this.driver_name,
-      required this.number,
-      required this.transtype,
-      required this.pickup,
-      required this.trans_imgURL,
-      required this.fareprice,
+      required this.campImageURL,
+      required this.campName,
+      required this.campPrice,
+      required this.campLocation,
+      required this.campcapacity,
+      required this.campRating,
+      required this.description,
       required this.latitude,
       required this.longitude,
       required this.adminid,
       required this.userid,
       required this.docid,
-      required this.total_seats,
-      required this.transId});
+      required this.campid});
 
   @override
-  State<TransportDetails> createState() => _TransportDetailsState();
+  State<Minadetails> createState() => _MinadetailsState();
 }
 
-class _TransportDetailsState extends State<TransportDetails> {
-  final departureDateController = TextEditingController();
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  FirebaseAuth user = FirebaseAuth.instance;
-  int selcteddays = 1;
+class _MinadetailsState extends State<Minadetails> {
   GoogleMapController? _controller;
+  final BookingDateController = TextEditingController();
+  int selctedrooms = 1;
+  int selcteddays = 1;
+  int updatedprice = 0;
+  @override
+  void initState() {
+    super.initState();
+    updatedprice = widget.campPrice;
+  }
+
+  late DateTime selecteddate;
 
   @override
   Widget build(BuildContext context) {
+    String input = widget.campRating;
+    String numpart = input.replaceAll(RegExp(r'[^0-9]'), '');
     CameraPosition _initialPosition = CameraPosition(
       target: LatLng(widget.latitude, widget.longitude),
       zoom: 12.0,
@@ -60,24 +70,14 @@ class _TransportDetailsState extends State<TransportDetails> {
         markerId: const MarkerId('marker_1'),
         position: LatLng(widget.latitude, widget.longitude),
         infoWindow: InfoWindow(
-          title: widget.transtype,
-          snippet: widget.pickup,
+          title: widget.campName,
+          snippet: widget.campLocation,
         ),
       ),
     };
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
-        actions: [
-          IconButton(
-            color: Colors.black,
-            icon: Icon(Icons.chat),
-            onPressed: () {
-              String num = widget.number;
-              launch("https://wa.me/$num");
-            },
-          ),
-        ],
         elevation: 3,
         centerTitle: true,
         automaticallyImplyLeading: true,
@@ -86,7 +86,7 @@ class _TransportDetailsState extends State<TransportDetails> {
           borderRadius: BorderRadius.zero,
         ),
         title: const Text(
-          "Flight details",
+          "Camp details",
           style: TextStyle(
             fontWeight: FontWeight.w700,
             fontStyle: FontStyle.normal,
@@ -128,7 +128,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                             enlargeCenterPage: true,
                             autoPlay: true,
                           ),
-                          items: widget.trans_imgURL.map((imageUrl) {
+                          items: widget.campImageURL.map((imageUrl) {
                             return Builder(
                               builder: (BuildContext context) {
                                 return Container(
@@ -160,7 +160,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                           Expanded(
                             flex: 1,
                             child: Text(
-                              widget.transtype.toUpperCase(),
+                              widget.campName,
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
                               style: const TextStyle(
@@ -177,7 +177,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Text(
-                                "PKR ${widget.fareprice}",
+                                "PKR ${updatedprice}",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: const TextStyle(
@@ -188,7 +188,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                                 ),
                               ),
                               const Text(
-                                "/day",
+                                "/night",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
@@ -203,11 +203,22 @@ class _TransportDetailsState extends State<TransportDetails> {
                         ],
                       ),
                     ),
+                    Text(
+                      widget.description,
+                      textAlign: TextAlign.start,
+                      overflow: TextOverflow.clip,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.normal,
+                        fontSize: 14,
+                        color: Color(0xff000000),
+                      ),
+                    ),
                     const Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
-                        "Location:",
+                        "Ratings",
                         textAlign: TextAlign.start,
                         overflow: TextOverflow.clip,
                         style: TextStyle(
@@ -218,21 +229,16 @@ class _TransportDetailsState extends State<TransportDetails> {
                         ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        const SizedBox(width: 20),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Available on:",
-                              style: TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            Text(widget.pickup),
-                          ],
-                        )
-                      ],
+                    RatingBarIndicator(
+                      itemBuilder: (context, index) => const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                      itemCount: 5,
+                      rating: double.parse(numpart),
+                      itemSize: 20,
                     ),
+                    const SizedBox(height: 30),
                     Center(
                       child: Container(
                         decoration: BoxDecoration(
@@ -248,11 +254,127 @@ class _TransportDetailsState extends State<TransportDetails> {
                         ),
                       ),
                     ),
+                    // Row(
+                    //   children: [
+                    //     const Text("Room Type:"),
+                    //     DropdownButton(
+                    //       value: _RoomType,
+                    //       items: _RoomTypes.map((RoomType) {
+                    //         return DropdownMenuItem(
+                    //           value: RoomType,
+                    //           child: Text(RoomType),
+                    //         );
+                    //       }).toList(),
+                    //       onChanged: (value) {
+                    //         setState(() {
+                    //           _RoomType = value!;
+                    //           print(value);
+                    //           if (value == 'Connected') {
+                    //             updatedprice = widget.hotelpriceConn;
+                    //           } else {
+                    //             updatedprice = widget.hotelPrice;
+                    //           }
+                    //         });
+                    //       },
+                    //     ),
+                    //   ],
+                    // ),
+                    // const Padding(
+                    //   padding:
+                    //       EdgeInsets.symmetric(vertical: 16, horizontal: 0),
+                    //   child: Text(
+                    //     "Number of days",
+                    //     textAlign: TextAlign.start,
+                    //     overflow: TextOverflow.clip,
+                    //     style: TextStyle(
+                    //       fontWeight: FontWeight.w700,
+                    //       fontStyle: FontStyle.normal,
+                    //       fontSize: 15,
+                    //       color: Color(0xff000000),
+                    //     ),
+                    //   ),
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.start,
+                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                    //   mainAxisSize: MainAxisSize.max,
+                    //   children: [
+                    //     Container(
+                    //       alignment: Alignment.center,
+                    //       margin: const EdgeInsets.all(0),
+                    //       padding: const EdgeInsets.all(4),
+                    //       decoration: BoxDecoration(
+                    //         color: const Color(0xfff0efef),
+                    //         shape: BoxShape.rectangle,
+                    //         borderRadius: BorderRadius.circular(8.0),
+                    //       ),
+                    //       child: IconButton(
+                    //         icon: const Icon(
+                    //           Icons.remove,
+                    //           color: Color(0xff000000),
+                    //           size: 20,
+                    //         ),
+                    //         onPressed: () {
+                    //           setState(() {
+                    //             if (selcteddays > 1) {
+                    //               selcteddays--;
+                    //             }
+                    //             if (selcteddays <= 0) {
+                    //               selcteddays = 0;
+                    //             }
+                    //           });
+                    //         },
+                    //       ),
+                    //     ),
+                    //     Padding(
+                    //       padding: const EdgeInsets.symmetric(
+                    //           vertical: 0, horizontal: 8),
+                    //       child: Text(
+                    //         selcteddays.toString(),
+                    //         textAlign: TextAlign.start,
+                    //         overflow: TextOverflow.clip,
+                    //         style: const TextStyle(
+                    //           fontWeight: FontWeight.w400,
+                    //           fontStyle: FontStyle.normal,
+                    //           fontSize: 16,
+                    //           color: Color(0xff000000),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     Container(
+                    //       alignment: Alignment.center,
+                    //       margin: const EdgeInsets.all(0),
+                    //       padding: const EdgeInsets.all(4),
+                    //       decoration: BoxDecoration(
+                    //         color: const Color(0xfff0efef),
+                    //         shape: BoxShape.rectangle,
+                    //         borderRadius: BorderRadius.circular(8.0),
+                    //       ),
+                    //       child: IconButton(
+                    //         iconSize: 20,
+                    //         icon: const Icon(
+                    //           Icons.add,
+                    //           color: Color(0xff000000),
+                    //           size: 20,
+                    //         ),
+                    //         onPressed: () {
+                    //           setState(() {
+                    //             if (selcteddays >= 10) {
+                    //               selcteddays = 10;
+                    //             } else {
+                    //               selcteddays++;
+                    //             }
+                    //           });
+                    //         },
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                     const Padding(
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
-                        "Number of Days",
+                        "Number of Slots",
                         textAlign: TextAlign.start,
                         overflow: TextOverflow.clip,
                         style: TextStyle(
@@ -285,11 +407,11 @@ class _TransportDetailsState extends State<TransportDetails> {
                             ),
                             onPressed: () {
                               setState(() {
-                                if (selcteddays > 1) {
-                                  selcteddays--;
+                                if (selctedrooms > 1) {
+                                  selctedrooms--;
                                 }
-                                if (selcteddays <= 0) {
-                                  selcteddays = 0;
+                                if (selctedrooms <= 0) {
+                                  selctedrooms = 0;
                                 }
                               });
                             },
@@ -299,7 +421,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 0, horizontal: 8),
                           child: Text(
-                            selcteddays.toString(),
+                            selctedrooms.toString(),
                             textAlign: TextAlign.start,
                             overflow: TextOverflow.clip,
                             style: const TextStyle(
@@ -328,40 +450,16 @@ class _TransportDetailsState extends State<TransportDetails> {
                             ),
                             onPressed: () {
                               setState(() {
-                                if (selcteddays >= 6) {
-                                  selcteddays = 6;
+                                if (selctedrooms >= 3) {
+                                  selctedrooms = 3;
                                 } else {
-                                  selcteddays++;
+                                  selctedrooms++;
                                 }
                               });
                             },
                           ),
                         ),
                       ],
-                    ),
-                    const SizedBox(height: 30),
-                    GestureDetector(
-                      onTap: () async {
-                        DateTime? datePicked = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime(2024));
-                        if (datePicked != null) {
-                          setState(() {
-                            departureDateController.text =
-                                '${datePicked.day}-${datePicked.month}-${datePicked.year}';
-                          });
-                        }
-                      },
-                      child: TextFormField(
-                        controller: departureDateController,
-                        enabled: false,
-                        showCursor: false,
-                        decoration: const InputDecoration(
-                          labelText: 'Select Booking Date',
-                        ),
-                      ),
                     ),
                   ],
                 ),
@@ -372,120 +470,86 @@ class _TransportDetailsState extends State<TransportDetails> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: MaterialButton(
-                  onPressed: () async {
-                    if (departureDateController.text == '') {
-                      await showDialog(
+                  onPressed: () {
+                    showDialog(
                         context: context,
                         builder: (BuildContext context) {
+                          int totalprice;
+                          if (updatedprice == 0) {
+                            totalprice = widget.campPrice * selctedrooms;
+                          } else {
+                            totalprice = updatedprice * selctedrooms;
+                          }
                           return AlertDialog(
-                            title: const Text("Error"),
-                            content: const Text("Please select booking date"),
+                            title: const Text('Confirmatrion'),
+                            content: SizedBox(
+                              height: 150,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                      child: Text('NAME: ${widget.campName}')),
+                                  Expanded(
+                                      child: Text('Hotel Id:${widget.campid}')),
+                                  const SizedBox(height: 5),
+                                  Expanded(child: Text('Slots: $selctedrooms')),
+                                  const SizedBox(height: 10),
+                                  Expanded(
+                                      child: Text('Total Price: $totalprice')),
+                                ],
+                              ),
+                            ),
                             actions: <Widget>[
                               TextButton(
-                                child: const Text("Ok"),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
+                                  onPressed: () async {
+                                    FirebaseAuth user = FirebaseAuth.instance;
+                                    FirebaseFirestore firestore =
+                                        FirebaseFirestore.instance;
+                                    await firestore
+                                        .collection('app')
+                                        .doc('bookings')
+                                        .collection('cart')
+                                        .doc('request')
+                                        .collection(user.currentUser!.uid)
+                                        .doc('minacamp')
+                                        .set({
+                                      'name': widget.campName,
+                                      'price': totalprice,
+                                      'image': widget.campImageURL[0],
+                                      'id': widget.campid,
+                                      'quantity': selctedrooms,
+                                      'docid': widget.docid,
+                                    }).then((value) => Navigator.pop(context));
+                                    await firestore
+                                        .collection('app')
+                                        .doc('bookings')
+                                        .collection('minacamp')
+                                        .doc('${user.currentUser!.uid}' +
+                                            '${DateTime.now()}')
+                                        .set({
+                                      'adminid': widget.adminid,
+                                      'userid': widget.userid,
+                                      'camp_docid': widget.docid,
+                                      'name': widget.campName,
+                                      'id': widget.campid,
+                                      'price': totalprice,
+                                      'image': widget.campImageURL,
+                                      'campslot': selctedrooms,
+                                      'status': 'pending',
+                                      'latitude': widget.latitude,
+                                      'longitude': widget.longitude,
+                                      'date': DateTime.now(),
+                                    }, SetOptions(merge: true));
+                                  },
+                                  child: const Text('OK')),
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('CLOSE')),
                             ],
                           );
-                        },
-                      );
-                    } else {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            int totalprice = widget.fareprice * selcteddays;
-                            return AlertDialog(
-                              title: const Text('Confirmatrion'),
-                              content: SizedBox(
-                                height: 150,
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'NAME: ${widget.transtype}',
-                                        overflow: TextOverflow.clip,
-                                      ),
-                                      Text('ID: ${widget.transId}'),
-                                      const SizedBox(height: 10),
-                                      Text(
-                                          'Date: ${departureDateController.text}'),
-                                      const SizedBox(height: 5),
-                                      Text('Total Price: $totalprice'),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                    onPressed: () async {
-                                      FirebaseAuth user = FirebaseAuth.instance;
-                                      FirebaseFirestore firestore =
-                                          FirebaseFirestore.instance;
-                                      final userdata = await firestore
-                                          .collection('app')
-                                          .doc('Users')
-                                          .collection('Signup')
-                                          .doc(user.currentUser!.uid)
-                                          .get();
-                                      await firestore
-                                          .collection('app')
-                                          .doc('bookings')
-                                          .collection('cart')
-                                          .doc('request')
-                                          .collection(user.currentUser!.uid)
-                                          .doc('transport')
-                                          .set({
-                                        'name': widget.transtype,
-                                        'price': totalprice,
-                                        'image': widget.trans_imgURL[0],
-                                        'id': widget.transId,
-                                        'quantity': selcteddays,
-                                        'docid': widget.docid
-                                      }).then((value) =>
-                                              Navigator.pop(context));
-                                      await firestore
-                                          .collection('app')
-                                          .doc('bookings')
-                                          .collection('transport')
-                                          .doc('${user.currentUser!.uid}' +
-                                              '${DateTime.now()}')
-                                          .set({
-                                        'adminid': widget.adminid,
-                                        'userid': widget.userid,
-                                        'docid': widget.docid,
-                                        'name': widget.transtype,
-                                        'id': widget.transId,
-                                        'price': totalprice,
-                                        'image': widget.trans_imgURL,
-                                        'booking date':
-                                            departureDateController.text,
-                                        'seats': widget.total_seats,
-                                        'status': 'pending',
-                                        'latitude': widget.latitude,
-                                        'longitude': widget.longitude,
-                                        'driver_phone': widget.number,
-                                        'driver_name': widget.driver_name,
-                                        'user_name':
-                                            userdata.data()?['First_name'],
-                                        'user_phone':
-                                            userdata.data()?['Contact'],
-                                        'date': DateTime.now(),
-                                      }, SetOptions(merge: true));
-                                    },
-                                    child: const Text('OK')),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('CLOSE')),
-                              ],
-                            );
-                          });
-                    }
+                        });
                   },
                   color: const Color(0xff3a57e8),
                   elevation: 0,
