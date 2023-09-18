@@ -50,15 +50,25 @@ class _MapViewState extends State<MapView> {
   List<dynamic> _placesList = [];
 
   // ignore: non_constant_identifier_names
+  // List<LatLng> Polygonpoints = const [
+  //   LatLng(24.873463514025758, 67.13520799826712),
+  //   LatLng(24.873472639291787, 67.1352086688193),
+  //   LatLng(24.873480547855124, 67.13520933937151),
+  //   LatLng(24.873480547855124, 67.1352207387589),
+  //   LatLng(24.873479331153092, 67.13527371238264),
+  //   LatLng(24.873477506100052, 67.13529248784423),
+  //   LatLng(24.873459863919177, 67.13528913508323),
+  //   LatLng(24.873458038865834, 67.13523750256388),
+  // ];
   List<LatLng> Polygonpoints = const [
-    LatLng(24.873463514025758, 67.13520799826712),
-    LatLng(24.873472639291787, 67.1352086688193),
-    LatLng(24.873480547855124, 67.13520933937151),
-    LatLng(24.873480547855124, 67.1352207387589),
-    LatLng(24.873479331153092, 67.13527371238264),
-    LatLng(24.873477506100052, 67.13529248784423),
-    LatLng(24.873459863919177, 67.13528913508323),
-    LatLng(24.873458038865834, 67.13523750256388),
+    LatLng(24.927287711685864, 67.04758581132711),
+    LatLng(24.92734535183283, 67.0476460274595),
+    LatLng(24.92738580115554, 67.04759473233756),
+    LatLng(24.927455576100304, 67.0476549485545),
+    LatLng(24.92760439717652, 67.04746640148856),
+    LatLng(24.927414471402553, 67.0472792177636),
+    LatLng(24.92736461595279, 67.04733943071528),
+    LatLng(24.92742990292065, 67.04740357052722),
   ];
 
   final startAddressFocusNode = FocusNode();
@@ -503,10 +513,6 @@ class _MapViewState extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
-    final BackArrow = IconButton(
-        color: Colors.white,
-        onPressed: () {},
-        icon: const Icon(Icons.arrow_back));
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return SizedBox(

@@ -14,7 +14,8 @@ class Minadetails extends StatefulWidget {
   final List<dynamic> campImageURL;
   final int campPrice;
   final String campcapacity;
-
+  String manager_name;
+  String manager_phone;
   final String description;
   final String campid;
   final double latitude;
@@ -23,7 +24,7 @@ class Minadetails extends StatefulWidget {
   final String userid;
   final String docid;
 
-  const Minadetails(
+  Minadetails(
       {super.key,
       required this.campImageURL,
       required this.campName,
@@ -37,6 +38,8 @@ class Minadetails extends StatefulWidget {
       required this.adminid,
       required this.userid,
       required this.docid,
+      required this.manager_name,
+      required this.manager_phone,
       required this.campid});
 
   @override
@@ -188,7 +191,7 @@ class _MinadetailsState extends State<Minadetails> {
                                 ),
                               ),
                               const Text(
-                                "/night",
+                                "/slot",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
@@ -505,6 +508,12 @@ class _MinadetailsState extends State<Minadetails> {
                                     FirebaseAuth user = FirebaseAuth.instance;
                                     FirebaseFirestore firestore =
                                         FirebaseFirestore.instance;
+                                    final userdata = await firestore
+                                        .collection('app')
+                                        .doc('Users')
+                                        .collection('Signup')
+                                        .doc(user.currentUser!.uid)
+                                        .get();
                                     await firestore
                                         .collection('app')
                                         .doc('bookings')
@@ -538,7 +547,12 @@ class _MinadetailsState extends State<Minadetails> {
                                       'status': 'pending',
                                       'latitude': widget.latitude,
                                       'longitude': widget.longitude,
-                                      'date': DateTime.now(),
+                                      'user_name':
+                                          userdata.data()?['First_name'],
+                                      'user_phone': userdata.data()?['Contact'],
+                                      'manager_name': widget.manager_name,
+                                      'manager_phone': widget.manager_phone,
+                                      'date': '${DateTime.now()}',
                                     }, SetOptions(merge: true));
                                   },
                                   child: const Text('OK')),
