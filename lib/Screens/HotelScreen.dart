@@ -197,7 +197,6 @@ class _HotelListScreenState extends State<HotelListScreen> {
                                           hotelRating: document['stars'],
                                           hotelcapacity:
                                               document['room_capacity'],
-                                          checkin: _checkInDate!,
                                           description: document['description'],
                                           latitude: document['hotel_lat'],
                                           longitude: document['hotel_lng'],
@@ -243,7 +242,7 @@ class HotelScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          const DateSelector(),
+          // const DateSelector(),
           Expanded(
             child: HotelListScreen(),
           ),
@@ -253,51 +252,51 @@ class HotelScreen extends StatelessWidget {
   }
 }
 
-DateTime? _checkInDate;
+// DateTime? _checkInDate;
 
-class DateSelector extends StatefulWidget {
-  const DateSelector({super.key});
+// class DateSelector extends StatefulWidget {
+//   const DateSelector({super.key});
 
-  @override
-  _DateSelectorState createState() => _DateSelectorState();
-}
+//   @override
+//   _DateSelectorState createState() => _DateSelectorState();
+// }
 
-class _DateSelectorState extends State<DateSelector> {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 80),
-              primary: const Color(0xFF3A57E8),
-              onPrimary: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              shadowColor: Colors.black26),
-          onPressed: () async {
-            final DateTime? selectedDate = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime.now().add(const Duration(days: 365)),
-            );
-            if (selectedDate != null) {
-              setState(() {
-                _checkInDate = selectedDate;
-              });
-            }
-            ;
-          },
-          child: Text(
-            _checkInDate != null
-                ? 'Check-in: ${_checkInDate.toString().substring(0, 10)}'
-                : 'Select Check-in',
-          ),
-        ),
-      ],
-    );
-  }
-}
+// class _DateSelectorState extends State<DateSelector> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//       children: [
+//         ElevatedButton(
+//           style: ElevatedButton.styleFrom(
+//               padding: const EdgeInsets.symmetric(horizontal: 80),
+//               primary: const Color(0xFF3A57E8),
+//               onPrimary: Colors.white,
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(8),
+//               ),
+//               shadowColor: Colors.black26),
+//           onPressed: () async {
+//             final DateTime? selectedDate = await showDatePicker(
+//               context: context,
+//               initialDate: DateTime.now(),
+//               firstDate: DateTime.now(),
+//               lastDate: DateTime.now().add(const Duration(days: 365)),
+//             );
+//             if (selectedDate != null) {
+//               setState(() {
+//                 _checkInDate = selectedDate;
+//               });
+//             }
+//             ;
+//           },
+//           child: Text(
+//             _checkInDate != null
+//                 ? 'Check-in: ${_checkInDate.toString().substring(0, 10)}'
+//                 : 'Select Check-in',
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
