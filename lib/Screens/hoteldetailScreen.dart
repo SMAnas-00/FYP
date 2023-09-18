@@ -45,6 +45,16 @@ class Hoteldetails extends StatefulWidget {
   State<Hoteldetails> createState() => _HoteldetailsState();
 }
 
+Widget _buildServiceChip(String service) {
+  return Chip(
+    label: Text(
+      service,
+      style: TextStyle(fontSize: 12),
+    ),
+    backgroundColor: Color(0xffCCCCCC), // Adjust the chip background color
+  );
+}
+
 DateTime? checkin;
 
 class _HoteldetailsState extends State<Hoteldetails> {
@@ -219,6 +229,29 @@ class _HoteldetailsState extends State<Hoteldetails> {
                         fontSize: 14,
                         color: Color(0xff000000),
                       ),
+                    ),
+                    SizedBox(
+                        height:
+                            8), // Add some spacing between the price and services
+                    Text(
+                      "Services:",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: Color(0xff000000),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Wrap(
+                      spacing: 8, // Adjust the spacing between services
+                      children: [
+                        _buildServiceChip("WiFi"),
+                        _buildServiceChip("Swimming Pool"),
+                        _buildServiceChip("Food"),
+                        _buildServiceChip("Mosque"),
+                        _buildServiceChip("Malls"),
+                        _buildServiceChip("Room Service"),
+                      ],
                     ),
                     const Padding(
                       padding:
