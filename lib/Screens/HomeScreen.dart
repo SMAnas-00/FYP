@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:newui/Screens/local_push_notification.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:geolocator/geolocator.dart';
@@ -510,7 +511,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: const Icon(Icons.bed),
+                          child: const Icon(FontAwesomeIcons.hotel),
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
@@ -561,7 +562,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            child: const Icon(Icons.flight)),
+                            child: const Icon(FontAwesomeIcons.plane)),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
@@ -611,7 +612,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: const Icon(Icons.bike_scooter),
+                          child: const Icon(FontAwesomeIcons.car),
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
@@ -663,7 +664,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: const Icon(Icons.broken_image),
+                          child: const Icon(FontAwesomeIcons.streetView),
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
@@ -714,7 +715,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            child: const Icon(Icons.home)),
+                            child: const Icon(FontAwesomeIcons.tent)),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
@@ -764,7 +765,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            child: const Icon(Icons.book)),
+                            child: const Icon(FontAwesomeIcons.bookAtlas)),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
@@ -814,7 +815,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: const Icon(Icons.broken_image),
+                          child: const Icon(FontAwesomeIcons.cow),
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),

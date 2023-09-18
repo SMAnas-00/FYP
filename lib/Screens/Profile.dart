@@ -412,7 +412,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               auth
                   .signOut()
                   .then((value) => Navigator.pop(context))
-                  .then((value) => Navigator.pop(context));
+                  .then((value) => Navigator.pushNamed(context, '/signin'));
             },
             child: const Text(
               "Log Out",
