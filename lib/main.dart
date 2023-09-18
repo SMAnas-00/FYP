@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -61,9 +63,24 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  Future<Map<String, dynamic>?> getuserdata() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    FirebaseAuth auth = FirebaseAuth.instance;
+    final userdata = await firestore
+        .collection('app')
+        .doc('Users')
+        .collection('Signup')
+        .doc(auth.currentUser!.uid)
+        .get();
+        
+    return userdata.data();
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final user = getuserdata();
+    String usercontact = user.
     return MaterialApp(
       title: "NewUI",
       debugShowCheckedModeBanner: false,

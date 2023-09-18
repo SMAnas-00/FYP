@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TransportDetails extends StatefulWidget {
   String transtype;
   String pickup;
   List<dynamic> trans_imgURL;
   int fareprice;
+  String number;
   String transId;
   String adminid;
   String userid;
@@ -19,8 +21,11 @@ class TransportDetails extends StatefulWidget {
   double longitude;
   String docid;
   String total_seats;
+  String driver_name;
   TransportDetails(
       {super.key,
+      required this.driver_name,
+      required this.number,
       required this.transtype,
       required this.pickup,
       required this.trans_imgURL,
@@ -63,6 +68,16 @@ class _TransportDetailsState extends State<TransportDetails> {
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
+        actions: [
+          IconButton(
+            color: Colors.black,
+            icon: Icon(Icons.chat),
+            onPressed: () {
+              String num = widget.number;
+              launch("https://wa.me/$num");
+            },
+          ),
+        ],
         elevation: 3,
         centerTitle: true,
         automaticallyImplyLeading: true,
@@ -410,6 +425,12 @@ class _TransportDetailsState extends State<TransportDetails> {
                                       FirebaseAuth user = FirebaseAuth.instance;
                                       FirebaseFirestore firestore =
                                           FirebaseFirestore.instance;
+                                      final userdata = await firestore
+                                          .collection('app')
+                                          .doc('Users')
+                                          .collection('Signup')
+                                          .doc(user.currentUser!.uid)
+                                          .get();
                                       await firestore
                                           .collection('app')
                                           .doc('bookings')
@@ -446,6 +467,12 @@ class _TransportDetailsState extends State<TransportDetails> {
                                         'status': 'pending',
                                         'latitude': widget.latitude,
                                         'longitude': widget.longitude,
+                                        'driver_phone': widget.number,
+                                        'driver_name': widget.driver_name,
+                                        'user_name':
+                                            userdata.data()?['First_name'],
+                                        'user_phone':
+                                            userdata.data()?['Contact'],
                                         'date': DateTime.now(),
                                       }, SetOptions(merge: true));
                                     },
