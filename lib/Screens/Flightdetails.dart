@@ -21,6 +21,8 @@ class FlightDetails extends StatefulWidget {
   String userid;
   String dep_time;
   String docid;
+  String manager_name;
+  String manager_phone;
 
   FlightDetails(
       {super.key,
@@ -37,6 +39,8 @@ class FlightDetails extends StatefulWidget {
       required this.dep_time,
       required this.adminid,
       required this.userid,
+      required this.manager_name,
+      required this.manager_phone,
       required this.docid,
       required this.flight_id});
 
@@ -374,6 +378,12 @@ class _FlightDetailsState extends State<FlightDetails> {
                                     FirebaseAuth user = FirebaseAuth.instance;
                                     FirebaseFirestore firestore =
                                         FirebaseFirestore.instance;
+                                    final userdata = await firestore
+                                        .collection('app')
+                                        .doc('Users')
+                                        .collection('Signup')
+                                        .doc(user.currentUser!.uid)
+                                        .get();
                                     await firestore
                                         .collection('app')
                                         .doc('bookings')
@@ -409,6 +419,11 @@ class _FlightDetailsState extends State<FlightDetails> {
                                       'status': 'pending',
                                       'latitude': widget.latitude,
                                       'longitude': widget.longitude,
+                                      'user_name':
+                                          userdata.data()?['First_name'],
+                                      'user_phone': userdata.data()?['Contact'],
+                                      'manager_name': widget.manager_name,
+                                      'manager_phone': widget.manager_phone,
                                       'date': DateTime.now(),
                                     }, SetOptions(merge: true));
                                   },
