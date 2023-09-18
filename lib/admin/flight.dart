@@ -126,9 +126,17 @@ class _addFlightScreenState extends State<addFlightScreen> {
           loading = true;
         });
         User? checkuser = user.currentUser;
+
         if (checkuser != null) {
           final flightId = '${user.currentUser!.uid}$did';
+          final userDOc = await firestore
+              .collection('app')
+              .doc('Users')
+              .collection('Signup')
+              .doc(checkuser.uid)
+              .get();
           await uploadImages(flightId);
+
           await firestore
               .collection('app')
               .doc('Services')
@@ -160,6 +168,8 @@ class _addFlightScreenState extends State<addFlightScreen> {
             'departure_city': departureCityController.text,
             'destination_city': destinationCityController.text,
             'day': dayController.text,
+            'manager_name': userDOc.data()?['First_name'],
+            'manager_phone': userDOc.data()?['Contact'],
           });
           setState(() {
             selectedFlightType = null;

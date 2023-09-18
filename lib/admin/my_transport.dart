@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:newui/admin/admin_transport_booking.dart';
 
 class MyTransport extends StatefulWidget {
   const MyTransport({super.key});
@@ -308,7 +309,13 @@ class _MyTransportState extends State<MyTransport> {
                             ),
                           ),
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AdminTransportBooking(
+                                      docId: document.id)));
+                        },
                       ),
                     ],
                   ),

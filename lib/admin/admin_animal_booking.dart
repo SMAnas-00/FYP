@@ -2,22 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class AdminHotelBooking extends StatefulWidget {
+class AdminAnimalBooking extends StatefulWidget {
   final String docId;
-  const AdminHotelBooking({super.key, required this.docId});
+
+  const AdminAnimalBooking({super.key, required this.docId});
 
   @override
-  State<AdminHotelBooking> createState() => _AdminHotelBookingState();
+  State<AdminAnimalBooking> createState() => _AdminAnimalBookingState();
 }
 
-class _AdminHotelBookingState extends State<AdminHotelBooking> {
+class _AdminAnimalBookingState extends State<AdminAnimalBooking> {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   CollectionReference hotelCollection = FirebaseFirestore.instance
       .collection('app')
       .doc('bookings')
-      .collection('hotel');
+      .collection('animal');
 
   @override
   void initState() {
@@ -45,8 +46,8 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
           }
 
           final sortedDocs = snapshot.data!.docs.where((doc) {
-            final hotelDocid = doc['hotel_docid'];
-            return hotelDocid == widget.docId;
+            final animalDocid = doc['docid'];
+            return animalDocid == widget.docId;
           }).toList();
 
           if (sortedDocs.isEmpty) {
@@ -111,7 +112,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 0),
                             child: Text(
-                              'Hotel Checkin: ${document['hcheckin']}',
+                              'Animal Type: ${document['name']}',
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
                               style: const TextStyle(
@@ -126,22 +127,7 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 0),
                             child: Text(
-                              'Hotel Checkout: ${document['hcheckout']}',
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.clip,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                                fontSize: 12,
-                                color: Color(0xff000000),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 0),
-                            child: Text(
-                              'price: ${document['hprice']}',
+                              'price: ${document['price']}',
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.clip,
                               style: const TextStyle(

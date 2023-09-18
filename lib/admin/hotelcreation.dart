@@ -108,6 +108,12 @@ class _addHotelScreenState extends State<addHotelScreen> {
         User? checkuser = user.currentUser;
         if (checkuser != null) {
           final hotelId = '${user.currentUser!.uid}$did';
+          final userDOc = await firestore
+              .collection('app')
+              .doc('Users')
+              .collection('Signup')
+              .doc(checkuser.uid)
+              .get();
           await uploadImages(hotelId);
 
           await FirebaseFirestore.instance
@@ -132,6 +138,8 @@ class _addHotelScreenState extends State<addHotelScreen> {
             'hotel_lng': locationPosition!.geometry!.location!.lng!,
             'hotel_lat': locationPosition!.geometry!.location!.lat!,
             'description': descriptionController.text,
+            'manager_name': userDOc.data()?['First_name'],
+            'hotel_phone': userDOc.data()?['Contact'],
           });
           setState(() {
             selectedHotelType = null;

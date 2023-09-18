@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:newui/admin/admin_flight_booking.dart';
 
 Color flightBorderColor = const Color(0xFFE6E6E6);
 Color chipBackgroundColor = const Color(0xFFF6F6F6);
@@ -46,17 +47,10 @@ class _MyFlightsState extends State<MyFlights> {
                   color: Color.fromARGB(255, 29, 165, 153),
                 ));
               }
-              final now = DateTime.now();
               final sortedDocs = snapshot.data!.docs.where((doc) {
-                final airlineDate =
-                    DateFormat('dd-MM-yyyy').parse(doc['departure_date']);
-                final airlineDateTime = DateTime(
-                    airlineDate.year, airlineDate.month, airlineDate.day);
                 final adminID = doc['admin_id'];
                 final userID = user!.uid;
-                return userID == adminID &&
-                    airlineDateTime
-                        .isAfter(now.subtract(const Duration(days: 1)));
+                return userID == adminID;
               }).toList();
 
               if (sortedDocs.isEmpty) {
@@ -80,21 +74,21 @@ class _MyFlightsState extends State<MyFlights> {
                           QueryDocumentSnapshot document = sortedDocs[index];
                           return GestureDetector(
                             child: FlightCard(
-                              economy_seats: document['economy_seats'],
-                              business_Seats: document['business_seats'],
-                              economy_price: document['economy_price'],
-                              business_price: document['business_price'],
-                              departure: document['departure'],
-                              destination: document['destination'],
-                              departure_date: document['departure_date'],
-                              departure_time: document['departure_time'],
-                              destination_date: document['destination_date'],
-                              destination_time: document['destination_time'],
-                              flight_name: document['airline_name'],
-                              flight_type: document['type'],
-                              flight_number: document['airline_number'],
-                              mid_point: document['mid_point'],
-                            ),
+                                economy_seats: document['economy_seats'],
+                                business_Seats: document['business_seats'],
+                                economy_price: document['economy_price'],
+                                business_price: document['business_price'],
+                                departure: document['departure'],
+                                destination: document['destination'],
+                                departure_date: document['day'],
+                                departure_time: document['departure_time'],
+                                destination_date: document['destination_date'],
+                                destination_time: document['destination_time'],
+                                flight_name: document['airline_name'],
+                                flight_type: document['type'],
+                                flight_number: document['airline_number'],
+                                mid_point: document['mid_point'],
+                                docId: document.id),
                             onTap: () {},
                           );
                         })
@@ -123,6 +117,7 @@ class FlightCard extends StatefulWidget {
   String flight_type;
   String flight_number;
   String mid_point;
+  String docId;
 
   FlightCard({
     super.key,
@@ -140,6 +135,7 @@ class FlightCard extends StatefulWidget {
     required this.flight_type,
     required this.flight_number,
     required this.mid_point,
+    required this.docId,
   });
 
   @override
@@ -233,7 +229,13 @@ class _FlightCardState extends State<FlightCard> {
                       ),
                     ),
                   ),
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                AdminFlightBookings(docId: widget.docId)));
+                  },
                 ),
               ],
             ),

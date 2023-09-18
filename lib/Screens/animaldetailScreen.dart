@@ -180,7 +180,8 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 5),
                       child: Text('${widget.weight}'),
                     ),
                     const Padding(
