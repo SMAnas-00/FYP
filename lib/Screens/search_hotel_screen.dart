@@ -228,6 +228,8 @@ class _SearchHotelScreenState extends State<SearchHotelScreen> {
                                       adminid: document['admin_id'],
                                       docid: document.id,
                                       userid: auth.currentUser!.uid,
+                                      hotel_phone: document['hotel_phone'],
+                                      manager_name: document['manager_name'],
                                     )));
                       },
                     ),

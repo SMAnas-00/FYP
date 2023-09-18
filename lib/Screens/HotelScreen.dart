@@ -204,6 +204,9 @@ class _HotelListScreenState extends State<HotelListScreen> {
                                           hotelpriceConn:
                                               document['connected_room_price'],
                                           adminid: document['admin_id'],
+                                          manager_name:
+                                              document['manager_name'],
+                                          hotel_phone: document['hotel_phone'],
                                           docid: document.id,
                                           userid: auth.currentUser!.uid,
                                         )));
