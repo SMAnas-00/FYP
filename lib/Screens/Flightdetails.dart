@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -23,6 +24,8 @@ class FlightDetails extends StatefulWidget {
   String docid;
   String manager_name;
   String manager_phone;
+  String day;
+  String midpoint;
 
   FlightDetails(
       {super.key,
@@ -41,7 +44,9 @@ class FlightDetails extends StatefulWidget {
       required this.userid,
       required this.manager_name,
       required this.manager_phone,
+      required this.day,
       required this.docid,
+      required this.midpoint,
       required this.flight_id});
 
   @override
@@ -209,6 +214,14 @@ class _FlightDetailsState extends State<FlightDetails> {
                             Container(
                                 width: MediaQuery.of(context).size.width * 0.7,
                                 child: Text('${widget.departure}')),
+                            const Divider(height: 20),
+                            const Text(
+                              "Midpoint",
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            Container(
+                                width: MediaQuery.of(context).size.width * 0.7,
+                                child: Text('${widget.midpoint}')),
                             // const SizedBox(height: 10),
                             const Divider(height: 20),
                             const Text(
@@ -230,6 +243,21 @@ class _FlightDetailsState extends State<FlightDetails> {
                           vertical: 16, horizontal: 0),
                       child: Text(
                         'Time: ' '${widget.dep_time}',
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.clip,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.normal,
+                          fontSize: 15,
+                          color: Color(0xff000000),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 0),
+                      child: Text(
+                        'Day: ' '${widget.day}',
                         textAlign: TextAlign.start,
                         overflow: TextOverflow.clip,
                         style: const TextStyle(
@@ -346,96 +374,124 @@ class _FlightDetailsState extends State<FlightDetails> {
                 child: MaterialButton(
                   onPressed: () {
                     String datecheckin =
-                        DateFormat('EEEE, MMM dd, yyyy').format(_checkInDate!);
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          int totalprice = widget.FlightPriceEco * selcteddays;
-                          return AlertDialog(
-                            title: const Text('Confirmatrion'),
-                            content: SizedBox(
-                              height: 150,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('NAME: ${widget.flight_name}'),
-                                    Text('ID: ${widget.flight_id}'),
-                                    const SizedBox(height: 10),
-                                    Text('DEPART: ${widget.departure}'),
-                                    Text('DES: ${widget.destination}'),
-                                    const SizedBox(height: 10),
-                                    Text('Date: $datecheckin'),
-                                    const SizedBox(height: 5),
-                                    Text('Total Price: $totalprice'),
-                                  ],
+                        DateFormat('EEEE-MMM-dd-yyyy').format(_checkInDate!);
+                    List<String> dateParts = datecheckin.split('-');
+                    print("DATE LENGTH>>>" + '${dateParts.length}');
+                    if (dateParts.length == 4) {
+                      if (dateParts[0] != widget.day) {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Error'),
+                                content: Text(
+                                    'Please Select Date with respect to Day: ${widget.day}'),
+                                actions: <Widget>[
+                                  TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: Text('OK'))
+                                ],
+                              );
+                            });
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              int totalprice =
+                                  widget.FlightPriceEco * selcteddays;
+                              return AlertDialog(
+                                title: const Text('Confirmatrion'),
+                                content: SizedBox(
+                                  height: 150,
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text('NAME: ${widget.flight_name}'),
+                                        Text('ID: ${widget.flight_id}'),
+                                        const SizedBox(height: 10),
+                                        Text('DEPART: ${widget.departure}'),
+                                        Text('DES: ${widget.destination}'),
+                                        const SizedBox(height: 10),
+                                        Text('Date: $datecheckin'),
+                                        const SizedBox(height: 5),
+                                        Text('Total Price: $totalprice'),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            actions: <Widget>[
-                              TextButton(
-                                  onPressed: () async {
-                                    FirebaseAuth user = FirebaseAuth.instance;
-                                    FirebaseFirestore firestore =
-                                        FirebaseFirestore.instance;
-                                    final userdata = await firestore
-                                        .collection('app')
-                                        .doc('Users')
-                                        .collection('Signup')
-                                        .doc(user.currentUser!.uid)
-                                        .get();
-                                    await firestore
-                                        .collection('app')
-                                        .doc('bookings')
-                                        .collection('cart')
-                                        .doc('request')
-                                        .collection(user.currentUser!.uid)
-                                        .doc('flight')
-                                        .set({
-                                      'name': widget.flight_name,
-                                      'price': totalprice,
-                                      'image': widget.FlightImageURL[0],
-                                      'id': widget.flight_id,
-                                      'quantity': selcteddays,
-                                      'docid': widget.docid
-                                    }).then((value) => Navigator.pop(context));
-                                    await firestore
-                                        .collection('app')
-                                        .doc('bookings')
-                                        .collection('flight')
-                                        .doc('${user.currentUser!.uid}' +
-                                            '${DateTime.now()}')
-                                        .set({
-                                      'admin_id': widget.adminid,
-                                      'userid': widget.userid,
-                                      'docid': widget.docid,
-                                      'name': widget.flight_name,
-                                      'id': widget.flight_id,
-                                      'price': totalprice,
-                                      'image': widget.FlightImageURL[0],
-                                      'departure': datecheckin,
-                                      'Pessangers': selcteddays,
-                                      'days': selcteddays,
-                                      'status': 'pending',
-                                      'latitude': widget.latitude,
-                                      'longitude': widget.longitude,
-                                      'user_name':
-                                          userdata.data()?['First_name'],
-                                      'user_phone': userdata.data()?['Contact'],
-                                      'manager_name': widget.manager_name,
-                                      'manager_phone': widget.manager_phone,
-                                      'date': DateTime.now(),
-                                    }, SetOptions(merge: true));
-                                  },
-                                  child: const Text('OK')),
-                              TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('CLOSE')),
-                            ],
-                          );
-                        });
+                                actions: <Widget>[
+                                  TextButton(
+                                      onPressed: () async {
+                                        FirebaseAuth user =
+                                            FirebaseAuth.instance;
+                                        FirebaseFirestore firestore =
+                                            FirebaseFirestore.instance;
+                                        final userdata = await firestore
+                                            .collection('app')
+                                            .doc('Users')
+                                            .collection('Signup')
+                                            .doc(user.currentUser!.uid)
+                                            .get();
+                                        await firestore
+                                            .collection('app')
+                                            .doc('bookings')
+                                            .collection('cart')
+                                            .doc('request')
+                                            .collection(user.currentUser!.uid)
+                                            .doc('flight')
+                                            .set({
+                                          'name': widget.flight_name,
+                                          'price': totalprice,
+                                          'image': widget.FlightImageURL[0],
+                                          'id': widget.flight_id,
+                                          'quantity': selcteddays,
+                                          'docid': widget.docid
+                                        }).then((value) =>
+                                                Navigator.pop(context));
+                                        await firestore
+                                            .collection('app')
+                                            .doc('bookings')
+                                            .collection('flight')
+                                            .doc('${user.currentUser!.uid}' +
+                                                '${DateTime.now()}')
+                                            .set({
+                                          'admin_id': widget.adminid,
+                                          'userid': widget.userid,
+                                          'docid': widget.docid,
+                                          'name': widget.flight_name,
+                                          'id': widget.flight_id,
+                                          'price': totalprice,
+                                          'image': widget.FlightImageURL[0],
+                                          'departure': datecheckin,
+                                          'Pessangers': selcteddays,
+                                          'days': selcteddays,
+                                          'status': 'pending',
+                                          'latitude': widget.latitude,
+                                          'longitude': widget.longitude,
+                                          'user_name':
+                                              userdata.data()?['First_name'],
+                                          'user_phone':
+                                              userdata.data()?['Contact'],
+                                          'manager_name': widget.manager_name,
+                                          'manager_phone': widget.manager_phone,
+                                          'date': DateTime.now(),
+                                        }, SetOptions(merge: true));
+                                      },
+                                      child: const Text('OK')),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('CLOSE')),
+                                ],
+                              );
+                            });
+                      }
+                    } else {
+                      Fluttertoast.showToast(msg: 'Invalid Date format');
+                    }
                   },
                   color: const Color(0xff3a57e8),
                   elevation: 0,
