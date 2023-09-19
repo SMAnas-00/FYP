@@ -21,7 +21,8 @@ class _UserTransportBookingState extends State<UserTransportBooking> {
       .collection('transport');
 
   void launchWhatsApp(String phoneNumber) async {
-    final whatsappUrl = "whatsapp://send?phone=$phoneNumber";
+    // final whatsappUrl = "whatsapp://send?phone=$phoneNumber";
+    final whatsappUrl = "https://wa.me/$phoneNumber";
     if (await canLaunch(whatsappUrl)) {
       await launch(whatsappUrl);
     } else {
