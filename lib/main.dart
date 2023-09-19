@@ -9,6 +9,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:newui/Screens/FlightScreen.dart';
 import 'package:newui/Screens/TODO/TodoListScreen.dart';
 import 'package:newui/Screens/animalBookscreen.dart';
+import 'package:newui/Screens/counter.dart';
 import 'package:newui/Screens/guideScreen.dart';
 import 'package:newui/Screens/local_push_notification.dart';
 import 'package:newui/Screens/search_hotel_keywords.dart';
@@ -98,6 +99,7 @@ class MyApp extends StatelessWidget {
         '/searchtransport': (context) => const SearchTranportKeyword(),
         '/addmina': (context) => const addMinaScreen(),
         '/userbooking': (context) => const UserBookings(),
+        '/counter': (context) => const Counter(),
       },
     );
   }
