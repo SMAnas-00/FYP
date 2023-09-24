@@ -1,7 +1,8 @@
+// ignore_for_file: file_names, non_constant_identifier_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:newui/Screens/Transportdetails.dart';
 import 'package:newui/Screens/animaldetailScreen.dart';
 
 class AnimalScreen extends StatefulWidget {
@@ -21,6 +22,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
       .collection('Animal');
   late Stream<QuerySnapshot> _streamTransport;
 
+  @override
   void initState() {
     super.initState();
     _streamTransport = Transportitems.snapshots();
@@ -28,7 +30,7 @@ class _AnimalScreenState extends State<AnimalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final String user = auth.currentUser!.uid;
+    // final String user = auth.currentUser!.uid;
     return Scaffold(
       appBar: AppBar(
         title: const Text(

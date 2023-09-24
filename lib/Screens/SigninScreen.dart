@@ -54,6 +54,8 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  bool _obsurePassText = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextField(
                       controller: _passwordcontroller,
                       keyboardType: TextInputType.visiblePassword,
-                      obscureText: true,
+                      obscureText: _obsurePassText,
                       textAlign: TextAlign.start,
                       maxLines: 1,
                       style: const TextStyle(
@@ -217,6 +219,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           fontStyle: FontStyle.normal,
                           fontSize: 14,
                           color: Color(0xff494646),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obsurePassText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obsurePassText = !_obsurePassText;
+                            });
+                          },
                         ),
                         filled: true,
                         fillColor: const Color(0xffffffff),

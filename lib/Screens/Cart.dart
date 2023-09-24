@@ -231,65 +231,64 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  Future<void> transferData() async {
-    CollectionReference sourceCollection = _firestore
-        .collection('app')
-        .doc('bookings')
-        .collection('cart')
-        .doc('request')
-        .collection(user.currentUser!.uid);
-    CollectionReference newCollection = _firestore
-        .collection('app')
-        .doc('bookings')
-        .collection('admin')
-        .doc('request')
-        .collection('${user.currentUser!.uid}' +
-            '${DateTime.now().millisecondsSinceEpoch}');
+  // Future<void> transferData() async {
+  //   CollectionReference sourceCollection = _firestore
+  //       .collection('app')
+  //       .doc('bookings')
+  //       .collection('cart')
+  //       .doc('request')
+  //       .collection(user.currentUser!.uid);
+  //   CollectionReference newCollection = _firestore
+  //       .collection('app')
+  //       .doc('bookings')
+  //       .collection('admin')
+  //       .doc('request')
+  //       .collection('${user.currentUser!.uid}' +
+  //           '${DateTime.now().millisecondsSinceEpoch}');
 
-    // Fetch all documents from the source collection
-    QuerySnapshot sourceSnapshot = await sourceCollection.get();
+  //   // Fetch all documents from the source collection
+  //   QuerySnapshot sourceSnapshot = await sourceCollection.get();
 
-    // Loop through each document and save it to the new collection
-    sourceSnapshot.docs.forEach((DocumentSnapshot document) async {
-      await newCollection.add(document.data());
-    });
+  //   // Loop through each document and save it to the new collection
+  //   sourceSnapshot.docs.forEach((DocumentSnapshot document) async {
+  //     await newCollection.add(document.data());
+  //   });
 
-    // Delete all documents from the source collection
-    sourceSnapshot.docs.forEach((DocumentSnapshot document) async {
-      await sourceCollection.doc(document.id).delete();
-    });
+  //   // Delete all documents from the source collection
+  //   sourceSnapshot.docs.forEach((DocumentSnapshot document) async {
+  //     await sourceCollection.doc(document.id).delete();
+  //   });
 
-    print("Data transfer and deletion completed.");
-  }
+  //   print("Data transfer and deletion completed.");
+  // }
 
   displayPaymentSheet() async {
     try {
       await Stripe.instance.presentPaymentSheet().then((value) async {
-        await transferData();
-        // await firestore
-        //     .collection('app')
-        //     .doc('bookings')
-        //     .collection('cart')
-        //     .doc('request')
-        //     .collection(user.currentUser!.uid)
-        //     .doc('hotel')
-        //     .delete();
-        // await firestore
-        //     .collection('app')
-        //     .doc('bookings')
-        //     .collection('cart')
-        //     .doc('request')
-        //     .collection(user.currentUser!.uid)
-        //     .doc('flight')
-        //     .delete();
-        // await firestore
-        //     .collection('app')
-        //     .doc('bookings')
-        //     .collection('cart')
-        //     .doc('request')
-        //     .collection(user.currentUser!.uid)
-        //     .doc('transport')
-        //     .delete();
+        await firestore
+            .collection('app')
+            .doc('bookings')
+            .collection('cart')
+            .doc('request')
+            .collection(user.currentUser!.uid)
+            .doc('hotel')
+            .delete();
+        await firestore
+            .collection('app')
+            .doc('bookings')
+            .collection('cart')
+            .doc('request')
+            .collection(user.currentUser!.uid)
+            .doc('flight')
+            .delete();
+        await firestore
+            .collection('app')
+            .doc('bookings')
+            .collection('cart')
+            .doc('request')
+            .collection(user.currentUser!.uid)
+            .doc('transport')
+            .delete();
         await firestore
             .collection('app')
             .doc('bookings')

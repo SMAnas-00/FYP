@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             Align(
-              alignment: const Alignment(0.0, 0.1),
+              alignment: const Alignment(0.0, 0.2),
               child: MaterialButton(
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, '/welcome');

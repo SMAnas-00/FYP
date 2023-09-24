@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:newui/Screens/Campdetails.dart';
 
-import 'hoteldetailScreen.dart';
-
 class MinaListScreen extends StatefulWidget {
   @override
   _MinaListScreenState createState() => _MinaListScreenState();

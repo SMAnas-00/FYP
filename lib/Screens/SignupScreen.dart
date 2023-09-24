@@ -84,7 +84,7 @@ class _SignupScreenState extends State<SignupScreen> {
           leading: IconButton(
               color: const Color(0xff212435),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pushNamed(context, '/welcome');
               },
               icon: const Icon(Icons.arrow_back)),
         ),
@@ -385,6 +385,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         if (value.startsWith("0")) {
                           return "Please start with country code";
                         }
+
                         return null;
                       },
                       style: const TextStyle(
@@ -429,7 +430,11 @@ class _SignupScreenState extends State<SignupScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
                     child: MaterialButton(
-                      onPressed: () => signup(),
+                      onPressed: () {
+                        if (_formkey.currentState!.validate()) {
+                          signup();
+                        }
+                      },
                       color: const Color(0xff3a57e8),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -497,6 +502,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                               onPressed: () {
                                 if (_formkey.currentState!.validate()) {
+                                  _formkey.currentState!.save();
                                   signup();
                                 }
                               },
