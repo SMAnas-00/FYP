@@ -1,5 +1,6 @@
 // ignore: file_names
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:newui/Screens/Cart.dart';
 import 'package:newui/Screens/HomeScreen.dart';
@@ -16,6 +17,7 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   final _pageController = PageController(initialPage: 2);
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   int maxCount = 5;
 
@@ -27,6 +29,32 @@ class _BottomNavBarState extends State<BottomNavBar> {
     const CartScreen(),
     ProfileScreen(),
   ];
+
+  Future<bool> _onBackPressed() async {
+    return await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Confirm Exit'),
+            content: Text('Are you sure you want to exit the app?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () {
+                  auth
+                      .signOut()
+                      .then((value) => Navigator.pop(context))
+                      .then((value) => Navigator.pushNamed(context, '/signin'));
+                },
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
 
   @override
   void dispose() {
@@ -42,11 +70,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(),
-        children: List.generate(
-            bottomBarPages.length, (index) => bottomBarPages[index]),
+      body: WillPopScope(
+        onWillPop: _onBackPressed,
+        child: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: List.generate(
+              bottomBarPages.length, (index) => bottomBarPages[index]),
+        ),
       ),
       extendBody: true,
       bottomNavigationBar: (bottomBarPages.length <= maxCount)

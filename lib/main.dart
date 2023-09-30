@@ -10,6 +10,7 @@ import 'package:newui/Screens/animalBookscreen.dart';
 import 'package:newui/Screens/counter.dart';
 import 'package:newui/Screens/guideScreen.dart';
 import 'package:newui/Screens/local_push_notification.dart';
+import 'package:newui/Screens/prayertimes.dart';
 import 'package:newui/Screens/search_hotel_keywords.dart';
 import 'package:newui/Screens/search_transport_keyword.dart';
 import 'package:newui/Screens/transportScreen.dart';
@@ -98,6 +99,7 @@ class MyApp extends StatelessWidget {
         '/addmina': (context) => const addMinaScreen(),
         '/userbooking': (context) => const UserBookings(),
         '/counter': (context) => const Counter(),
+        '/prayers': (context) => PrayerTimesApp()
       },
     );
   }

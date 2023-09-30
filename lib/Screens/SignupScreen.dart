@@ -309,12 +309,22 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
-                    child: TextField(
+                    child: TextFormField(
                       controller: _passwordcontroller,
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: _obsurePassText,
                       textAlign: TextAlign.start,
                       maxLines: 1,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Enter password';
+                        }
+                        if (!RegExp(r'^[A-Za-z0-9]{8}$').hasMatch(value)) {
+                          return "Password must have 8 Alphabets or numbers";
+                        }
+
+                        return null;
+                      },
                       style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontStyle: FontStyle.normal,
@@ -432,6 +442,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     child: MaterialButton(
                       onPressed: () {
                         if (_formkey.currentState!.validate()) {
+                          _formkey.currentState!.save();
                           signup();
                         }
                       },
@@ -501,10 +512,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                               ),
                               onPressed: () {
-                                if (_formkey.currentState!.validate()) {
-                                  _formkey.currentState!.save();
-                                  signup();
-                                }
+                                Navigator.pushNamed(context, '/signin');
                               },
                             )),
                       ],

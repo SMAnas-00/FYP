@@ -69,7 +69,9 @@ dependencies:
   path_provider:
   carousel_slider:
   timezone: ^0.9.2
-  
+  pray_times: ^0.0.1
+  flutter_islamic_icons: ^1.0.2
+  volume_watcher: ^2.0.0
 
 
 dev_dependencies:

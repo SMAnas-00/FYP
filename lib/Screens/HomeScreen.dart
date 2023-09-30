@@ -3,8 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:newui/Screens/local_push_notification.dart';
+
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -51,6 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
   //           prediction.toLowerCase().contains(query.toLowerCase()))
   //       .toList();
   // }
+  late double lat;
+  late double long;
 
   Future<void> _getCurrentLocation() async {
     try {
@@ -58,6 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
         if (await Geolocator.isLocationServiceEnabled()) {
           Position position = await Geolocator.getCurrentPosition(
               desiredAccuracy: LocationAccuracy.high);
+          lat = position.latitude;
+          long = position.longitude;
           _getAddressFromLatLng(position.latitude, position.longitude);
           setState(() {
             locationLatLang = '${position.latitude},${position.longitude}';
@@ -815,7 +821,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: const Icon(FontAwesomeIcons.cow),
+                          child: const Icon(FlutterIslamicIcons.solidCow),
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
@@ -917,12 +923,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: const FaIcon(FontAwesomeIcons.timeline),
+                          child:
+                              const Icon(FlutterIslamicIcons.solidTasbihHand),
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
-                            "Counter",
+                            "Tasbih",
                             textAlign: TextAlign.start,
                             overflow: TextOverflow.clip,
                             style: TextStyle(
@@ -937,7 +944,59 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.004),
+                GestureDetector(
+                  onTap: () async {
+                    Navigator.pushNamed(context, '/prayers');
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.all(0),
+                    width: 200,
+                    height: 100,
+                    decoration: const BoxDecoration(
+                      color: Color(0x00000000),
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            color: const Color(0xffffffff),
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: const Icon(
+                              FlutterIslamicIcons.solidPrayingPerson),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
+                          child: Text(
+                            "Namaz Timing",
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.clip,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              fontSize: 14,
+                              color: Color(0xff000000),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               ],
             ),
           ],
