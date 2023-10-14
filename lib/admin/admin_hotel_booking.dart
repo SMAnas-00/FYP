@@ -23,7 +23,8 @@ class _AdminHotelBookingState extends State<AdminHotelBooking> {
 
   // Function to launch WhatsApp with the specified phone number
   void launchWhatsApp(String phoneNumber) async {
-    final whatsappUrl = "whatsapp://send?phone=$phoneNumber";
+    // final whatsappUrl = "whatsapp://send?phone=$phoneNumber";
+    final whatsappUrl = "https://wa.me/$phoneNumber";
     if (await canLaunch(whatsappUrl)) {
       await launch(whatsappUrl);
     } else {

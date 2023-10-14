@@ -311,7 +311,7 @@ class _addTransportScreenState extends State<addTransportScreen> {
                   controller: priceController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
-                      labelText: 'Fair for the trip per day'),
+                      labelText: 'Fair for the trip per KM'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Fair Required';

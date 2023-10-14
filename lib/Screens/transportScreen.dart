@@ -139,7 +139,8 @@ class _TransportServiceState extends State<TransportService> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 16, horizontal: 0),
                                 child: Text(
-                                  'PKR: ' + '${document['price']}/-',
+                                  'PKR: ' +
+                                      '${document['price']}/- per kilometer',
                                   textAlign: TextAlign.start,
                                   overflow: TextOverflow.clip,
                                   style: const TextStyle(

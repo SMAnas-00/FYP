@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -7,11 +5,13 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:newui/Screens/FlightScreen.dart';
+import 'package:newui/Screens/QuranScreen.dart';
 import 'package:newui/Screens/TODO/TodoListScreen.dart';
 import 'package:newui/Screens/animalBookscreen.dart';
 import 'package:newui/Screens/counter.dart';
 import 'package:newui/Screens/guideScreen.dart';
 import 'package:newui/Screens/local_push_notification.dart';
+import 'package:newui/Screens/prayertimes.dart';
 import 'package:newui/Screens/search_hotel_keywords.dart';
 import 'package:newui/Screens/search_transport_keyword.dart';
 import 'package:newui/Screens/transportScreen.dart';
@@ -100,6 +100,8 @@ class MyApp extends StatelessWidget {
         '/addmina': (context) => const addMinaScreen(),
         '/userbooking': (context) => const UserBookings(),
         '/counter': (context) => const Counter(),
+        '/prayers': (context) => PrayerTimesApp(),
+        '/quran': (context) => Quran(),
       },
     );
   }

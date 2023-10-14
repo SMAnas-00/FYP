@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, deprecated_member_use
+// ignore_for_file: file_names, deprecated_member_use, must_be_immutable, non_constant_identifier_names
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -344,7 +344,7 @@ class _AnimalDetailsState extends State<AnimalDetails> {
                                         .collection('app')
                                         .doc('bookings')
                                         .collection('animal')
-                                        .doc('${user.currentUser!.uid}' +
+                                        .doc('${user.currentUser!.uid}'
                                             '${DateTime.now()}')
                                         .set({
                                       'adminid': widget.adminid,

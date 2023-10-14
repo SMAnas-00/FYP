@@ -374,11 +374,17 @@ class _FlightDetailsState extends State<FlightDetails> {
                 child: MaterialButton(
                   onPressed: () {
                     String datecheckin =
-                        DateFormat('EEEE-MMM-dd-yyyy').format(_checkInDate!);
+                        DateFormat("EEEE-MMM-dd-yyyy").format(_checkInDate!);
                     List<String> dateParts = datecheckin.split('-');
+                    String datecheckin1 =
+                        DateFormat("EEEE").format(_checkInDate!);
+
                     print("DATE LENGTH>>>" + '${dateParts.length}');
                     if (dateParts.length == 4) {
-                      if (dateParts[0] != widget.day) {
+                      print(dateParts[0]);
+                      print(widget.day);
+                      if (datecheckin1.toLowerCase() !=
+                          widget.day.toLowerCase()) {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {

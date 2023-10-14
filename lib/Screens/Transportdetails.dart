@@ -44,6 +44,8 @@ class TransportDetails extends StatefulWidget {
 
 class _TransportDetailsState extends State<TransportDetails> {
   final departureDateController = TextEditingController();
+  final pickupCntroller = TextEditingController();
+  final dropCntroller = TextEditingController();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth user = FirebaseAuth.instance;
   int selcteddays = 1;
@@ -68,16 +70,6 @@ class _TransportDetailsState extends State<TransportDetails> {
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       appBar: AppBar(
-        actions: [
-          IconButton(
-            color: Colors.black,
-            icon: Icon(Icons.chat),
-            onPressed: () {
-              String num = widget.number;
-              launch("https://wa.me/$num");
-            },
-          ),
-        ],
         elevation: 3,
         centerTitle: true,
         automaticallyImplyLeading: true,
@@ -188,7 +180,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                                 ),
                               ),
                               const Text(
-                                "/day",
+                                "/KM",
                                 textAlign: TextAlign.start,
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
@@ -252,7 +244,7 @@ class _TransportDetailsState extends State<TransportDetails> {
                       padding:
                           EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                       child: Text(
-                        "Number of Days",
+                        "Number of Kilometers",
                         textAlign: TextAlign.start,
                         overflow: TextOverflow.clip,
                         style: TextStyle(
