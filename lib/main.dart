@@ -5,6 +5,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:newui/Screens/FlightScreen.dart';
+import 'package:newui/Screens/QuranScreen.dart';
 import 'package:newui/Screens/TODO/TodoListScreen.dart';
 import 'package:newui/Screens/animalBookscreen.dart';
 import 'package:newui/Screens/counter.dart';
@@ -99,7 +100,8 @@ class MyApp extends StatelessWidget {
         '/addmina': (context) => const addMinaScreen(),
         '/userbooking': (context) => const UserBookings(),
         '/counter': (context) => const Counter(),
-        '/prayers': (context) => PrayerTimesApp()
+        '/prayers': (context) => PrayerTimesApp(),
+        '/quran': (context) => Quran(),
       },
     );
   }

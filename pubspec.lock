@@ -286,6 +286,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_compass:
+    dependency: "direct main"
+    description:
+      name: flutter_compass
+      sha256: "1a0121bff32df95193812b4e0f69e95f45fdec042ebd7a326ba087c0f6ec8304"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0"
+  flutter_html:
+    dependency: "direct main"
+    description:
+      name: flutter_html
+      sha256: "02ad69e813ecfc0728a455e4bf892b9379983e050722b1dce00192ee2e41d1ee"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0-beta.2"
   flutter_islamic_icons:
     dependency: "direct main"
     description:
@@ -390,6 +406,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  flutter_qiblah:
+    dependency: "direct main"
+    description:
+      name: flutter_qiblah
+      sha256: e2b96d468f8e39d6799bbd033e6b82890a811ac309a211b73eae2ecc27ff81a0
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   flutter_rating_bar:
     dependency: "direct main"
     description:
@@ -696,6 +720,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  list_counter:
+    dependency: transitive
+    description:
+      name: list_counter
+      sha256: c447ae3dfcd1c55f0152867090e67e219d42fe6d4f2807db4bbe8b8d69912237
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   location:
     dependency: "direct main"
     description:
@@ -880,6 +912,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
+  quran:
+    dependency: "direct main"
+    description:
+      name: quran
+      sha256: b52ceeae1083a856a3eaacbbfbdd493e41789970b6d9bee61c6d968fc326d947
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -926,7 +966,7 @@ packages:
     source: hosted
     version: "2.1.1"
   stream_transform:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: stream_transform
       sha256: "14a00e794c7c11aa145a170587321aedce29769c08d7f58b1d141da75e3b1c6f"
@@ -1070,7 +1110,7 @@ packages:
     source: hosted
     version: "3.0.7"
   vector_math:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: vector_math
       sha256: "80b3257d1492ce4d091729e3a67a60407d227c27241d6927be0130c98e741803"
@@ -1117,14 +1157,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.16"
-  volume_watcher:
-    dependency: "direct main"
-    description:
-      name: volume_watcher
-      sha256: "738f05c80dbda963cee4e9945291cd3c94229aa04c10da9386caef243deeac6f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.1"
   wakelock:
     dependency: transitive
     description:

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:volume_watcher/volume_watcher.dart';
 
 class Counter extends StatefulWidget {
   const Counter({super.key});
