@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_islamic_icons/flutter_islamic_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:newui/Screens/local_push_notification.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:geolocator/geolocator.dart';
@@ -157,6 +158,23 @@ class _HomeScreenState extends State<HomeScreen> {
           .set({'token': token}, SetOptions(merge: true));
     } catch (e) {
       debugPrint(e.toString());
+    }
+  }
+
+  bool hasPermission = false;
+
+  Future getPermission() async {
+    if (await Permission.location.serviceStatus.isEnabled) {
+      var status = await Permission.location.status;
+      if (status.isGranted) {
+        hasPermission = true;
+      } else {
+        Permission.location.request().then((value) {
+          setState(() {
+            hasPermission = (value == PermissionStatus.granted);
+          });
+        });
+      }
     }
   }
 
@@ -998,7 +1016,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    Navigator.pushNamed(context, '/quran');
+                    if (hasPermission) {
+                      Navigator.pushNamed(context, '/qiblah');
+                    } else {
+                      getPermission();
+                    }
                   },
                   child: Container(
                     alignment: Alignment.center,
@@ -1027,12 +1049,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             shape: BoxShape.rectangle,
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: const Icon(FlutterIslamicIcons.solidQuran),
+                          child: const Icon(FlutterIslamicIcons.solidQibla),
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
                           child: Text(
-                            "Quran",
+                            "Qibla",
                             textAlign: TextAlign.start,
                             overflow: TextOverflow.clip,
                             style: TextStyle(
