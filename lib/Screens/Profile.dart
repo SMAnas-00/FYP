@@ -65,6 +65,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return users.data()?['dp'];
   }
 
+  void _openPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MiniPopup();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -199,8 +208,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         leading: const Icon(Icons.person,
                             color: Color(0xff3a57e8), size: 24),
-                        trailing: const Icon(Icons.edit,
-                            color: Color(0xff79797c), size: 22),
+                        trailing: IconButton(
+                          icon: Icon(Icons.edit,
+                              color: Color(0xff79797c), size: 22),
+                          onPressed: () {
+                            _openPopup(context);
+                          },
+                        ),
                       ),
                     );
                   }),
@@ -425,6 +439,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
           onPressed: () {
             Navigator.of(context).pop();
           },
+        ),
+      ),
+    );
+  }
+}
+
+class MiniPopup extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    TextEditingController name = TextEditingController();
+    return Dialog(
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text('EDIT'),
+            TextField(
+              controller: name,
+              decoration: InputDecoration(
+                hintText: 'Type Name...',
+              ),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () async {
+                FirebaseAuth user = FirebaseAuth.instance;
+                FirebaseFirestore firestore = FirebaseFirestore.instance;
+                await firestore
+                    .collection('app')
+                    .doc('Users')
+                    .collection('Signup')
+                    .doc(user.currentUser!.uid)
+                    .set({
+                  'Last_name': name.text,
+                }, SetOptions(merge: true));
+                Navigator.of(context).pop(); // Close the popup
+              },
+              child: Text('Save'),
+            ),
+          ],
         ),
       ),
     );

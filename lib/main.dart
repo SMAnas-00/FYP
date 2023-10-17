@@ -8,6 +8,7 @@ import 'package:newui/Screens/FlightScreen.dart';
 import 'package:newui/Screens/QuranScreen.dart';
 import 'package:newui/Screens/TODO/TodoListScreen.dart';
 import 'package:newui/Screens/animalBookscreen.dart';
+import 'package:newui/Screens/compass.dart';
 import 'package:newui/Screens/counter.dart';
 import 'package:newui/Screens/guideScreen.dart';
 import 'package:newui/Screens/local_push_notification.dart';
@@ -102,6 +103,7 @@ class MyApp extends StatelessWidget {
         '/counter': (context) => const Counter(),
         '/prayers': (context) => PrayerTimesApp(),
         '/quran': (context) => Quran(),
+        '/qiblah': (context) => QiblahScreen(),
       },
     );
   }
